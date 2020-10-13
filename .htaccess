@@ -1,0 +1,21 @@
+#<IfModule mod_rewrite.c>
+#DirectoryIndex index.html
+#RewriteEngine On
+
+#RewriteRule ^/?$ /tracing/public/ [L]
+
+#RewriteCond %{REQUEST_FILENAME} !-f
+#RewriteCond %{REQUEST_FILENAME} !-d
+
+#RewriteRule (.*) /tracing/public/$1 [L]
+#</IfModule>
+
+<IfModule mod_rewrite.c>
+  DirectoryIndex /tracing/public/index.html
+  RewriteEngine On
+  RewriteBase /tracing/public/
+  RewriteRule ^tracing/public/index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /tracing/public/index.html [L]
+</IfModule>
