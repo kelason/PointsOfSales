@@ -6,16 +6,20 @@ $CORS = cors("GET");
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
 
+    $categories = new Categories();
+    $firstID = $categories->getAllCategories()[0]['id'];
+    
     $products = new Products();
+    $products->catid = ($_GET['catid'] == 0) ? $firstID : $_GET['catid'];
     $products->product_status = "active";
+    $productsByCategory = $products->getProductsByCategory();
 
-    $allProducts = $products->getAllProducts();
 
-    if ($allProducts) {
+    if ($productsByCategory) {
         http_response_code(200);
         echo json_encode(
             [
-                "data" => $allProducts
+                "data" => $productsByCategory
             ]);
     } else {
         http_response_code(422);

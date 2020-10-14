@@ -1,4 +1,9 @@
 <?php
+spl_autoload_register('classAutoloader');
+
+function classAutoloader($classname) {
+    require_once WWW_ROOT . 'classes/' . $classname . '.php';
+}
 
 function cors($method) {
 

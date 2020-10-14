@@ -10,20 +10,6 @@
               <li class="nav-item">
                   {{someDate}}
               </li>
-              <!--
-              <li class="nav-item">
-                  <router-link class="nav-link" :class="{ active: currentRouteName == 'Home' }" to="/">Home </router-link>
-              </li>
-              <li class="nav-item">
-                  <router-link class="nav-link" :class="{ active: currentRouteName == 'Forms' }" to="/forms">Forms </router-link>
-              </li>
-              <li class="nav-item">
-                  <router-link class="nav-link" :class="{ active: currentRouteName == 'Reports' }" to="/reports">Reports </router-link>
-              </li>
-              <li class="nav-item">
-                  <a class="nav-link" @click="logout" style="cursor: pointer;">Logout </a>
-              </li>
-              -->
           </ul>
       </div>
     </nav>
@@ -48,7 +34,6 @@ export default {
   created(){
     setInterval(() => {
       this.someDate = moment().format("dddd, MMMM Do YYYY, h:mm:ss a");
-      //console.log(this.someDate);
     }, 1000);
   },
   methods: {

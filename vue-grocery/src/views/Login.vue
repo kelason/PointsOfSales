@@ -17,6 +17,9 @@
                             </div>
 
                             <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Sign in</button>
+                            <div class="alert alert-sucess text-danger" role="alert">
+                                {{msg}}
+                            </div>
                             <hr class="my-4">
                         </form>
                     </div>
@@ -47,23 +50,26 @@ export default {
             var app = this;
             if (app.validUsername() && app.validUserpassword()) {
                 const axios = require("axios");
-
+                
                 axios
                     .post("/api/login.php", {
                         username: app.username,
                         userpassword: app.userpassword
                     })
                     .then(function(response) {
-                        //console.log(response.data);
-                        if (response.status === 200) {
+                        //console.log(response);
+                        if (response.status === 200 && response.data.user_id != 0) {
                             app.msg = response.data.msg;
                             app.$session.start();
+                            app.$session.set("user_approval", response.data.user_approval);
                             app.$session.set("user_id", response.data.user_id);
                             app.$router.push("/");
-                            //console.log(response.data.msg);
+                            console.log(response.data);
+                        } else {
+                            app.msg = response.data.msg;
                         }
                         setTimeout(() => {
-                            app.msg = false;
+                            app.msg = '';
                         }, 3000);
                     })
                     .catch((error) => {

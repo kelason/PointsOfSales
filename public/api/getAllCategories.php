@@ -18,7 +18,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
             ]);
     } else {
         http_response_code(422);
-        echo json_encode(["msg" => "Login failed."]);
+        echo json_encode(["msg" => "Failed fetching categories."]);
     }
 }
 ?>
