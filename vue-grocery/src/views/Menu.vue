@@ -31,7 +31,7 @@
                         <img src="http://localhost/grocery/public/images/loading.gif" alt="loading gif">
                     </div>
                     <div v-else class="row text-center">
-                        <div class="col-md-3 mb-4" v-for="(product) in products" :value="product.id" :key="product.id" @click="addQueueItems(product.id, 1)">
+                        <div class="col-md-3 mb-4" v-for="(product) in products" :value="product.id" :key="product.id" @click="addOrders(product.id, 1)">
                             <v-lazy-image :src="imgURL + product.product_image" class="res-img shadow border"/>
                             <p class="card-text box text-white mr-4 ml-4">
                                 {{ product.product_name }}
@@ -52,11 +52,20 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row overflow-auto border" style="height: 65vh;">
+                    <div class="row overflow-auto" style="height: 65vh;">
                         <div class="col-12">
+                            <table class="table">
+                                <tbody>
+                                    <tr v-for="(order, index) in orders" :key="order.order_id" :value="order.order_id">
+                                        <td class="pt-2 pb-2">{{order.product_name}}</td>
+                                        <td class="pt-2 pb-2"><input type="number" :min="1" v-model="order.product_qty" @input="minInput($event, index), updateOrder(order.order_id, order.product_qty, order.product_id)" class="form-control form-control-sm rounded-0 border-top-0 border-left-0 border-right-0" style="width:70px;"></td>
+                                        <td class="pt-2 pb-2">{{order.total_amount}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                    <button class="btn btn-dark btn-block item-bottom btn-lg rounded-0"><i class="fas fa-cart-plus"></i> Checkout</button>
+                    <button class="btn btn-dark btn-block item-bottom btn-lg rounded-0"><span class="float-left ml-2"><i class="fas fa-cart-plus"></i> Checkout</span> <span class="float-right mr-3">{{(total != '') ? "&#8369; " + total : total}}</span></button>
                 </div>
             </div>
         </div>
@@ -72,7 +81,7 @@ export default {
         return {
             products: [],
             categories: [],
-            queue: [],
+            orders: [],
             selectedCategory: undefined,
             catid: undefined,
             loading: false,
@@ -83,12 +92,24 @@ export default {
         this.focusBarcode();
         this.fetchCategories();
         this.fetchProductsbyCategory();
+        this.fetchOrders();
     },
     methods: {
         focusBarcode() {
             setTimeout(() => {
                 this.$refs.bar.focus()
             }, 1)
+        },
+        minInput(event, selectedIndex) {
+            var app = this;
+            const inputValue = parseInt(event.target.value);
+            const minValue = parseInt(event.target.min);
+            
+            if (inputValue < minValue || Number.isNaN(inputValue)) {
+                return app.orders[selectedIndex].product_qty = 1;
+            } else {
+                return app.orders[selectedIndex].product_qty = inputValue;
+            }
         },
         fetchProductsbyCategory(id) {
             var app = this;
@@ -139,13 +160,35 @@ export default {
             }, 500);
                 
         },
-        addQueueItems(id, qty) {
+        addOrders(id, qty) {
+            const axios = require("axios");
+            axios
+                .get("/api/addOrders.php?id=" + id + '&qty=' + qty)
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        updateOrder(id, qty, product_id) {
             var app = this;
             const axios = require("axios");
             axios
-                .get("/api/addQueueItems.php?id=" + id + '&qty=' + qty)
+                .put("/api/updateOrder.php" , {"id": id, "qty": qty, "product_id": product_id})
+                .then(() => {
+                    //console.log(response.data);
+                    app.fetchOrders();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        fetchOrders() {
+            var app = this;
+            const axios = require("axios");
+            axios
+                .get("/api/getAllOrders.php")
                 .then(function(response) {
-                    app.queue = response.data.data;
+                    app.orders = response.data.data;
+                    //console.log(app.orders);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -153,6 +196,13 @@ export default {
         }
     },
     computed: {
+        total: function() {
+            var sum=0;
+            this.orders.forEach(element => {
+                sum += parseFloat(element.total_amount)
+            });
+            return sum;
+        }
     }
 }
 </script>

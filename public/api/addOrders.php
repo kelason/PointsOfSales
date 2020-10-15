@@ -10,22 +10,22 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
     $products->id = $_GET['id'];
     $product_price = $products->productShow()[0]['selling_price'];
 
-    $payment = new PaymentItems();
-    $payment->product_id = $_GET['id'];
-    $payment->product_qty = $_GET['qty'];
-    $payment->total_amount = $_GET['qty'] * $product_price;
+    $order = new Orders();
+    $order->product_id = $_GET['id'];
+    $order->product_qty = $_GET['qty'];
+    $order->total_amount = $_GET['qty'] * $product_price;
 
-    $resultPayment = $payment->insertQueueItems();
+    $resultOrder = $order->insertOrders();
 
-    if ($resultPayment) {
+    if ($resultOrder) {
         http_response_code(200);
         echo json_encode(
             [
-                "data" => $resultPayment
+                "data" => $resultOrder
             ]);
     } else {
         http_response_code(422);
-        echo json_encode(["msg" => "Failed fetching category."]);
+        echo json_encode(["msg" => "Failed fetching Orders."]);
     }
 }
 ?>

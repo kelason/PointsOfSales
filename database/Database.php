@@ -2,22 +2,36 @@
 
 class Database extends Connection
 {
-    public function create($table, $fields=[]) 
+    public function create($table, $fields = []) 
 	{
-		$implodeColumns = implode(', ', array_keys($fields));
-		$implodePlaceholder = implode(', :', array_keys($fields));
+		try {
+			$implodeColumns = implode(', ', array_keys($fields));
+			$implodePlaceholder = implode(', :', array_keys($fields));
 
-		$sql = "INSERT INTO " . $table . " (" . $implodeColumns . ") VALUES (:" . $implodePlaceholder . ")";
+			$sql = "INSERT INTO " . $table . " (" . $implodeColumns . ") VALUES (:" . $implodePlaceholder . ")";
+			$stmt = $this->getConnection()->prepare($sql);
 
-		$stmt = $this->getConnection()->prepare($sql);
-
-		foreach ($fields as $key => $value) {
-			$stmt->bindValue(':'.$key,$value);
+			foreach ($fields as $key => $value) {
+				$stmt->bindValue(':'.$key,$value);
+			}
+			$stmtExec = $stmt->execute();
+			return $stmtExec;
+		} catch (PDOException $e) {
+			throw new Exception($e->getMessage());	
 		}
+	}
 
-		$stmtExec = $stmt->execute();
-
-        return $stmtExec;
+	public function update($query, $fields = []){
+		try {
+			$stmt = $this->getConnection()->prepare($query);
+			foreach ($fields as $key => $value) {
+				$stmt->bindValue(':'.$key,$value);
+			}
+			$stmtExec = $stmt->execute();
+			return $stmtExec;
+		} catch (PDOException $e) {
+			throw new Exception($e->getMessage());	
+		}
 	}
 
 	public function destroy($query, $params = []){
