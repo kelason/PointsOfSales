@@ -13,7 +13,8 @@ html body {
 tr td{
     padding: 0 !important;
     margin: 0 !important;
-  }
+    border-top: 0 !important;
+}
 
 .fullheight {
     height: calc(100vh - 120px);
@@ -51,9 +52,12 @@ tr td{
     background-color: rgba(1, 1, 1, 0.6);
     position: absolute;
     height: 40px;
+    width: 165px;
     bottom: 0;
     left: 0;
-    right:0;
+    right: 0; 
+    margin-left: auto; 
+    margin-right: auto;
 }
 
 a {

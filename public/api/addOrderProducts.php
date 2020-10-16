@@ -18,11 +18,12 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
     $product_price = $products->productShow()[0]['selling_price'];
 
     $orderProduct = new OrderProducts();
-
     $orderProduct->order_id = $maxOrderID;
     $orderProduct->product_id = $_GET['id'];
+
     $existQty = $orderProduct->existQty();
     $orderQty = $_GET['qty'];
+
     ($existQty) ? $orderQty = $existQty + 1 : $orderQty;
     $orderProduct->product_qty = $orderQty;
     $orderProduct->total_amount = $orderQty * $product_price;

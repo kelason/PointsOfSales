@@ -1,16 +1,20 @@
 <template>
   <div id="app" class="container-fluid">
-    <nav class="navbar navbar-expand-lg navbar-light bg-transparent" v-if="$session.exists()">
+    <nav class="navbar navbar-expand-md navbar-light bg-transparent" v-if="$session.exists()">
       <router-link class="navbar-brand" to="/">Grocery</router-link>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2"></div>
+      <div class="mx-auto order-0">
+        <a class="navbar-brand mx-auto" href="#">{{ currentRouteName }}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
           <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarText">
-          <ul class="navbar-nav ml-auto">
-              <li class="nav-item">
-                  {{someDate}}
-              </li>
-          </ul>
+        </button>
+      </div>
+      <div class="navbar-collapse collapse w-100 order-2 dual-collapse2">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              {{someDate}}
+            </li>
+        </ul>
       </div>
     </nav>
     <div class="container-full">

@@ -52,7 +52,8 @@ class OrderProducts extends Database
         $query = "DELETE FROM $this->table WHERE id=?";
         $params = array($this->id);
 
-        return $this->destroy($query, $params);
+        $this->destroy($query, $params);
+        return $this->resetId($this->table);
     }
 
     public function existQty() {

@@ -4,6 +4,7 @@ import VueSession from "vue-session";
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Menu from "../views/Menu.vue";
+import Payment from "../views/Payment.vue";
 
 Vue.use(VueRouter);
 Vue.use(VueSession);
@@ -13,7 +14,7 @@ const session = Vue.prototype.$session;
 const routes = [
   {
     path: "/",
-    name: "Home",
+    name: "HOME",
     component: Home
   },
   {
@@ -23,8 +24,13 @@ const routes = [
   },
   {
     path: "/terminal",
-    name: "Menu",
+    name: "POS TERMINAL",
     component: Menu
+  },
+  {
+    path: "/terminal/payment",
+    name: "PAYMENT",
+    component: Payment
   }
 ];
 
