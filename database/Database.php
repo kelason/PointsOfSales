@@ -2,13 +2,13 @@
 
 class Database extends Connection
 {
-    public function create($table, $fields = []) 
+    public function create($table, $fields = [], $onDuplicate="") 
 	{
 		try {
 			$implodeColumns = implode(', ', array_keys($fields));
 			$implodePlaceholder = implode(', :', array_keys($fields));
 
-			$sql = "INSERT INTO " . $table . " (" . $implodeColumns . ") VALUES (:" . $implodePlaceholder . ")";
+			$sql = "INSERT INTO " . $table . " (" . $implodeColumns . ") VALUES (:" . $implodePlaceholder . ") $onDuplicate";
 			$stmt = $this->getConnection()->prepare($sql);
 
 			foreach ($fields as $key => $value) {
@@ -68,6 +68,16 @@ class Database extends Connection
 			$stmt = $this->getConnection()->prepare($query);
 			$stmt->execute($params);
 			return $stmt->fetchAll();	
+		} catch (PDOException $e) {
+			throw new Exception($e->getMessage());	
+		}
+	}
+
+	public function setRowCount($query, $params = []){
+		try {
+			$stmt = $this->getConnection()->prepare($query);
+			$stmt->execute($params);
+			return $stmt->rowCount();	
 		} catch (PDOException $e) {
 			throw new Exception($e->getMessage());	
 		}

@@ -31,7 +31,7 @@
                         <img src="http://localhost/grocery/public/images/loading.gif" alt="loading gif">
                     </div>
                     <div v-else class="row text-center">
-                        <div class="col-md-3 mb-4" v-for="(product) in products" :value="product.id" :key="product.id" @click="addOrders(product.id, 1)">
+                        <div class="col-md-3 mb-4" v-for="(product) in products" :value="product.id" :key="product.id" @click="addOrderProducts(product.id, 1)">
                             <v-lazy-image :src="imgURL + product.product_image" class="res-img shadow border"/>
                             <p class="card-text box text-white mr-4 ml-4">
                                 {{ product.product_name }}
@@ -56,9 +56,9 @@
                         <div class="col-12">
                             <table class="table">
                                 <tbody>
-                                    <tr v-for="(order, index) in orders" :key="order.order_id" :value="order.order_id">
-                                        <td class="pt-2 pb-2">{{order.product_name}}</td>
-                                        <td class="pt-2 pb-2"><input type="number" :min="1" v-model="order.product_qty" @input="minInput($event, index), updateOrder(order.order_id, order.product_qty, order.product_id)" class="form-control form-control-sm rounded-0 border-top-0 border-left-0 border-right-0" style="width:70px;"></td>
+                                    <tr v-for="(order, index) in orders" :key="order.id" :value="order.id">
+                                        <td class="pt-2 pb-2" style="cursor: pointer;" :title="'Delete ' + order.product_name" @click="deleteOrderProduct(order.id)">{{order.product_name}}</td>
+                                        <td class="pt-2 pb-2"><input type="number" :min="1" v-model="order.product_qty" @input="minInput($event, index), updateOrderProduct(order.id, order.product_qty, order.product_id)" class="form-control form-control-sm rounded-0 border-top-0 border-left-0 border-right-0" style="width:70px;"></td>
                                         <td class="pt-2 pb-2">{{order.total_amount}}</td>
                                     </tr>
                                 </tbody>
@@ -92,7 +92,7 @@ export default {
         this.focusBarcode();
         this.fetchCategories();
         this.fetchProductsbyCategory();
-        this.fetchOrders();
+        this.fetchOrderProducts();
     },
     methods: {
         focusBarcode() {
@@ -141,6 +141,19 @@ export default {
                     console.log(error);
                 });
         },
+        fetchOrderProducts() {
+            var app = this;
+            const axios = require("axios");
+            axios
+                .get("/api/getAllOrderProducts.php")
+                .then(function(response) {
+                    app.orders = response.data.data;
+                    //console.log(app.orders);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
         searchCategory(name) {
             var app = this;
             const axios = require("axios");
@@ -160,35 +173,37 @@ export default {
             }, 500);
                 
         },
-        addOrders(id, qty) {
-            const axios = require("axios");
-            axios
-                .get("/api/addOrders.php?id=" + id + '&qty=' + qty)
-                .catch((error) => {
-                    console.log(error);
-                });
-        },
-        updateOrder(id, qty, product_id) {
+        addOrderProducts(id, qty) {
             var app = this;
             const axios = require("axios");
             axios
-                .put("/api/updateOrder.php" , {"id": id, "qty": qty, "product_id": product_id})
+                .get("/api/addOrderProducts.php?id=" + id + '&qty=' + qty + '&user_id=' + app.$session.get('user_id'))
                 .then(() => {
-                    //console.log(response.data);
-                    app.fetchOrders();
+                    app.fetchOrderProducts();
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         },
-        fetchOrders() {
+        updateOrderProduct(id, qty, product_id) {
             var app = this;
             const axios = require("axios");
             axios
-                .get("/api/getAllOrders.php")
-                .then(function(response) {
-                    app.orders = response.data.data;
-                    //console.log(app.orders);
+                .put("/api/updateOrderProduct.php" , {"id": id, "qty": qty, "product_id": product_id})
+                .then(() => {
+                    app.fetchOrderProducts();
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        deleteOrderProduct(id) {
+            var app = this;
+            const axios = require("axios");
+            axios
+                .delete("/api/deleteOrderProduct.php?id=" + id)
+                .then(() => {
+                    app.fetchOrderProducts();
                 })
                 .catch((error) => {
                     console.log(error);

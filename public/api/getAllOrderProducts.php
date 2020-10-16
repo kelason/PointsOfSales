@@ -6,18 +6,21 @@ $CORS = cors("GET");
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
 
-    $orders = new Orders();
-    $resultOrders = $orders->getAllOrders();
+    $orders = new OrderProducts();
+    $resultOrders = $orders->getAllOrderProducts();
 
     if ($resultOrders) {
-        http_response_code(200);
         echo json_encode(
             [
                 "data" => $resultOrders
             ]);
     } else {
-        http_response_code(422);
-        echo json_encode(["msg" => "Failed fetching Orders."]);
+        echo json_encode(
+            [
+                "data" => [],
+                "msg" => "Failed fetching Orders."
+            ]
+        );
     }
 }
 ?>
