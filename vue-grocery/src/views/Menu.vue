@@ -149,7 +149,6 @@ export default {
                 .get("/api/getAllOrderProducts.php")
                 .then(function(response) {
                     app.orders = response.data.data;
-                    //console.log(app.orders);
                 })
                 .catch((error) => {
                     console.log(error);
