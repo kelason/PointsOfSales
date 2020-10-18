@@ -7,12 +7,12 @@
                         <input type="text" id="inputCategory" class="form-control form-control-sm mb-3 rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Insert Category" @keyup="searchCategory($event.target.value)">
                         <label for="inputCategory">Insert Category</label>
                     </div>
-                    
                     <div class="row">
                         <div class="col-12 mb-2" v-for="(category, index) in categories" :value="category.id" :key="category.id">
                             <button class="btn btn-block btn-outline-dark rounded-0" :class="{ 'active': (selectedCategory !== undefined) ? category.id == selectedCategory : index===0 }" @click="selectedCategory=category.id, fetchProductsbyCategory((selectedCategory !== undefined) ? selectedCategory : category.id)">{{ category.category_name }}</button>
                         </div>
                     </div>
+                    <button class="btn btn-warning text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                                 <tbody>
                                     <tr v-for="(order, index) in orders" :key="order.id" :value="order.id">
                                         <td class="pt-2 pb-2 align-middle" :title="order.product_name">{{order.product_name}}</td>
-                                        <td class="pt-2 pb-2 align-middle"><input type="number" :min="1" v-model="order.product_qty" @input="minInput($event, index), updateOrderProduct(order.id, order.product_qty, order.product_id)" class="form-control form-control-sm rounded-0 border-top-0 border-left-0 border-right-0" style="width:70px;"></td>
+                                        <td class="pt-2 pb-2 align-middle"><input type="number" :min="1" v-model="order.product_qty" @input="minInput($event, index), updateOrderProduct(order.id, order.product_qty, order.product_id)" class="form-control form-control-sm bg-transparent rounded-0 border-top-0 border-left-0 border-right-0" style="width:70px;"></td>
                                         <td class="pt-2 pb-2 align-middle">&#8369; {{order.total_amount}}</td>
                                         <td class="pt-2 pb-2 align-middle" style="cursor: pointer;" :title="'Delete ' + order.product_name" @click="deleteOrderProduct(order.id)"><i class="fas fa-times-circle"></i></td>
                                     </tr>
@@ -66,7 +66,7 @@
                             </table>
                         </div>
                     </div>
-                    <button class="btn btn-dark btn-block item-bottom btn-lg rounded-0" @click="checkOut(orderTotal)"><span class="float-left ml-2"><i class="fas fa-cart-plus"></i> Checkout</span> <span class="float-right mr-3">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span></button>
+                    <button class="btn btn-success btn-block item-bottom btn-lg rounded-0" @click="checkOut(orderTotal)"><span class="float-left ml-2"><i class="fas fa-cart-plus"></i> Checkout</span> <span class="float-right mr-3">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span></button>
                 </div>
             </div>
         </div>
@@ -100,6 +100,9 @@ export default {
             setTimeout(() => {
                 this.$refs.bar.focus()
             }, 1)
+        },
+        back() {
+            this.$router.push("/");
         },
         minInput(event, selectedIndex) {
             var app = this;
@@ -219,7 +222,7 @@ export default {
             this.orders.forEach(element => {
                 sum += parseFloat(element.total_amount)
             });
-            return sum;
+            return sum.toFixed(2);
         }
     }
 }

@@ -5,6 +5,7 @@ import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Menu from "../views/Menu.vue";
 import Payment from "../views/Payment.vue";
+import Product from "../views/Product.vue";
 
 Vue.use(VueRouter);
 Vue.use(VueSession);
@@ -31,6 +32,11 @@ const routes = [
     path: "/terminal/payment",
     name: "PAYMENT",
     component: Payment
+  },
+  {
+    path: "/product",
+    name: "PRODUCTS",
+    component: Product
   }
 ];
 

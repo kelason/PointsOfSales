@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-sm-3">
             <div class="card fullheight overflow-auto rounded-0">
-                <div class="card-header">
+                <div class="card-header bg-gradient">
                     <h5>Payment Setup</h5>
                 </div>
                 <div class="card-body">
@@ -34,13 +34,13 @@
                             <textarea id="comment" class="form-control form-control-sm rounded-0" cols="30" rows="9"></textarea>
                         </div>
                     </div>
-                    <button class="btn btn-dark btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
+                    <button class="btn btn-warning text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
                 </div>
             </div>
         </div>
         <div class="col-sm-3">
             <div class="card fullheight overflow-auto rounded-0">
-                <div class="card-header">
+                <div class="card-header bg-gradient">
                     <h5>Order Summary</h5>
                 </div>
                 <div class="card-body">
@@ -50,7 +50,7 @@
                                 <tbody>
                                     <tr v-for="(order, index) in orders" :key="order.id" :value="order.id">
                                         <td class="pt-2 pb-2 align-middle" :title="order.product_name">{{order.product_name}}</td>
-                                        <td class="pt-2 pb-2 align-middle"><input type="number" :min="1" v-model="order.product_qty" @input="minInput($event, index), updateOrderProduct(order.id, order.product_qty, order.product_id)" class="form-control form-control-sm rounded-0 border-top-0 border-left-0 border-right-0" style="width:70px;"></td>
+                                        <td class="pt-2 pb-2 align-middle"><input type="number" :min="1" v-model="order.product_qty" @input="minInput($event, index), updateOrderProduct(order.id, order.product_qty, order.product_id)" class="form-control form-control-sm bg-transparent rounded-0 border-top-0 border-left-0 border-right-0" style="width:70px;"></td>
                                         <td class="pt-2 pb-2 align-middle">&#8369; {{order.total_amount}}</td>
                                         <td class="pt-2 pb-2 align-middle" style="cursor: pointer;" :title="'Delete ' + order.product_name" @click="deleteOrderProduct(order.id)"><i class="fas fa-times-circle"></i></td>
                                     </tr>
@@ -58,7 +58,7 @@
                             </table>
                         </div>
                     </div>
-                    <button class="btn btn-dark btn-block item-bottom btn-lg rounded-0" style="cursor: context-menu;"><span class="float-left mr-3">Total: </span><span class="float-right mr-3">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span></button>
+                    <button class="btn btn-success btn-block item-bottom btn-lg rounded-0" style="cursor: context-menu;"><span class="float-left mr-3">Total: </span><span class="float-right mr-3">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span></button>
                 </div>
             </div>
         </div>
@@ -164,6 +164,30 @@ export default {
                 return app.orders[selectedIndex].product_qty = inputValue;
             }
         },
+        back() {
+            this.$router.push("/terminal");
+        },
+        key(num) {
+            if(num == 0) {
+                return this.total = Number(this.total) + Number(num) + '0';
+            } else {
+                if (num >= 20) {
+                    return this.total += Number(num);
+                } else {
+                    return this.total = Number(this.total) + String(num);
+                }
+            }
+        },
+        clear(num){
+            if (num > 1) {
+                return this.total = String(num).substr(0, String(num).length - 1);
+            } else {
+                return this.total = Number(0);
+            } 
+        },
+        clearAll(){
+            return this.total = 0;
+        },
         fetchOrderProducts() {
             var app = this;
             const axios = require("axios");
@@ -199,30 +223,6 @@ export default {
                 .catch((error) => {
                     console.log(error);
                 });
-        },
-        back() {
-            this.$router.push("/terminal");
-        },
-        key(num) {
-            if(num == 0) {
-                return this.total = Number(this.total) + Number(num) + '0';
-            } else {
-                if (num >= 20) {
-                    return this.total += Number(num);
-                } else {
-                    return this.total = Number(this.total) + String(num);
-                }
-            }
-        },
-        clear(num){
-            if (num > 1) {
-                return this.total = String(num).substr(0, String(num).length - 1);
-            } else {
-                return this.total = Number(0);
-            } 
-        },
-        clearAll(){
-            return this.total = 0;
         }
     },
     computed: {
@@ -231,7 +231,7 @@ export default {
             this.orders.forEach(element => {
                 sum += parseFloat(element.total_amount)
             });
-            return sum;
+            return sum.toFixed(2);
         }
     }
 }

@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="container-fluid">
     <nav class="navbar navbar-expand-md navbar-light bg-transparent" v-if="$session.exists()">
-      <router-link class="navbar-brand" to="/">Grocery</router-link>
+      <router-link class="navbar-brand sansita" to="/">Grocery</router-link>
       <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2"></div>
       <div class="mx-auto order-0">
         <a class="navbar-brand mx-auto" href="#">{{ currentRouteName }}</a>

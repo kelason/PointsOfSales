@@ -43,15 +43,6 @@ class Database extends Connection
 		}
 	}
 
-	public function resetId($table){
-		try {
-			$stmt = $this->getConnection()->prepare("ALTER TABLE $table AUTO_INCREMENT=1");
-			return $stmt->execute();
-		} catch (PDOException $e) {
-			throw new Exception($e->getMessage());	
-		}
-	}
-
 	public function setColumn($query, $params = []){
 		try {
 			$stmt = $this->getConnection()->prepare($query);

@@ -8,18 +8,37 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 
     $products = new Products();
     $products->product_status = "active";
+    $products->limit = 7;
 
-    $allProducts = $products->getAllProducts();
+    $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
+    if ($page < 1) {
+        $page = 1;
+    }
+    $products->start = ($page - 1) * $products->limit;
+    $total = $products->productCount();
+    
+    $totalPages = ceil($total / $products->limit);
+    
+    $pagination = [
+        "current_page" => $page,
+        "last_page" => $totalPages
+    ];
+
+    $allProducts = $products->paginationProducts();
 
     if ($allProducts) {
-        http_response_code(200);
         echo json_encode(
             [
-                "data" => $allProducts
+                "data" => $allProducts,
+                "pagination" => $pagination
             ]);
     } else {
-        http_response_code(422);
-        echo json_encode(["msg" => "Failed fetching products."]);
+        echo json_encode(
+            [
+                "data" => [],
+                "msg" => "Failed fetching Products."
+            ]
+        );
     }
 }
 ?>
