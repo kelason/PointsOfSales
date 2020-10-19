@@ -14,8 +14,10 @@ class Database extends Connection
 			foreach ($fields as $key => $value) {
 				$stmt->bindValue(':'.$key,$value);
 			}
-			$stmtExec = $stmt->execute();
-			return $stmtExec;
+			$stmt->execute();
+			$last_id = $this->getConnection()->lastInsertId();
+			
+			return $last_id;
 		} catch (PDOException $e) {
 			throw new Exception($e->getMessage());	
 		}

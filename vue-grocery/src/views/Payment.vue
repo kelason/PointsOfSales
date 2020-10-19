@@ -34,7 +34,7 @@
                             <textarea id="comment" class="form-control form-control-sm rounded-0" cols="30" rows="9"></textarea>
                         </div>
                     </div>
-                    <button class="btn btn-warning text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
+                    <button class="btn btn-primary text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
                             </table>
                         </div>
                     </div>
-                    <button class="btn btn-success btn-block item-bottom btn-lg rounded-0" style="cursor: context-menu;"><span class="float-left mr-3">Total: </span><span class="float-right mr-3">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span></button>
+                    <button class="btn btn-info btn-block item-bottom btn-lg rounded-0" style="cursor: context-menu;"><span class="float-left mr-3">Total: </span><span class="float-right mr-3">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span></button>
                 </div>
             </div>
         </div>
@@ -125,7 +125,7 @@
                                 </div>
                             </div>
                             <div class="row no-gutters">
-                                <div class="col-sm-6"><button value="0" class="btn btn-lg btn-warning border btn-block text-white p-4 px-0">Hold</button></div>
+                                <div class="col-sm-6"><button value="0" class="btn btn-lg btn-primary border btn-block text-white p-4 px-0">Hold</button></div>
                                 <div class="col-sm-6"><button value="0" class="btn btn-lg btn-success border btn-block p-4 px-0">Tender</button></div> 
                             </div>
                         </div>

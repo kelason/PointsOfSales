@@ -2,37 +2,39 @@
     <div class="row">
         <div class="col-md-2">
             <div class="card fullheight overflow-auto shadow">
-                <div class="card-body">
+                <div class="card-header bg-gradient p-0 pl-4 pr-4 pt-1">
                     <div class="form-label-group">
-                        <input type="text" id="inputCategory" class="form-control form-control-sm mb-3 rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Insert Category" @keyup="searchCategory($event.target.value)">
-                        <label for="inputCategory">Insert Category</label>
+                        <input type="text" id="inputCategory" class="form-control form-control-sm mb-3 rounded-0 border-top-0 bg-transparent text-white border-left-0  border-right-0" placeholder="Insert Category" @keyup="searchCategory($event.target.value)">
+                        <label for="inputCategory" class="text-white">Insert Category</label>
                     </div>
+                </div>
+                <div class="card-body">
                     <div class="row">
                         <div class="col-12 mb-2" v-for="(category, index) in categories" :value="category.id" :key="category.id">
-                            <button class="btn btn-block btn-outline-dark rounded-0" :class="{ 'active': (selectedCategory !== undefined) ? category.id == selectedCategory : index===0 }" @click="selectedCategory=category.id, fetchProductsbyCategory((selectedCategory !== undefined) ? selectedCategory : category.id)">{{ category.category_name }}</button>
+                            <button class="btn btn-block btn-outline-dark rounded-0" :class="{ 'active': (selectedCategory !== null) ? category.id == selectedCategory : index===0 }" @click="selectedCategory=category.id, fetchProductsbyCategory((selectedCategory !== null) ? selectedCategory : category.id), searchProd=''">{{ category.category_name }}</button>
                         </div>
                     </div>
-                    <button class="btn btn-warning text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
+                    <button class="btn btn-primary text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
                 </div>
             </div>
         </div>
         <div class="col-md-7">
             <div class="card fullheight overflow-auto shadow">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-label-group">
-                                <input type="text" id="inputProduct" class="form-control form-control-sm rounded-0 border-top-0 border-left-0 border-right-0" placeholder="Insert Product">
-                                <label for="inputProduct">Insert Product</label>
-                            </div>
-                        </div>
+                <div class="card-header bg-gradient p-0 pl-4 pr-4 pt-1">
+                    <div class="form-label-group">
+                        <input type="text" v-model="searchProd" id="inputProduct" class="form-control form-control-sm bg-transparent text-white rounded-0 border-top-0 border-left-0 border-right-0" placeholder="Insert Product" @keyup="searchProduct($event.target.value)">
+                        <label for="inputProduct" class="text-white">Insert Product</label>
                     </div>
-                    <div class="text-center" v-if="loading">
-                        <img src="http://localhost/grocery/public/images/loading.gif" alt="loading gif">
+                </div>
+                <div class="card-body">
+                    <div v-if="products==''">
+                            <div class="text-danger text-center">
+                                No Records...
+                            </div>
                     </div>
                     <div v-else class="row text-center">
                         <div class="col-md-3 mb-4" v-for="(product) in products" :value="product.id" :key="product.id" @click="addOrderProducts(product.id, 1)">
-                            <v-lazy-image :src="imgURL + product.product_image" class="res-img shadow border"/>
+                            <v-lazy-image :src="imgURL + product.product_image" class="res-img shadow-lg border"/>
                             <p class="card-text box text-white">
                                 {{ product.product_name }}
                             </p>
@@ -43,15 +45,13 @@
         </div>
         <div class="col-md-3">
             <div class="card fullheight shadow">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-label-group">
-                                <input type="text" id="inputBarcode" ref="bar" class="form-control form-control-sm rounded-0 border-top-0 border-left-0 border-right-0" placeholder="Insert Barcode">
-                                <label for="inputBarcode">Insert Barcode</label>
-                            </div>
-                        </div>
+                <div class="card-header bg-gradient p-0 pl-4 pr-4 pt-1">
+                    <div class="form-label-group">
+                        <input type="text" id="inputBarcode" ref="bar" class="form-control form-control-sm bg-transparent text-white rounded-0 border-top-0 border-left-0 border-right-0" placeholder="Insert Barcode">
+                        <label for="inputBarcode" class="text-white">Insert Barcode</label>
                     </div>
+                </div>
+                <div class="card-body">
                     <div class="row overflow-auto" style="height: 65vh;">
                         <div class="col-12">
                             <table class="table table-striped">
@@ -66,7 +66,7 @@
                             </table>
                         </div>
                     </div>
-                    <button class="btn btn-success btn-block item-bottom btn-lg rounded-0" @click="checkOut(orderTotal)"><span class="float-left ml-2"><i class="fas fa-cart-plus"></i> Checkout</span> <span class="float-right mr-3">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span></button>
+                    <button class="btn btn-info btn-block item-bottom btn-lg rounded-0" @click="checkOut(orderTotal)"><span class="float-left ml-2"><i class="fas fa-cart-plus"></i> Checkout</span> <span class="float-right mr-3">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span></button>
                 </div>
             </div>
         </div>
@@ -83,9 +83,10 @@ export default {
             products: [],
             categories: [],
             orders: [],
-            selectedCategory: undefined,
+            selectedCategory: null,
             catid: undefined,
             loading: false,
+            searchProd: '',
             imgURL: 'http://localhost/grocery/public/images/products/'
         }
     },
@@ -166,9 +167,27 @@ export default {
             }
             app.timer = setTimeout(() => {
                 axios
-                    .get("/api/searchCategory.php?category_name=" + name)
+                    .get("/api/searchProduct.php?category_name=" + name)
                     .then(function(response) {
                         app.categories = response.data.data;
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }, 500);
+        },
+        searchProduct(name) {
+            var app = this;
+            const axios = require("axios");
+            if (app.timer) {
+                clearTimeout(app.timer);
+                app.timer = null;
+            }
+            app.timer = setTimeout(() => {
+                axios
+                    .get("/api/searchProductByCategory.php?product_name=" + name + "&category_id=" + app.selectedCategory)
+                    .then(function(response) {
+                        app.products = response.data.data;
                     })
                     .catch((error) => {
                         console.log(error);

@@ -16,14 +16,16 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 
 
     if ($productsByCategory) {
-        http_response_code(200);
         echo json_encode(
             [
                 "data" => $productsByCategory
             ]);
     } else {
-        http_response_code(422);
-        echo json_encode(["msg" => "Failed fetching products."]);
+        echo json_encode(
+            [
+                "data" => [],
+                "msg" => "Failed fetching Category."
+            ]);
     }
 }
 ?>

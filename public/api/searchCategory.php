@@ -12,14 +12,16 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
     $resultCategory = $categories->searchCategory();
 
     if ($resultCategory) {
-        http_response_code(200);
         echo json_encode(
             [
                 "data" => $resultCategory
             ]);
     } else {
-        http_response_code(422);
-        echo json_encode(["msg" => "Failed fetching category."]);
+        echo json_encode(
+            [
+                "data" => [],
+                "msg" => "Failed fetching Category."
+            ]);
     }
 }
 ?>

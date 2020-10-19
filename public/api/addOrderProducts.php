@@ -9,9 +9,8 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
     if ($orders->orderStatus() == "paid" || $orders->orderStatus() == "") {
         $orders->user_id = $_GET['user_id'];
         $orders->created_at = DATE('Y-m-d H:i:s');
-        $orders->insertOrders();
+        $maxOrderID = $orders->insertOrders();
     }
-    $maxOrderID = $orders->maxOrderId();
 
     $products = new Products();
     $products->id = $_GET['id'];
