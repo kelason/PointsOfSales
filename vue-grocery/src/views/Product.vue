@@ -12,7 +12,7 @@
                         </div>
                         <div class="col-5"></div>
                         <div class="col-2 mt-2">
-                            <button class="btn btn-dark btn-block rounded-0" data-toggle="modal" data-target="#addProduct"><i class="fas fa-plus-circle"></i> Add Product</button>
+                            <button class="btn btn-dark btn-block rounded-0" @click="toggleModal(), edit = false;"><i class="fas fa-plus-circle"></i> Add Product</button>
                         </div>
                     </div>
                     
@@ -44,8 +44,8 @@
                                 <tr class="text-center" v-for="(product, index) in products" :key="product.id">
                                     <td>
                                         <label :title="'Click to Upload Photo'" :for="'file' + index" class="border m-0" style="cursor: pointer;">
-                                            <input type="file" :id="'file' + index" :ref="'file' + index" class="form-control-file" @change="onImageChange" hidden>
-                                            <v-lazy-image :src="imgURL + product.product_image" class="res-img shadow border" style="width: 80px; height: 50px;"/>
+                                            <input type="file" ref="file" :id="'file' + index" class="form-control-file" @change="createImage(product.id, index)" hidden>
+                                            <img :src="imgURL + product.product_image" class="res-img shadow border" style="width: 80px; height: 50px;"/>
                                         </label>
                                     </td>
                                     <td class="align-middle">{{ product.product_name }}</td>
@@ -56,8 +56,8 @@
                                     <td class="align-middle">{{ product.barcode }}</td>
                                     <td class="align-middle">{{ product.alarmlvl }}</td>
                                     <td class="align-middle">
-                                        <i class="fa fa-edit mr-2" :title="'Click to Edit ' + product.product_name" style="cursor: pointer;"></i> 
-                                        <i class="fa fa-trash ml-2" :title="'Click to Delete ' + product.product_name" style="cursor: pointer;"></i>
+                                        <i class="fa fa-edit mr-2" :title="'Click to Edit ' + product.product_name" style="cursor: pointer;" @click="editProduct(product)"></i> 
+                                        <i class="fa fa-trash ml-2" :title="'Click to Delete ' + product.product_name" style="cursor: pointer;" @click="deleteProduct(product.id, product.product_name)"></i>
                                     </td>
                                 </tr>
                             </tbody>
@@ -93,12 +93,12 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" tabindex="-1" role="dialog" id="addProduct">
+        <div class="modal fade" tabindex="-1" :class="{show, 'd-block': active}" role="dialog" id="addProduct">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-gradient">
                         <h5 class="modal-title">Add Product</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" @click="toggleModal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
@@ -170,11 +170,7 @@
     </div>
 </template>
 <script>
-import VLazyImage from "v-lazy-image";
 export default {
-    components: {
-        VLazyImage
-    },
     data () {
         return {
             products: [],
@@ -187,9 +183,13 @@ export default {
                 selling_price: '',
                 product_image: ''
             },
+            active: false,
+            show: false,
             pagination: [],
+            edit: false,
             errors: [],
             loading: false,
+            file: '',
             page: 0,
             msg: null,
             imgURL: 'http://localhost/grocery/public/images/products/'
@@ -220,19 +220,41 @@ export default {
         back() {
             this.$router.push("/");
         },
-        onImageChange(event) {
-            this.product.product_image = event.target.files[0];
-            //this.type = this.product.product_image.type;
-            this.createImage(this.product.product_image);
-            console.log(this.product.product_image);
+        createImage(product_id, index) {
+            var app = this;
+            const axios = require("axios");
+
+            app.file = app.$refs.file[index].files[0];
+            
+            let splitFile = app.file.name.split('.');
+            let fileName = product_id;
+            let fileExt = splitFile[1];
+            let newFile = fileName + '.' + fileExt;
+            
+            var formData = new FormData();
+
+            formData.append('file', app.file, newFile);
+
+            axios
+                .post("/api/uploadProductImage.php" , formData, {
+                    header:{
+                        'Content-Type' : 'multipart/form-data'
+                    }
+                })
+                .then(function() {
+                    window.location.reload(true)
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
-        createImage(file) {
-            let reader = new FileReader();
-            let vm = this;
-            reader.onload = (e) => {
-                vm.product.product_image = e.target.result;
-            };
-            return reader.readAsDataURL(file);
+        toggleModal() {
+            const body = document.querySelector("body");
+            this.active = !this.active;
+            this.active
+                ? body.classList.add("modal-open")
+                : body.classList.remove("modal-open");
+            setTimeout(() => (this.show = !this.show), 10);
         },
         fetchProducts(page) {
             var app = this;
@@ -301,17 +323,65 @@ export default {
                 !app.validStatus 
             ) {
                 const axios = require("axios");
+                if(app.edit == false) {
+                    axios
+                        .post("/api/addProducts.php", app.product)
+                        .then(function(response) {
+                            app.msg = response.data.msg;
 
+                            setTimeout(() => {
+                                app.msg = null;
+                            }, 2000);
+                            app.fetchProducts(this.page);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                } else {
+                    axios
+                        .put("/api/updateProduct.php", app.product)
+                        .then((response) => {
+                            app.msg = response.data.msg;
+                            app.edit = false;
+                            setTimeout(() => {
+                                app.msg = null;
+                            }, 2000);
+                            app.fetchProducts();
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        });
+                }
+            }
+        },
+        editProduct(product) {
+            let app = this;
+            app.toggleModal();
+
+            app.edit = true;
+
+            app.product.id = product.id;
+            app.product.product_name = product.product_name;
+            app.product.unit_price = product.unit_price;
+            app.product.selling_price = product.selling_price;
+            app.product.product_status = (product.product_status == "active") ? 1 : 2;
+            app.product.product_alarmlvl = product.product_alarmlvl;
+            app.product.category_id = product.category_id;
+            app.product.barcode = product.barcode;
+        },
+        deleteProduct(product_id, product_name) {
+            if (confirm('Do you wat to delete ' + product_name)) {
+                const axios = require("axios");
                 axios
-                    .post("/api/addProducts.php", app.product)
-                    .then(function(response) {
-                        app.msg = response.data.msg;
-
-                        setTimeout(() => {
-                            app.msg = null;
-                        }, 2000);
-                        app.fetchProducts();
+                    .put("/api/deleteProduct.php", {'id' : product_id})
+                    .then(() => {
+                        this.fetchProducts(this.page);
                     })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else {
+                return false;
             }
         }
     }

@@ -126,6 +126,7 @@ export default {
             axios
                 .get("/api/getProductsByCategory.php?catid=" + catid)
                 .then(function(response) {
+                    console.log(response.data);
                     app.products = response.data.data;
                     app.loading = false;
                 })

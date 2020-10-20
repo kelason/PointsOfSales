@@ -10,7 +10,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
     $firstID = $categories->getAllCategories()[0]['id'];
     
     $products = new Products();
-    $products->catid = ($_GET['catid'] == 0) ? $firstID : $_GET['catid'];
+    $products->category_id = ($_GET['catid'] == 0) ? $firstID : $_GET['catid'];
     $products->product_status = "active";
     $productsByCategory = $products->getProductsByCategory();
 
@@ -24,7 +24,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
         echo json_encode(
             [
                 "data" => [],
-                "msg" => "Failed fetching Category."
+                "msg" => "Failed fetching Product."
             ]);
     }
 }

@@ -2,14 +2,14 @@
 require $_SERVER['DOCUMENT_ROOT'] . 'grocery/config/init.php';
 
 //Activate Header CORS
-$CORS = cors("POST");
+$CORS = cors("PUT");
 
-if($_SERVER['REQUEST_METHOD'] == "POST") {
+if($_SERVER['REQUEST_METHOD'] == "PUT") {
     $data = json_decode(file_get_contents("php://input", true));
-    
+
     $product = new Products();
+    $product->id = $data->id;
     $product->product_name = $data->product_name;
-    $product->product_image = "no-thumbnail.jpg";
     $product->category_id = $data->category_id;
     $product->unit_price = $data->unit_price;
     $product->selling_price = $data->selling_price;
@@ -17,26 +17,19 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     $product->barcode = (isset($data->barcode) == '') ? '' : $data->barcode;
     $product->alarmlvl = (isset($data->alarmlvl) == '') ? 0 : $data->alarmlvl;
 
-    $resultProduct = $product->createProduct();
+    $resultProduct = $product->updateProduct();
 
-    $productCategories = new ProductCategories();
-    $productCategories->product_id = $resultProduct;
-    $productCategories->category_id = $data->category_id;
-
-    $resultProductCategory = $productCategories->createProductCategories();
-
-    if ($resultProduct && $resultProductCategory) {
+    if ($resultProduct) {
         echo json_encode(
             [
-                "data" => [
-                    "msg" => "Product added successfully."
-                ]
+                "data" => [],
+                "msg" => "Product Updated successfully."
             ]);
     } else {
         echo json_encode(
             [
                 "data" => [],
-                "msg" => "Failed fetching Orders."
+                "msg" => "Failed Updating Products."
             ]
         );
     }
