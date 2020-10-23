@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'Roboto';
-    src:  url('../fonts/Roboto/RobotoCondensed-Regular.ttf');
+    src:  url('../fonts/Roboto/RobotoCondensed-Light.ttf');
 }
 
 @font-face {
@@ -18,6 +18,15 @@ html body {
     background: linear-gradient(to right, #0062E6, #33AEFF)!important; */
     font-family: 'Roboto', sans-serif;
     background: #e9e8e8!important;
+}
+
+hr {
+    border: 0;
+    clear:both;
+    display:block;
+    width: 96%;               
+    background-color:#e9e8e8;
+    height: 1px;
 }
 
 tr td{

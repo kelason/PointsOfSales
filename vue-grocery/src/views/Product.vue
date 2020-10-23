@@ -23,7 +23,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>Image</th>
-                                    <th>Name</th>
+                                    <th>Product Name</th>
                                     <th>Unit Price</th>
                                     <th>Selling Price</th>
                                     <th>Category</th>
@@ -332,7 +332,7 @@ export default {
                             setTimeout(() => {
                                 app.msg = null;
                             }, 2000);
-                            app.fetchProducts(this.page);
+                            app.fetchProducts(app.page);
                         })
                         .catch((error) => {
                             console.log(error);
@@ -346,7 +346,7 @@ export default {
                             setTimeout(() => {
                                 app.msg = null;
                             }, 2000);
-                            app.fetchProducts();
+                            app.fetchProducts(app.page);
                         })
                         .catch((error) => {
                             console.log(error);

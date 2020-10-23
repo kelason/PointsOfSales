@@ -6,6 +6,10 @@ import Login from "../views/Login.vue";
 import Menu from "../views/Menu.vue";
 import Payment from "../views/Payment.vue";
 import Product from "../views/Product.vue";
+import Category from "../views/Category.vue";
+import Purchase from "../views/Purchase.vue";
+import PurchaseProduct from "../views/PurchaseProduct.vue";
+import Retail from "../views/Retail.vue";
 
 Vue.use(VueRouter);
 Vue.use(VueSession);
@@ -37,6 +41,26 @@ const routes = [
     path: "/product",
     name: "PRODUCTS",
     component: Product
+  },
+  {
+    path: "/category",
+    name: "CATEGORIES",
+    component: Category
+  },
+  {
+    path: "/purchase",
+    name: "PURCHASES",
+    component: Purchase
+  },
+  {
+    path: "/purchase-product",
+    name: "PURCHASE PRODUCTS",
+    component: PurchaseProduct
+  },
+  {
+    path: "/retail",
+    name: "PRODUCTION",
+    component: Retail
   }
 ];
 

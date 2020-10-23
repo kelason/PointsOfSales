@@ -6,30 +6,29 @@ $CORS = cors("GET");
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
 
-    $products = new Products();
-    $products->product_status = "active";
-    $products->limit = 7;
+    $purchase = new Purchases();
+    $purchase->limit = 15;
 
     $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
     if ($page < 1) {
         $page = 1;
     }
-    $products->start = ($page - 1) * $products->limit;
-    $total = $products->productCount();
+    $purchase->start = ($page - 1) * $purchase->limit;
+    $total = $purchase->purchaseCount();
     
-    $totalPages = ceil($total / $products->limit);
+    $totalPages = ceil($total / $purchase->limit);
     
     $pagination = [
         "current_page" => $page,
         "last_page" => $totalPages
     ];
 
-    $allProducts = (isset($_GET['page'])) ? $products->paginationProducts() : $products->getAllProducts();
+    $allPurchases = (isset($_GET['page'])) ? $purchase->paginationPurchases() : $purchase->getAllPurchases();
 
-    if ($allProducts) {
+    if ($allPurchases) {
         echo json_encode(
             [
-                "data" => $allProducts,
+                "data" => $allPurchases,
                 "pagination" => $pagination
             ]);
     } else {

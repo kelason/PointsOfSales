@@ -7,6 +7,7 @@ $CORS = cors("GET");
 if($_SERVER['REQUEST_METHOD'] == "GET") {
 
     $categories = new Categories();
+    $categories->category_status = "active";
     $firstID = $categories->getAllCategories()[0]['id'];
     
     $products = new Products();

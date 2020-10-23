@@ -37,36 +37,58 @@
             </router-link>
         </div>
         <div class="col-xl-3 col-sm-6 col-12 p-3">
-            <div class="card bg-dark text-white" style="cursor: pointer;">
-                <div class="card-content p-2">
-                    <div class="card-body">
-                        <div class="media d-flex">
-                            <div class="align-self-center">
-                                <i class="fas fa-shopping-bag fa-5x float-left"></i>
-                            </div>
-                            <div class="media-body align-self-end text-right">
-                                <h3>Purchase</h3>
+            <router-link to="/category">
+                <div class="card bg-dark text-white" style="cursor: pointer;">
+                    <div class="card-content p-2">
+                        <div class="card-body">
+                            <div class="media d-flex">
+                                <div class="align-self-center">
+                                    <i class="fas fa-tags fa-5x float-left"></i>
+                                </div>
+                                <div class="media-body align-self-end text-right">
+                                    <h3>Categories</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </router-link>
         </div>
         <div class="col-xl-3 col-sm-6 col-12 p-3">
-            <div class="card bg-dark text-white" style="cursor: pointer;">
-                <div class="card-content p-2">
-                    <div class="card-body">
-                        <div class="media d-flex">
-                            <div class="align-self-center">
-                                <i class="fas fa-store fa-5x float-left"></i>
-                            </div>
-                            <div class="media-body align-self-end text-right">
-                                <h3>Retail</h3>
+            <router-link to="/purchase">
+                <div class="card bg-dark text-white" style="cursor: pointer;">
+                    <div class="card-content p-2">
+                        <div class="card-body">
+                            <div class="media d-flex">
+                                <div class="align-self-center">
+                                    <i class="fas fa-shopping-bag fa-5x float-left"></i>
+                                </div>
+                                <div class="media-body align-self-end text-right">
+                                    <h3>Purchase</h3>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </router-link>
+        </div>
+        <div class="col-xl-3 col-sm-6 col-12 p-3">
+            <router-link to="/retail">
+                <div class="card bg-dark text-white" style="cursor: pointer;">
+                    <div class="card-content p-2">
+                        <div class="card-body">
+                            <div class="media d-flex">
+                                <div class="align-self-center">
+                                    <i class="fas fa-store fa-5x float-left"></i>
+                                </div>
+                                <div class="media-body align-self-end text-right">
+                                    <h3>Retail</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </router-link>
         </div>
         <div class="col-xl-3 col-sm-6 col-12 p-3">
             <div class="card bg-dark text-white" style="cursor: pointer;">

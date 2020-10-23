@@ -126,7 +126,6 @@ export default {
             axios
                 .get("/api/getProductsByCategory.php?catid=" + catid)
                 .then(function(response) {
-                    console.log(response.data);
                     app.products = response.data.data;
                     app.loading = false;
                 })
@@ -168,7 +167,7 @@ export default {
             }
             app.timer = setTimeout(() => {
                 axios
-                    .get("/api/searchProduct.php?category_name=" + name)
+                    .get("/api/searchCategory.php?category_name=" + name)
                     .then(function(response) {
                         app.categories = response.data.data;
                     })

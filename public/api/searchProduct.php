@@ -25,7 +25,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
         "last_page" => $totalPages
     ];
     
-    $resultCategory = $products->searchProduct();
+    $resultCategory = (isset($_GET['page'])) ? $products->searchPaginationProduct() : $products->searchProduct();
 
     if ($resultCategory) {
         echo json_encode(

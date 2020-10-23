@@ -8,7 +8,7 @@ class Database extends Connection
 			$implodeColumns = implode(', ', array_keys($fields));
 			$implodePlaceholder = implode(', :', array_keys($fields));
 
-			$sql = "INSERT INTO " . $table . " (" . $implodeColumns . ") VALUES (:" . $implodePlaceholder . ")";
+			$sql = "INSERT INTO $table ($implodeColumns) VALUES (:$implodePlaceholder)";
 			$stmt = $this->getConnection()->prepare($sql);
 
 			foreach ($fields as $key => $value) {
@@ -19,6 +19,34 @@ class Database extends Connection
 			
 			return $last_id;
 		} catch (PDOException $e) {
+			throw new Exception($e->getMessage());	
+		}
+	}
+
+	public function createMany($table, $fields = []) 
+	{
+		try {
+			$this->getConnection()->beginTransaction();
+			foreach ($fields as $field) {}
+
+			$implodeColumns = implode(', ', array_keys($field));
+			$implodePlaceholder = implode(', :', array_keys($field));
+
+			$sql = "INSERT INTO $table ($implodeColumns) VALUES (:$implodePlaceholder)";
+			$stmt = $this->getConnection()->prepare($sql);
+			
+			foreach ($fields as $field) {
+				foreach ($field as $key => $value) {
+					$stmt->bindValue(":$key", $value);
+				}
+				$stmt->execute();
+			}
+			$this->getConnection()->commit();
+			$last_id = $this->getConnection()->lastInsertId();
+			
+			return $last_id;
+		} catch (PDOException $e) {
+			$this->getConnection()->rollBack();
 			throw new Exception($e->getMessage());	
 		}
 	}
