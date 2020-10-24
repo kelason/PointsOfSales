@@ -18,13 +18,14 @@ html body {
     background: linear-gradient(to right, #0062E6, #33AEFF)!important; */
     font-family: 'Roboto', sans-serif;
     background: #e9e8e8!important;
+    margin: 0;
 }
 
 hr {
     border: 0;
     clear:both;
     display:block;
-    width: 96%;               
+    width: 100%;               
     background-color:#e9e8e8;
     height: 1px;
 }

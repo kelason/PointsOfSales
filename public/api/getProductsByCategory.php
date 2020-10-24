@@ -13,13 +13,12 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
     $products = new Products();
     $products->category_id = ($_GET['catid'] == 0) ? $firstID : $_GET['catid'];
     $products->product_status = "active";
-    $productsByCategory = $products->getProductsByCategory();
+    $stocks = $products->getProductStocksByCategory();
 
-
-    if ($productsByCategory) {
+    if ($stocks) {
         echo json_encode(
             [
-                "data" => $productsByCategory
+                "data" => $stocks
             ]);
     } else {
         echo json_encode(

@@ -7,12 +7,13 @@ $CORS = cors("GET");
 if($_SERVER['REQUEST_METHOD'] == "GET") {
 
     $categories = new Categories();
+    $categories->category_status = "active";
     $category_id = $categories->getAllCategories()[0]['id'];
 
     $products = new Products();
     $products->product_name = $_GET['product_name'];
     $products->product_status = "active";
-    $products->catid = (is_null($_GET['category_id'])) ? $category_id : $_GET['category_id']; 
+    $products->category_id = ($_GET['category_id'] == 'null') ? $category_id : $_GET['category_id']; 
     
     $resultProduct = $products->searchProductByCategory();
 

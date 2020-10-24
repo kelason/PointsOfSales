@@ -33,10 +33,10 @@
                             </div>
                     </div>
                     <div v-else class="row text-center">
-                        <div class="col-md-3 mb-4" v-for="(product) in products" :value="product.id" :key="product.id" @click="addOrderProducts(product.id, 1)">
-                            <v-lazy-image :src="imgURL + product.product_image" class="res-img shadow-lg border"/>
+                        <div class="col-md-3 mb-4" v-for="(product) in products" :value="product.id" :key="product.id" @click="addOrderProducts(product.id, 1, product.stock_qty)">
+                            <v-lazy-image :src="imgURL + product.product_image" class="res-img shadow-lg border" :title="product.product_name" />
                             <p class="card-text box text-white">
-                                {{ product.product_name }}
+                                {{ trimProductName(product.product_name) }} <br> ({{ product.stock_qty }})
                             </p>
                         </div>
                     </div>
@@ -52,21 +52,84 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="row overflow-auto" style="height: 65vh;">
+                    <div class="row overflow-auto" style="height: 48vh;">
                         <div class="col-12">
                             <table class="table table-striped">
                                 <tbody>
                                     <tr v-for="(order, index) in orders" :key="order.id" :value="order.id">
-                                        <td class="pt-2 pb-2 align-middle" :title="order.product_name">{{order.product_name}}</td>
-                                        <td class="pt-2 pb-2 align-middle"><input type="number" :min="1" v-model="order.product_qty" @input="minInput($event, index), updateOrderProduct(order.id, order.product_qty, order.product_id)" class="form-control form-control-sm bg-transparent rounded-0 border-top-0 border-left-0 border-right-0" style="width:70px;"></td>
-                                        <td class="pt-2 pb-2 align-middle">&#8369; {{order.total_amount}}</td>
+                                        <td class="pt-2 pb-2 pl-2 align-middle" :title="'Click to discount ' + order.product_name" style="cursor: pointer;" @click="addDiscount(order.id)">{{order.product_name}}</td>
+                                        <td class="pt-2 pb-2 align-middle"><input type="text" :min="1" :max="order.stock_qty" v-model="order.product_qty" @input="minInput($event, index), updateOrderProduct(order.id, order.product_qty, order.product_id)" class="form-control form-control-sm bg-transparent rounded-0 border-top-0 border-left-0 border-right-0" style="width:40px;"></td>
+                                        <td class="pt-2 align-middle"><b>&#8369; {{order.total_amount}}</b> <p class="small">{{(order.discount_amount == 0) ? '' : "-&#8369;" + order.discount_amount}}</p></td>
                                         <td class="pt-2 pb-2 align-middle" style="cursor: pointer;" :title="'Delete ' + order.product_name" @click="deleteOrderProduct(order.id)"><i class="fas fa-times-circle"></i></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                    <button class="btn btn-info btn-block item-bottom btn-lg rounded-0" @click="checkOut(orderTotal)"><span class="float-left ml-2"><i class="fas fa-cart-plus"></i> Checkout</span> <span class="float-right mr-3">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span></button>
+                    <hr>
+                    <div class="row" style="height: 10vh;">
+                        <div class="col-12">
+                            <span class="float-left ml-2 font-weight-bold">Vat Sales:</span>
+                            <span class="float-right mr-3 font-weight-bold">{{(vatSalesTotal == 0) ? '' : "&#8369; " + vatSalesTotal }}</span>
+                        </div>
+                        <div class="col-12">
+                            <span class="float-left ml-2 font-weight-bold">12% Vat:</span>
+                            <span class="float-right mr-3 font-weight-bold">{{(vatTotal == 0) ? '' : "&#8369; " + vatTotal }}</span>
+                        </div>
+                        <div class="col-12">
+                            <span class="float-left ml-2 font-weight-bold">Discount Total:</span>
+                            <span class="float-right mr-3 font-weight-bold">{{(discountTotal == 0) ? '' : "&#8369; " + discountTotal }}</span>
+                        </div>
+                        <div class="col-12">
+                            <span class="float-left ml-2 font-weight-bold">Sub Total:</span>
+                            <span class="float-right mr-3 font-weight-bold">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-info btn-block item-bottom btn-lg rounded-0" @click="checkOut(orderTotal)"><span class="ml-2"><i class="fas fa-cart-plus"></i> Checkout</span> </button>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" tabindex="-1" :class="{show, 'd-block': active}" role="dialog" id="addDisc">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header bg-gradient">
+                        <h5 class="modal-title">Add Discount</h5>
+                        <button type="button" class="close" @click="toggleModal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <table class="table table-striped text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>Product Name</th>
+                                            <th>Qty</th>
+                                            <th>Discount %</th>
+                                            <th>Discount Amount</th>
+                                            <th>Total Amount</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(order_disc, index) in order_discs" :key="order_disc.id" :value="order_disc.id">
+                                            <td class="pt-2 pb-2 align-middle" :title="'Click to discount ' + order_disc.product_name" style="cursor: pointer;">{{order_disc.product_name}}</td>
+                                            <td class="pt-2 pb-2 pl-5 align-middle">
+                                                <input type="text" :min="1" :max="order_disc.product_qty" v-model="order_disc.product_qty" @input="minDiscQty($event, index)" class="form-control form-control-sm bg-transparent rounded-0 border-top-0 border-left-0 border-right-0" style="width:40px;">
+                                            </td>
+                                            <td class="pt-2 pb-2 pl-5 align-middle">
+                                                <input type="text" v-model="disc" min="0" max="90" @input="minInputDisc($event)" class="form-control form-control-sm bg-transparent rounded-0 border-top-0 border-left-0 border-right-0" style="width:40px;">
+                                            </td>
+                                            <td class="pt-2 align-middle"><b>&#8369; {{(order_disc.product_qty * order_disc.selling_price) / (100 / disc)}}</b></td>
+                                            <td class="pt-2 align-middle"><b>&#8369; {{order_disc.product_qty * order_disc.selling_price}}</b></td>
+                                            <td class="pt-2 align-middle"><button type="button" class="btn btn-primary btn-sm" @click="btnDiscount(order_disc.id, (order_disc.product_qty * order_disc.selling_price) / (100 / disc))">Save</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -83,9 +146,12 @@ export default {
             products: [],
             categories: [],
             orders: [],
+            order_discs: [],
+            disc: 20,
+            show: false,
+            active: false,
             selectedCategory: null,
             catid: undefined,
-            loading: false,
             searchProd: '',
             imgURL: 'http://localhost/grocery/public/images/products/'
         }
@@ -102,16 +168,60 @@ export default {
                 this.$refs.bar.focus()
             }, 1)
         },
+        toggleModal() {
+            const body = document.querySelector("body");
+            this.active = !this.active;
+            this.active
+                ? body.classList.add("modal-open")
+                : body.classList.remove("modal-open");
+            setTimeout(() => (this.show = !this.show), 10);
+        },
         back() {
             this.$router.push("/");
+        },
+        trimProductName(name) {
+            var maxLength = 15;
+            var trimString = name.length > maxLength ? name.substring(0, name.length - 3) + "..." : name;
+            return trimString;
+        },
+        minInputDisc(event) {
+            var app = this;
+            const inputValue = parseInt(event.target.value);
+            const minValue = parseInt(event.target.min);
+            const maxValue = parseInt(event.target.max);
+            
+            if (inputValue < minValue || Number.isNaN(inputValue)) {
+                return app.disc = 0;
+            } else if (inputValue > maxValue) {
+                return app.disc = maxValue;
+            } else {
+                return app.disc = inputValue;
+            }
+        },
+        minDiscQty(event, selectedIndex) {
+            var app = this;
+            const inputValue = parseInt(event.target.value);
+            const minValue = parseInt(event.target.min);
+            const maxValue = parseInt(event.target.max);
+            
+            if (inputValue < minValue || Number.isNaN(inputValue)) {
+                return app.order_discs[selectedIndex].product_qty = 1;
+            } else if (inputValue > maxValue) {
+                return app.order_discs[selectedIndex].product_qty = maxValue;
+            } else {
+                return app.order_discs[selectedIndex].product_qty = inputValue;
+            }
         },
         minInput(event, selectedIndex) {
             var app = this;
             const inputValue = parseInt(event.target.value);
             const minValue = parseInt(event.target.min);
+            const maxValue = parseInt(event.target.max);
             
             if (inputValue < minValue || Number.isNaN(inputValue)) {
                 return app.orders[selectedIndex].product_qty = 1;
+            } else if (inputValue > maxValue) {
+                return app.orders[selectedIndex].product_qty = maxValue;
             } else {
                 return app.orders[selectedIndex].product_qty = inputValue;
             }
@@ -124,9 +234,11 @@ export default {
             (id === undefined) ? catid = 0 : catid = id;
             app.loading = true;
             axios
-                .get("/api/getProductsByCategory.php?catid=" + catid)
+                .get("/api/getProductsByCategory/?catid=" + catid)
                 .then(function(response) {
-                    app.products = response.data.data;
+                    app.products = response.data.data.filter(function(element){
+                        return element.stock_qty != 0
+                    });
                     app.loading = false;
                 })
                 .catch((error) => {
@@ -138,7 +250,7 @@ export default {
             const axios = require("axios");
 
             axios
-                .get("/api/getAllCategories.php")
+                .get("/api/getAllCategories/")
                 .then(function(response) {
                     app.categories = response.data.data;
                 })
@@ -150,9 +262,12 @@ export default {
             var app = this;
             const axios = require("axios");
             axios
-                .get("/api/getAllOrderProducts.php")
+                .get("/api/getAllOrderProducts/")
                 .then(function(response) {
                     app.orders = response.data.data;
+                    app.orders = response.data.data.filter(function(element){
+                        return element.id != null
+                    });
                 })
                 .catch((error) => {
                     console.log(error);
@@ -167,7 +282,7 @@ export default {
             }
             app.timer = setTimeout(() => {
                 axios
-                    .get("/api/searchCategory.php?category_name=" + name)
+                    .get("/api/searchCategory/?category_name=" + name)
                     .then(function(response) {
                         app.categories = response.data.data;
                     })
@@ -185,9 +300,11 @@ export default {
             }
             app.timer = setTimeout(() => {
                 axios
-                    .get("/api/searchProductByCategory.php?product_name=" + name + "&category_id=" + app.selectedCategory)
+                    .get("/api/searchProductByCategory/?product_name=" + name + "&category_id=" + app.selectedCategory)
                     .then(function(response) {
-                        app.products = response.data.data;
+                        app.products = response.data.data.filter(function(element){
+                            return element.stock_qty != 0
+                        });
                     })
                     .catch((error) => {
                         console.log(error);
@@ -195,25 +312,30 @@ export default {
             }, 500);
                 
         },
-        addOrderProducts(id, qty) {
+        addOrderProducts(id, qty, stock) {
             var app = this;
             const axios = require("axios");
-            axios
-                .get("/api/addOrderProducts.php?id=" + id + '&qty=' + qty + '&user_id=' + app.$session.get('user_id'))
-                .then(() => {
-                    app.fetchOrderProducts();
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
+
+            if (stock != 0) {
+                axios
+                    .get("/api/addOrderProducts/?id=" + id + '&qty=' + qty + '&user_id=' + app.$session.get('user_id'))
+                    .then(() => {
+                        app.fetchOrderProducts();
+                        app.fetchProductsbyCategory(app.selectedCategory);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
         },
         updateOrderProduct(id, qty, product_id) {
             var app = this;
             const axios = require("axios");
             axios
-                .put("/api/updateOrderProduct.php" , {"id": id, "qty": qty, "product_id": product_id})
+                .put("/api/updateOrderProduct/" , {"id": id, "qty": qty, "product_id": product_id})
                 .then(() => {
                     app.fetchOrderProducts();
+                    app.fetchProductsbyCategory(app.selectedCategory);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -223,9 +345,37 @@ export default {
             var app = this;
             const axios = require("axios");
             axios
-                .delete("/api/deleteOrderProduct.php?id=" + id)
+                .delete("/api/deleteOrderProduct/?id=" + id)
                 .then(() => {
                     app.fetchOrderProducts();
+                    app.fetchProductsbyCategory(app.selectedCategory);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        addDiscount(order_id) {
+            var app = this;
+            const axios = require("axios");
+            axios
+                .get("/api/getOrderDiscountById/?order_id=" + order_id)
+                .then((res) => {
+                    app.toggleModal();
+                    app.order_discs = res.data.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        btnDiscount(id, disc) {
+            var app = this;
+            const axios = require("axios");
+            axios
+                .get("/api/updateOrderDiscountById/?id=" + id + "&disc=" + disc)
+                .then((res) => {
+                    console.log(res.data);
+                    app.fetchOrderProducts();
+                    app.toggleModal();
                 })
                 .catch((error) => {
                     console.log(error);
@@ -241,7 +391,24 @@ export default {
             this.orders.forEach(element => {
                 sum += parseFloat(element.total_amount)
             });
+            return (sum - this.discountTotal).toFixed(2);
+        },
+        vatTotal: function() {
+            var sum=0;
+            this.orders.forEach(element => {
+                sum += parseFloat(element.vat_amount)
+            });
             return sum.toFixed(2);
+        },
+        discountTotal: function() {
+            var sum=0;
+            this.orders.forEach(element => {
+                sum += parseFloat(element.discount_amount)
+            });
+            return sum.toFixed(2);
+        },
+        vatSalesTotal: function() {
+            return (this.orderTotal - this.vatTotal - this.discountTotal).toFixed(2);
         }
     }
 }

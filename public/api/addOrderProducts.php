@@ -9,12 +9,14 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
     if ($orders->orderStatus() == "paid" || $orders->orderStatus() == "") {
         $orders->user_id = $_GET['user_id'];
         $orders->created_at = DATE('Y-m-d H:i:s');
-        $maxOrderID = $orders->insertOrders();
+        $orders->insertOrders();
     }
+    $maxOrderID = $orders->maxOrderId();
 
     $products = new Products();
     $products->id = $_GET['id'];
     $product_price = $products->productShow()[0]['selling_price'];
+    $isvatable = $products->productShow()[0]['isvatable'];
 
     $orderProduct = new OrderProducts();
     $orderProduct->order_id = $maxOrderID;
@@ -25,6 +27,8 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 
     ($existQty) ? $orderQty = $existQty + 1 : $orderQty;
     $orderProduct->product_qty = $orderQty;
+    $orderProduct->discount_amount = 0;
+    $orderProduct->vat_amount = ($isvatable == "yes") ? ($orderQty * $product_price) / 1.12 * 0.12 : 0;
     $orderProduct->total_amount = $orderQty * $product_price;
 
     $resultOrder = ($existQty) ? $orderProduct->updateOrderQty() : $orderProduct->insertOrderProducts();

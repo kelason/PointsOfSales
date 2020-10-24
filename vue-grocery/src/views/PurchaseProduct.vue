@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-        <img :src="imgURL + 'cancelled.png'" style="position:absolute; width: 600px; z-index: 10;">
         <div class="row mx-auto">
             <div class="col-sm-12">
                 <h5>Cabanatuan City, Nueva Ecija</h5>
@@ -8,6 +7,7 @@
         </div>
         
         <div class="row mx-auto" v-for="purchase in purchases" :key="purchase.id">
+            <img :src="imgURL + 'cancelled.png'" style="position:absolute; width: 600px; z-index: 10;" v-if="purchase.iscancel == 1">
             <div class="col-sm-6"><strong>Supplier:</strong> {{ purchase.supplier_name }}</div>
             <div class="col-sm-6"><strong>Date:</strong> {{ purchaseDtFormat(purchase.created_at) }}</div>
             <div class="col-sm-6"><strong>Delivery Reciept:</strong> {{ purchase.drnum }}</div>
