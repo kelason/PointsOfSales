@@ -5,6 +5,7 @@ class Orders extends Database
     public $id;
     public $user_id;
     public $created_at;
+    public $order_status;
     private $table = "posorders";
 
     public function insertOrders() {
@@ -26,5 +27,18 @@ class Orders extends Database
         $query = "SELECT MAX(id) FROM $this->table";
 
         return $this->setColumn($query);
+    }
+
+    public function updateOrderStatusById() {
+        $query = "UPDATE $this->table 
+        SET order_status=:order_status 
+        WHERE id=:id";
+
+        $fields = array(
+            'order_status'  => $this->order_status,
+            'id'  => $this->id
+        );
+
+        return $this->update($query, $fields);
     }
 }

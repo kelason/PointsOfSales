@@ -19,7 +19,8 @@ class Products extends Database
     private $tableCat = "poscategories";
     private $tableProCat = "posproduct_categories";
     private $tableOrder = "posorder_products";
-    private $tablePurchase = "pospurchase_products";
+    private $tablePurchaseProd = "pospurchase_products";
+    private $tablePurchase = "pospurchases";
 
     public function createProduct() {
         $fields = array(
@@ -36,7 +37,9 @@ class Products extends Database
     }
 
     public function updateProduct() {
-        $query = "UPDATE $this->table SET product_name=:product_name, unit_price=:unit_price, selling_price=:selling_price, product_status=:product_status, barcode=:barcode, alarmlvl=:alarmlvl WHERE id=:id";
+        $query = "UPDATE $this->table 
+        SET product_name=:product_name, unit_price=:unit_price, selling_price=:selling_price, product_status=:product_status, barcode=:barcode, alarmlvl=:alarmlvl 
+        WHERE id=:id";
 
         $fields = array(
             'product_name'  => $this->product_name,
@@ -52,7 +55,9 @@ class Products extends Database
     }
 
     public function deleteProduct() {
-        $query = "UPDATE $this->table SET isdelete=:isdelete WHERE id=:id";
+        $query = "UPDATE $this->table 
+        SET isdelete=:isdelete 
+        WHERE id=:id";
 
         $fields = array(
             'isdelete'  => $this->isdelete,
@@ -69,7 +74,9 @@ class Products extends Database
         if (in_array($extension, $valid_extensions)) {
             $upload_path = WWW_ROOT . '/public/images/products/' . $this->product_image;
             if (move_uploaded_file($this->tmp_image, $upload_path)) {
-                $query = "UPDATE $this->table SET product_image=:product_image WHERE id=:id";
+                $query = "UPDATE $this->table 
+                SET product_image=:product_image 
+                WHERE id=:id";
 
                 $fields = array(
                     'product_image'  => $this->product_image,
@@ -83,7 +90,10 @@ class Products extends Database
     }
 
     public function productShow() {
-        $query = "SELECT id, product_name, product_image, unit_price, selling_price, product_status, barcode, alarmlvl, isdelete, isvatable FROM $this->table WHERE id=?";
+        $query = "SELECT id, product_name, product_image, unit_price, selling_price, product_status, barcode, alarmlvl, isdelete, isvatable 
+        FROM $this->table 
+        WHERE id=?";
+
         $params = [$this->id];
         $result = $this->setRows($query, $params);
         return $result;
@@ -96,35 +106,67 @@ class Products extends Database
     }
 
     public function searchProductCount() {
-        $query = "SELECT COUNT(b.id) FROM $this->tableProCat AS a INNER JOIN $this->table AS b ON a.product_id=b.id INNER JOIN $this->tableCat AS c ON a.category_id=c.id WHERE b.product_name LIKE ?";
+        $query = "SELECT COUNT(b.id) 
+        FROM $this->tableProCat AS a 
+        INNER JOIN $this->table AS b ON a.product_id=b.id 
+        INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
+        WHERE b.product_name LIKE ?";
+
         $params = ["%" . $this->product_name . "%"];
         $result = $this->setColumn($query, $params);
         return $result;
     }
 
     public function getAllProducts() {
-        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name FROM $this->tableProCat AS a INNER JOIN $this->table AS b ON a.product_id=b.id INNER JOIN $this->tableCat AS c ON a.category_id=c.id WHERE b.isdelete=? ORDER BY b.product_name";
+        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name 
+        FROM $this->tableProCat AS a 
+        INNER JOIN $this->table AS b ON a.product_id=b.id 
+        INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
+        WHERE b.isdelete=? 
+        ORDER BY b.product_name";
+
         $params = [0];
         $result = $this->setRows($query, $params);
         return $result;
     }
 
     public function getAllProductsById() {
-        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name FROM $this->tableProCat AS a INNER JOIN $this->table AS b ON a.product_id=b.id INNER JOIN $this->tableCat AS c ON a.category_id=c.id WHERE b.id=? AND b.isdelete=? ORDER BY b.product_name";
+        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name 
+        FROM $this->tableProCat AS a 
+        INNER JOIN $this->table AS b ON a.product_id=b.id 
+        INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
+        WHERE b.id=? AND b.isdelete=? 
+        ORDER BY b.product_name";
+
         $params = [$this->id, 0];
         $result = $this->setRows($query, $params);
         return $result;
     }
 
     public function paginationProducts() {
-        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name, c.id AS category_id FROM $this->tableProCat AS a INNER JOIN $this->table AS b ON a.product_id=b.id INNER JOIN $this->tableCat AS c ON a.category_id=c.id WHERE b.isdelete=? ORDER BY b.product_name LIMIT $this->start, $this->limit";
+        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name, c.id AS category_id 
+        FROM $this->tableProCat AS a 
+        INNER JOIN $this->table AS b ON a.product_id=b.id 
+        INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
+        WHERE b.isdelete=? 
+        ORDER BY b.product_name 
+        LIMIT $this->start, $this->limit";
+
         $params = [0];
         $result = $this->setRows($query, $params);
         return $result;
     }
 
     public function getProductsByCategory() {
-        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name FROM $this->tableProCat AS a INNER JOIN $this->table AS b ON a.product_id=b.id INNER JOIN $this->tableCat AS c ON a.category_id=c.id WHERE b.product_status=? AND b.isdelete=? AND c.id=? ORDER BY b.product_name";
+        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name 
+        FROM $this->tableProCat AS a 
+        INNER JOIN $this->table AS b ON a.product_id=b.id 
+        INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
+        WHERE b.product_status=? 
+        AND b.isdelete=? 
+        AND c.id=? 
+        ORDER BY b.product_name";
+
         $params = [$this->product_status, 0, $this->category_id];
         $result = $this->setRows($query, $params);
         return $result;
@@ -135,10 +177,14 @@ class Products extends Database
         FROM $this->tableProCat AS a 
         INNER JOIN $this->table AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
-        LEFT JOIN (SELECT product_id, SUM(purchase_qty) AS total_qty FROM $this->tablePurchase GROUP BY product_id) AS d ON a.product_id=d.product_id 
+        LEFT JOIN (SELECT a.product_id, SUM(a.purchase_qty) AS total_qty FROM $this->tablePurchaseProd AS a INNER JOIN $this->tablePurchase AS b ON a.purchase_id=b.id WHERE b.iscancel=? GROUP BY product_id) AS d ON a.product_id=d.product_id 
         LEFT JOIN (SELECT product_id, SUM(product_qty) AS total_qty FROM $this->tableOrder GROUP BY product_id) AS e ON a.product_id=e.product_id 
-        WHERE b.product_status=? AND b.isdelete=? AND c.id=? ORDER BY b.product_name";
-        $params = [$this->product_status, 0, $this->category_id];
+        WHERE b.product_status=?
+         AND b.isdelete=? 
+         AND c.id=? 
+         ORDER BY b.product_name";
+
+        $params = [0, $this->product_status, 0, $this->category_id];
         $result = $this->setRows($query, $params);
         return $result;
     }
@@ -148,23 +194,48 @@ class Products extends Database
         FROM $this->tableProCat AS a 
         INNER JOIN $this->table AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
-        LEFT JOIN (SELECT product_id, SUM(purchase_qty) AS total_qty FROM $this->tablePurchase GROUP BY product_id) AS d ON a.product_id=d.product_id 
+        LEFT JOIN (SELECT a.product_id, SUM(a.purchase_qty) AS total_qty FROM $this->tablePurchaseProd AS a INNER JOIN $this->tablePurchase AS b ON a.purchase_id=b.id WHERE b.iscancel=? GROUP BY product_id) AS d ON a.product_id=d.product_id 
         LEFT JOIN (SELECT product_id, SUM(product_qty) AS total_qty FROM $this->tableOrder GROUP BY product_id) AS e ON a.product_id=e.product_id 
-        WHERE b.product_status=? AND b.isdelete=? AND c.id=? AND b.product_name LIKE ? ORDER BY b.product_name";
-        $params = [$this->product_status, 0, $this->category_id, "%" . $this->product_name . "%"];
+        WHERE b.product_status=? 
+        AND b.isdelete=? 
+        AND c.id=? 
+        AND b.product_name 
+        LIKE ? 
+        ORDER BY b.product_name";
+
+        $params = [0, $this->product_status, 0, $this->category_id, "%" . $this->product_name . "%"];
         $result = $this->setRows($query, $params);
         return $result;
     }
 
     public function searchProduct() {
-        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name FROM $this->tableProCat AS a INNER JOIN $this->table AS b ON a.product_id=b.id INNER JOIN $this->tableCat AS c ON a.category_id=c.id WHERE b.product_status=? AND b.isdelete=? AND b.product_name LIKE ? ORDER BY b.product_name LIMIT $this->start, $this->limit";
+        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name 
+        FROM $this->tableProCat AS a 
+        INNER JOIN $this->table AS b ON a.product_id=b.id 
+        INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
+        WHERE b.product_status=? 
+        AND b.isdelete=? 
+        AND b.product_name 
+        LIKE ? 
+        ORDER BY b.product_name 
+        LIMIT $this->start, $this->limit";
+
         $params = [$this->product_status, 0, "%" . $this->product_name . "%"];
         $result = $this->setRows($query, $params);
         return $result;
     }
 
     public function searchPaginationProduct() {
-        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name FROM $this->tableProCat AS a INNER JOIN $this->table AS b ON a.product_id=b.id INNER JOIN $this->tableCat AS c ON a.category_id=c.id WHERE b.isdelete=? AND b.product_name LIKE ? ORDER BY b.product_name LIMIT $this->start, $this->limit";
+        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name 
+        FROM $this->tableProCat AS a 
+        INNER JOIN $this->table AS b ON a.product_id=b.id 
+        INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
+        WHERE b.isdelete=? 
+        AND b.product_name 
+        LIKE ? 
+        ORDER BY b.product_name 
+        LIMIT $this->start, $this->limit";
+
         $params = [0, "%" . $this->product_name . "%"];
         $result = $this->setRows($query, $params);
         return $result;

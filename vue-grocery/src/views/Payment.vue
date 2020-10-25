@@ -10,22 +10,22 @@
                         <div class="col-12">
                             <label for="pay-by" class="ml-2 font-weight-light">Pay By:</label>
                             <select id="pay-by" v-model="payment.payment_typeid" class="form-control form-control-sm rounded-0 border-top-0 border-left-0 border-right-0">
-                                <option value="1">Cash</option>
+                                <option v-for="payment in payments" :key="payment.id" :value="payment.id">{{ payment.payment_name }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-12">
                             <label for="customer" class="ml-2 font-weight-light">Customer:</label>
-                            <select id="customer" v-model="payment.customer" class="form-control form-control-sm rounded-0 border-top-0 border-left-0 border-right-0">
-                                <option value="1">Guest</option>
+                            <select id="customer" v-model="payment.customer_id" class="form-control form-control-sm rounded-0 border-top-0 border-left-0 border-right-0">
+                                <option v-for="customer in customers" :key="customer.id" :value="customer.id">{{ customer.customer_name }}</option>
                             </select>
                         </div>
                     </div>
                     <div class="row mb-4">
                         <div class="col-12">
                             <label for="comment" class="ml-2 font-weight-light">Comment:</label>
-                            <textarea id="comment" class="form-control form-control-sm rounded-0" cols="30" rows="9"></textarea>
+                            <textarea id="comment" v-model="payment.sales_comment" class="form-control form-control-sm rounded-0" cols="30" rows="9" placeholder="Optional"></textarea>
                         </div>
                     </div>
                     <button class="btn btn-primary text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
@@ -68,7 +68,7 @@
                         </div>
                         <div class="col-12">
                             <span class="float-left ml-2 font-weight-bold">Sub Total:</span>
-                            <span class="float-right mr-3 font-weight-bold">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span>
+                            <span class="float-right mr-3 font-weight-bold">{{(subTotal == 0) ? '' : "&#8369; " + subTotal }}</span>
                         </div>
                     </div>
                     <button class="btn btn-info btn-block item-bottom btn-lg rounded-0" disabled>.</button>
@@ -80,7 +80,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12">
-                            <input type="text" v-model="total" class="form-control form-control-lg" disabled>
+                            <input type="text" v-model="tendered" class="form-control form-control-lg" disabled>
                             <div class="row no-gutters">
                                 <div class="col-sm-3">
                                     <button @click="key(20)" class="btn btn-lg btn-info border btn-block p-4 px-0">&#8369; 20</button>
@@ -106,7 +106,7 @@
                                     <button @click="key(9)" class="btn btn-lg btn-dark border btn-block p-5 px-0">9</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="clear(total)" class="btn btn-lg btn-danger border btn-block p-5 px-0">&larr;</button>
+                                    <button @click="clear(tendered)" class="btn btn-lg btn-danger border btn-block p-5 px-0">&larr;</button>
                                 </div>
                             </div>
                             <div class="row no-gutters">
@@ -138,7 +138,7 @@
                                 </div>
                             </div>
                             <div class="row no-gutters">
-                                <div class="col-sm-12"><button value="0" class="btn btn-lg btn-success border btn-block p-4 px-0">Tender</button></div> 
+                                <div class="col-sm-12"><button value="0" class="btn btn-lg btn-success border btn-block p-4 px-0" @click="btnTendered">Tender</button></div> 
                             </div>
                         </div>
                     </div>
@@ -200,17 +200,21 @@ export default {
             order_discs: [],
             disc: 20,
             payment: {
-                payment_typeid : 1,
-                customer : 1,
-                discount : 0
+                payment_typeid: 1,
+                customer_id: 1,
+                sales_comment: ''
             },
-            total: 0,
+            payments: [],
+            customers: [],
+            tendered: 0,
             show: false,
             active: false
         }
     },
     created () {
         this.fetchOrderProducts();
+        this.fetchPaymentTypes();
+        this.fetchCustomers();
     },
     methods: {
         minInputDisc(event) {
@@ -268,32 +272,56 @@ export default {
         },
         key(num) {
             if(num == 0) {
-                return this.total = Number(this.total) + Number(num) + '0';
+                return this.tendered = Number(this.tendered) + Number(num) + '0';
             } else {
                 if (num >= 20) {
-                    return this.total += Number(num);
+                    return this.tendered += Number(num);
                 } else {
-                    return this.total = Number(this.total) + String(num);
+                    return this.tendered = Number(this.tendered) + String(num);
                 }
             }
         },
         clear(num){
             if (num > 1) {
-                return this.total = String(num).substr(0, String(num).length - 1);
+                return this.tendered = String(num).substr(0, String(num).length - 1);
             } else {
-                return this.total = Number(0);
+                return this.tendered = Number(0);
             } 
         },
         clearAll(){
-            return this.total = 0;
+            return this.tendered = 0;
         },
         fetchOrderProducts() {
             var app = this;
             const axios = require("axios");
             axios
-                .get("/api/getAllOrderProducts.php")
+                .get("/api/getAllOrderProducts/")
                 .then(function(response) {
                     app.orders = response.data.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        fetchPaymentTypes() {
+            var app = this;
+            const axios = require("axios");
+            axios
+                .get("/api/getAllPaymentTypes/")
+                .then(function(response) {
+                    app.payments = response.data.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        fetchCustomers() {
+            var app = this;
+            const axios = require("axios");
+            axios
+                .get("/api/getAllCustomers/?customer_status=active")
+                .then(function(response) {
+                    app.customers = response.data.data;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -352,9 +380,53 @@ export default {
                     console.log(error);
                 });
         },
+        btnTendered() {
+            let app = this;
+
+            if(app.tendered != 0 && Number(app.tendered) > Number(app.subTotal)) {
+                var arr_pay = [];
+                arr_pay = {
+                    cashier_id: app.$session.get('user_id'),
+                    order_id: app.orderId,
+                    total_amount: app.orderTotal,
+                    tendered: app.tendered,
+                    change_amount: app.changeAmount,
+                    discount_amount: app.discountTotal,
+                    vat_amount: app.vatTotal
+                }
+                var merge_payment = [{...app.payment, ...arr_pay}];
+                const axios = require("axios");
+                axios
+                    .post("/api/addSales/", merge_payment)
+                    .then((res) => {
+                        console.log(res.data);
+                        app.$router.push("/terminal");
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            } else {
+                alert('Please check tender amount');
+            }
+                
+        }
     },
     computed: {
+        orderId: function() {
+            var id=0;
+            this.orders.forEach(element => {
+                id = element.order_id
+            });
+            return id;
+        },
         orderTotal: function() {
+            var sum=0;
+            this.orders.forEach(element => {
+                sum += parseFloat(element.total_amount)
+            });
+            return (sum).toFixed(2);
+        },
+        subTotal: function() {
             var sum=0;
             this.orders.forEach(element => {
                 sum += parseFloat(element.total_amount)
@@ -377,6 +449,9 @@ export default {
         },
         vatSalesTotal: function() {
             return (this.orderTotal - this.vatTotal - this.discountTotal).toFixed(2);
+        },
+        changeAmount: function() {
+            return (this.tendered - this.subTotal).toFixed(2);
         }
     }
 }

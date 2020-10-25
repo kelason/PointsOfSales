@@ -10,6 +10,7 @@ import Category from "../views/Category.vue";
 import Purchase from "../views/Purchase.vue";
 import PurchaseProduct from "../views/PurchaseProduct.vue";
 import Retail from "../views/Retail.vue";
+import Inventory from "../views/Inventory.vue";
 
 Vue.use(VueRouter);
 Vue.use(VueSession);
@@ -61,6 +62,11 @@ const routes = [
     path: "/retail",
     name: "PRODUCTION",
     component: Retail
+  },
+  {
+    path: "/inventory",
+    name: "INVENTORY",
+    component: Inventory
   }
 ];
 

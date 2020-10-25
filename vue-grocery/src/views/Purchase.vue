@@ -16,8 +16,7 @@
                                 <label class="text-white" for="to_date">To Date</label>
                             </div>
                         </div>
-                        <div class="col-4"></div>
-                        <div class="col-2 mt-2">
+                        <div class="col-2 mt-2 offset-md-4">
                             <button class="btn btn-dark btn-block rounded-0" @click="toggleModal(), edit = false;"><i class="fas fa-plus-circle"></i> Add Purchase</button>
                         </div>
                     </div>
@@ -227,7 +226,7 @@ export default {
             purchase: {
                 supplier_id: 0,
                 drnum: '',
-                cashier_id: this.$session.has('user_id'),
+                cashier_id: this.$session.get('user_id'),
                 created_at: new Date(),
                 purchase_note: ''
             },
@@ -387,7 +386,7 @@ export default {
                             app.purchase = {
                                 supplier_id: 0,
                                 drnum: '',
-                                cashier_id: app.$session.has('user_id'),
+                                cashier_id: app.$session.get('user_id'),
                                 created_at: moment().format("YYYY-MM-DDTkk:mm"),
                                 purchase_note: ''
                             }

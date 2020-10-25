@@ -15,7 +15,6 @@
                             <button class="btn btn-dark btn-block rounded-0" @click="toggleModal(), edit = false;"><i class="fas fa-plus-circle"></i> Add Product</button>
                         </div>
                     </div>
-                    
                 </div>
                 <div class="card-body overflow-auto">
                     <form method="POST" enctype="multipart/form-data">
@@ -71,7 +70,7 @@
                         <div class="col-6">
                             <nav aria-label="Page navigation example item-bottom">
                                 <ul class="pagination pagination-sm justify-content-end">
-                                    <li class="page-item" :class="[{disabled: pagination.current_page == 1}]" style="cursor: pointer;">
+                                    <li class="page-item" :class="[{disabled: pagination.current_page == 1 || pagination == ''}]" style="cursor: pointer;">
                                         <a class="page-link" @click="fetchProducts(page = page - 2)">
                                             Prev
                                         </a>

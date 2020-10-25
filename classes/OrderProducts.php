@@ -13,7 +13,8 @@ class OrderProducts extends Database
     private $table = "posorder_products";
     private $tableOrders = "posorders";
     private $tableProduct = "posproducts";
-    private $tablePurchase = "pospurchase_products";
+    private $tablePurchaseProd = "pospurchase_products";
+    private $tablePurchase = "pospurchases";
 
     public function insertOrderProducts() {
         $fields = array(
@@ -98,9 +99,12 @@ class OrderProducts extends Database
         FROM $this->table AS a 
         INNER JOIN $this->tableOrders AS b ON a.order_id=b.id 
         INNER JOIN $this->tableProduct AS c ON a.product_id=c.id
-        LEFT OUTER JOIN (SELECT product_id, SUM(purchase_qty) AS total_qty FROM $this->tablePurchase GROUP BY product_id) AS d ON c.id=d.product_id 
+        LEFT JOIN (SELECT a.product_id, SUM(a.purchase_qty) AS total_qty FROM $this->tablePurchaseProd AS a INNER JOIN $this->tablePurchase AS b ON a.purchase_id=b.id WHERE b.iscancel=? GROUP BY product_id) AS d ON a.product_id=d.product_id
+        WHERE b.order_status=?
         ORDER BY a.id";
-        $result = $this->setRows($query);
+
+        $params = [0, "not paid"];
+        $result = $this->setRows($query, $params);
 
         return $result;
     }
@@ -111,8 +115,9 @@ class OrderProducts extends Database
         INNER JOIN $this->tableOrders AS b ON a.order_id=b.id 
         INNER JOIN $this->tableProduct AS c ON a.product_id=c.id
         WHERE a.id=?
+        AND b.order_status=?
         ORDER BY a.id";
-        $params = [$this->id];
+        $params = [$this->id, "not paid"];
         $result = $this->setRows($query, $params);
         return $result;
     }

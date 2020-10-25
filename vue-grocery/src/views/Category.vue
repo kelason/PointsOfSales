@@ -56,7 +56,7 @@
                         <div class="col-6">
                             <nav aria-label="Page navigation example item-bottom">
                                 <ul class="pagination pagination-sm justify-content-end">
-                                    <li class="page-item" :class="[{disabled: pagination.current_page == 1}]" style="cursor: pointer;">
+                                    <li class="page-item" :class="[{disabled: pagination.current_page == 1} || pagination == '']" style="cursor: pointer;">
                                         <a class="page-link" @click="fetchCategories(page = page - 2)">
                                             Prev
                                         </a>

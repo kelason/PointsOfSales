@@ -6,31 +6,30 @@ $CORS = cors("GET");
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
 
-    $categories = new Categories();
-    $categories->category_status = $_GET['status'];
-    $categories->limit = 15;
+    $inventories = new Inventories();
+    $inventories->limit = 7;
 
     $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
     if ($page < 1) {
         $page = 1;
     }
-    $categories->start = ($page - 1) * $categories->limit;
-    $total = $categories->categoryCount();
+    $inventories->start = ($page - 1) * $inventories->limit;
+    $total = $inventories->inventoryCount();
 
-    $totalPages = ceil($total / $categories->limit);
+    $totalPages = ceil($total / $inventories->limit);
 
     $pagination = [
         "current_page" => $page,
         "last_page" => $totalPages
     ];
 
-    $allCategories = (isset($_GET['page']) && $_GET['page'] != '') ? $categories->paginationCategories() : $categories->getAllCategories();
+    $allInventories = $inventories->paginationInventories();
 
-    if ($allCategories) {
+    if ($allInventories) {
         http_response_code(200);
         echo json_encode(
             [
-                "data" => $allCategories,
+                "data" => $allInventories,
                 "pagination" => $pagination
             ]);
     } else {
