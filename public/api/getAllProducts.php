@@ -15,7 +15,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
         $page = 1;
     }
     $products->start = ($page - 1) * $products->limit;
-    $total = $products->productCount();
+    $total = $products->searchProductCount();
     
     $totalPages = ceil($total / $products->limit);
     
@@ -24,7 +24,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
         "last_page" => $totalPages
     ];
 
-    $allProducts = (isset($_GET['page'])) ? $products->paginationProducts() : $products->getAllProducts();
+    $allProducts = (isset($_GET['page']) && $_GET['page'] != '') ? $products->paginationProducts() : $products->getAllProducts();
 
     if ($allProducts) {
         echo json_encode(

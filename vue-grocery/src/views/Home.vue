@@ -73,7 +73,7 @@
             </router-link>
         </div>
         <div class="col-xl-3 col-sm-6 col-12 p-3">
-            <router-link to="/retail">
+            <router-link to="/sales-report">
                 <div class="card bg-dark text-white" style="cursor: pointer;">
                     <div class="card-content p-2">
                         <div class="card-body">
@@ -82,7 +82,7 @@
                                     <i class="fas fa-store fa-5x float-left"></i>
                                 </div>
                                 <div class="media-body align-self-end text-right">
-                                    <h3>Retail</h3>
+                                    <h3>Sales Report</h3>
                                 </div>
                             </div>
                         </div>

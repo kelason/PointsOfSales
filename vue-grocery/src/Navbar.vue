@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="container-fluid" v-if="currentRouteName != 'PURCHASE PRODUCTS'">
+  <div id="app" class="container-fluid" v-if="currentRouteName != 'PURCHASE PRODUCTS' && currentRouteName != 'Print Inventory'">
     <nav class="navbar navbar-expand-md navbar-light bg-transparent" v-if="$session.exists()">
       <router-link class="navbar-brand sansita" to="/">Generic POS</router-link>
       <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2"></div>

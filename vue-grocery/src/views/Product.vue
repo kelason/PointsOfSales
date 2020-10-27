@@ -71,7 +71,7 @@
                             <nav aria-label="Page navigation example item-bottom">
                                 <ul class="pagination pagination-sm justify-content-end">
                                     <li class="page-item" :class="[{disabled: pagination.current_page == 1 || pagination == ''}]" style="cursor: pointer;">
-                                        <a class="page-link" @click="fetchProducts(page = page - 2)">
+                                        <a class="page-link" @click="fetchProducts(page = page - 1)">
                                             Prev
                                         </a>
                                     </li>
@@ -81,7 +81,7 @@
                                     </li>
 
                                     <li class="page-item" :class="[{disabled: pagination.current_page == pagination.last_page}]" style="cursor: pointer;">
-                                        <a class="page-link" @click="fetchProducts(page = page + 2)">
+                                        <a class="page-link" @click="fetchProducts(page = page + 1)">
                                             Next
                                         </a>
                                     </li>
@@ -189,7 +189,7 @@ export default {
             errors: [],
             loading: false,
             file: '',
-            page: 0,
+            page: 1,
             msg: null,
             imgURL: 'http://localhost/grocery/public/images/products/'
         }
@@ -276,7 +276,7 @@ export default {
             const axios = require("axios");
 
             axios
-                .get("/api/getAllCategories.php")
+                .get("/api/getAllCategories.php?page=&status=active")
                 .then(function(response) {
                     app.categories = response.data.data;
                 })

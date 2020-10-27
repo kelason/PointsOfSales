@@ -67,7 +67,7 @@
                             <nav aria-label="Page navigation example item-bottom">
                                 <ul class="pagination pagination-sm justify-content-end">
                                     <li class="page-item" :class="[{disabled: pagination.current_page == 1}]" style="cursor: pointer;">
-                                        <a class="page-link" @click="fetchPurchases(page = page - 2)">
+                                        <a class="page-link" @click="fetchPurchases(page = page - 1)">
                                             Prev
                                         </a>
                                     </li>
@@ -77,7 +77,7 @@
                                     </li>
 
                                     <li class="page-item" :class="[{disabled: pagination.current_page == pagination.last_page}]" style="cursor: pointer;">
-                                        <a class="page-link" @click="fetchPurchases(page = page + 2)">
+                                        <a class="page-link" @click="fetchPurchases(page = page + 1)">
                                             Next
                                         </a>
                                     </li>
@@ -238,7 +238,7 @@ export default {
                 purchase_qty: 1,
                 unit_price: 0
             },
-            page: 0
+            page: 1
         }
     },
     created() {

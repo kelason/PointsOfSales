@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import VueSession from "vue-session";
+import VueCharts from 'vue-chartjs';
 import Home from "../views/Home.vue";
 import Login from "../views/Login.vue";
 import Menu from "../views/Menu.vue";
@@ -9,11 +10,13 @@ import Product from "../views/Product.vue";
 import Category from "../views/Category.vue";
 import Purchase from "../views/Purchase.vue";
 import PurchaseProduct from "../views/PurchaseProduct.vue";
-import Retail from "../views/Retail.vue";
 import Inventory from "../views/Inventory.vue";
+import SalesReport from "../views/SalesReport.vue";
+import PrintInventory from "../views/PrintInventory.vue";
 
 Vue.use(VueRouter);
 Vue.use(VueSession);
+Vue.use(VueCharts);
 
 const session = Vue.prototype.$session;
 
@@ -59,14 +62,19 @@ const routes = [
     component: PurchaseProduct
   },
   {
-    path: "/retail",
-    name: "PRODUCTION",
-    component: Retail
-  },
-  {
     path: "/inventory",
     name: "INVENTORY",
     component: Inventory
+  },
+  {
+    path: "/sales-report",
+    name: "SALES REPORT",
+    component: SalesReport
+  },
+  {
+    path: "/print/inventory",
+    name: "Print Inventory",
+    component: PrintInventory
   }
 ];
 

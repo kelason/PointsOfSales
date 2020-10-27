@@ -250,7 +250,7 @@ export default {
             const axios = require("axios");
 
             axios
-                .get("/api/getAllCategories/")
+                .get("/api/getAllCategories/?page=&status=active")
                 .then(function(response) {
                     app.categories = response.data.data;
                 })

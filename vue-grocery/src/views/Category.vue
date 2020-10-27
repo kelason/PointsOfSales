@@ -57,7 +57,7 @@
                             <nav aria-label="Page navigation example item-bottom">
                                 <ul class="pagination pagination-sm justify-content-end">
                                     <li class="page-item" :class="[{disabled: pagination.current_page == 1} || pagination == '']" style="cursor: pointer;">
-                                        <a class="page-link" @click="fetchCategories(page = page - 2)">
+                                        <a class="page-link" @click="fetchCategories(page = page - 1)">
                                             Prev
                                         </a>
                                     </li>
@@ -67,7 +67,7 @@
                                     </li>
 
                                     <li class="page-item" :class="[{disabled: pagination.current_page == pagination.last_page}]" style="cursor: pointer;">
-                                        <a class="page-link" @click="fetchCategories(page = page + 2)">
+                                        <a class="page-link" @click="fetchCategories(page = page + 1)">
                                             Next
                                         </a>
                                     </li>
@@ -144,7 +144,7 @@ export default {
             pagination: [],
             edit: false,
             errors: [],
-            page: 0,
+            page: 1,
             msg: null
         }
     },
@@ -180,8 +180,9 @@ export default {
             const axios = require("axios");
             
             axios
-                .get("/api/getAllCategories.php?page=" + page)
+                .get("/api/getAllCategories/?page=" + page + "&status=")
                 .then(function(response) {
+                    console.log(response.data);
                     app.categories = response.data.data;
                     app.pagination = response.data.pagination;
                 })
@@ -194,7 +195,7 @@ export default {
             const axios = require("axios");
             
             axios
-                .get("/api/getAllCategoryTypes.php")
+                .get("/api/getAllCategoryTypes/")
                 .then(function(response) {
                     app.category_types = response.data.data;
                 })
@@ -211,7 +212,7 @@ export default {
             }
             app.timer = setTimeout(() => {
                 axios
-                    .get("/api/searchCategory.php?category_name=" + name)
+                    .get("/api/searchCategory/?category_name=" + name)
                     .then(function(response) {
                         app.categories = response.data.data;
                         app.pagination = response.data.pagination;
@@ -238,7 +239,7 @@ export default {
                 const axios = require("axios");
                 if(app.edit == false) {
                     axios
-                        .post("/api/addCategory.php", app.category)
+                        .post("/api/addCategory/", app.category)
                         .then(function(response) {
                             app.msg = response.data.msg;
 
@@ -252,7 +253,7 @@ export default {
                         });
                 } else {
                     axios
-                        .put("/api/updateCategory.php", app.category)
+                        .put("/api/updateCategory/", app.category)
                         .then((response) => {
                             app.msg = response.data.msg;
                             app.edit = false;
@@ -282,7 +283,7 @@ export default {
             if (confirm('Do you wat to delete ' + product_name)) {
                 const axios = require("axios");
                 axios
-                    .put("/api/deleteProduct.php", {'id' : product_id})
+                    .put("/api/deleteProduct/", {'id' : product_id})
                     .then(() => {
                         this.fetchCategories(this.page);
                     })

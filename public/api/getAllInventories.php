@@ -7,8 +7,13 @@ $CORS = cors("GET");
 if($_SERVER['REQUEST_METHOD'] == "GET") {
 
     $inventories = new Inventories();
-    $inventories->limit = 7;
-
+    $inventories->limit = 15;
+    $inventories->product_name = (isset($_GET['product_name'])) ? $_GET['product_name'] : '' ;
+    $inventories->category_id = (isset($_GET['category_id'])) ? $_GET['category_id'] : '' ;
+    $inventories->beginning_date = DATE('Y-m-d', strtotime("-1 day",strtotime($_GET['fdate'])));
+    $inventories->from_date = DATE('Y-m-d', strtotime($_GET['fdate']));
+    $inventories->to_date = DATE('Y-m-d', strtotime($_GET['tdate']));
+    
     $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
     if ($page < 1) {
         $page = 1;
@@ -23,18 +28,16 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
         "last_page" => $totalPages
     ];
 
-    $allInventories = $inventories->paginationInventories();
+    $allInventories = (isset($_GET['page']) && $_GET['page'] != '') ? $inventories->paginationInventories() : $inventories->getAllInventories();
 
     if ($allInventories) {
-        http_response_code(200);
         echo json_encode(
             [
                 "data" => $allInventories,
                 "pagination" => $pagination
             ]);
     } else {
-        http_response_code(422);
-        echo json_encode(["msg" => "Failed fetching categories."]);
+        echo json_encode(["msg" => "Failed fetching Inventories."]);
     }
 }
 ?>
