@@ -10,9 +10,8 @@
                                 <label for="searchProduct" class="text-white">Search Product</label>
                             </div>
                         </div>
-                        <div class="col-5"></div>
-                        <div class="col-2 mt-2">
-                            <button class="btn btn-dark btn-block rounded-0" @click="toggleModal(), edit = false;"><i class="fas fa-plus-circle"></i> Add Product</button>
+                        <div class="col-1 offset-6 mt-3">
+                            <i class="fas fa-plus-circle fa-2x" title="Add Products" @click="toggleModal(), edit = false;" style="cursor: pointer;"></i>
                         </div>
                     </div>
                 </div>

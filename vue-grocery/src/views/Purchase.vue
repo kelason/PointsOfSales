@@ -16,8 +16,8 @@
                                 <label class="text-white" for="to_date">To Date</label>
                             </div>
                         </div>
-                        <div class="col-2 mt-2 offset-md-4">
-                            <button class="btn btn-dark btn-block rounded-0" @click="toggleModal(), edit = false;"><i class="fas fa-plus-circle"></i> Add Purchase</button>
+                        <div class="col-1 offset-5 mt-3">
+                            <i class="fas fa-plus-circle fa-2x" title="Add Purchase" @click="toggleModal(), edit = false;" style="cursor: pointer;"></i>
                         </div>
                     </div>
                     
