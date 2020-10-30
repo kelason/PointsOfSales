@@ -13,6 +13,7 @@ import PurchaseProduct from "../views/PurchaseProduct.vue";
 import Inventory from "../views/Inventory.vue";
 import SalesReport from "../views/SalesReport.vue";
 import PrintInventory from "../views/PrintInventory.vue";
+import PrintSales from "../views/PrintSales.vue";
 
 Vue.use(VueRouter);
 Vue.use(VueSession);
@@ -75,6 +76,11 @@ const routes = [
     path: "/print/inventory",
     name: "Print Inventory",
     component: PrintInventory
+  },
+  {
+    path: "/print/sales",
+    name: "Print Sales",
+    component: PrintSales
   }
 ];
 
