@@ -5,21 +5,20 @@ require $_SERVER['DOCUMENT_ROOT'] . '/grocery/config/init.php';
 $CORS = cors("GET");
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
-    $orderProduct = new OrderProducts();
-    $orderProduct->id = $_GET['order_id'];
 
-    $resultOrder = $orderProduct->getOrderDiscountById();
+    $particulars = new Particulars();
+    $allParticulars = $particulars->getAllParticulars();
 
-    if ($resultOrder) {
+    if ($allParticulars) {
         echo json_encode(
             [
-                "data" => $resultOrder
+                "data" => $allParticulars
             ]);
     } else {
         echo json_encode(
             [
                 "data" => [],
-                "msg" => "Failed fetching Orders."
+                "msg" => "Failed fetching Particulars."
             ]
         );
     }

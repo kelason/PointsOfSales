@@ -5,21 +5,23 @@ require $_SERVER['DOCUMENT_ROOT'] . '/grocery/config/init.php';
 $CORS = cors("GET");
 
 if($_SERVER['REQUEST_METHOD'] == "GET") {
-    $orderProduct = new OrderProducts();
-    $orderProduct->id = $_GET['order_id'];
+    $expense = new Expenses();
+    $expense->id = $_GET['expense_id'];
+    $expense->iscancel = 1;
 
-    $resultOrder = $orderProduct->getOrderDiscountById();
+    $resultExpense = $expense->cancelExpense();
 
-    if ($resultOrder) {
+    if ($resultExpense) {
         echo json_encode(
             [
-                "data" => $resultOrder
+                "data" => [],
+                "msg" => "expense Deleted successfully."
             ]);
     } else {
         echo json_encode(
             [
                 "data" => [],
-                "msg" => "Failed fetching Orders."
+                "msg" => "Failed Updating Expenses."
             ]
         );
     }

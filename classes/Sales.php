@@ -219,4 +219,21 @@ class Sales extends Database
         $params = [$this->from_date, $this->to_date, $this->payment_typeid, $this->customer_id];
         return $this->setRows($query, $params);
     }
+
+    public function getSalesOrderById() {
+        $query = "SELECT 
+            c.product_name, 
+            a.product_qty, 
+            a.total_amount, 
+            a.vat_amount, 
+            a.discount_amount
+        FROM $this->tableOrderProd AS a
+        INNER JOIN $this->table AS b ON b.order_id=a.order_id
+        INNER JOIN $this->tableProd AS c ON c.id=a.product_id
+        INNER JOIN $this->tableEmp AS d ON d.id=b.cashier_id
+        WHERE b.id=?";
+
+        $params = [$this->id];
+        return $this->setRows($query, $params);
+    }
 }

@@ -1,10 +1,10 @@
 <template>
-  <div id="app" class="container-fluid" v-if="currentRouteName != 'PURCHASE PRODUCTS' && currentRouteName != 'Print Inventory' && currentRouteName != 'Print Sales'">
+  <div id="app" class="container-fluid" v-if="currentRouteName != 'PURCHASE PRODUCTS' && currentRouteName != 'Print Inventory' && currentRouteName != 'Print Sales' && currentRouteName != 'SALES RECEIPT' && currentRouteName != 'EXPENSE DETAILS'">
     <nav class="navbar navbar-expand-md navbar-light bg-transparent" v-if="$session.exists()">
       <router-link class="navbar-brand sansita" to="/">Generic POS</router-link>
       <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2"></div>
       <div class="mr-5 order-0">
-        <a class="navbar-brand mr-5" href="#">{{ currentRouteName }}</a>
+        <a class="navbar-brand" href="#" style="margin-right:80px">{{ currentRouteName }}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
           <span class="navbar-toggler-icon"></span>
         </button>

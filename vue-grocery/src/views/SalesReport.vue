@@ -129,6 +129,7 @@
                                         <th>Comment</th>
                                         <th>Status</th>
                                         <th>Date Time</th>
+                                        <th>View</th>
                                         <th>Void</th>
                                     </tr>
                                 </thead>
@@ -141,6 +142,7 @@
                                         <td>{{ sales_invoice.sales_comment }}</td>
                                         <td>{{ sales_invoice.sales_status }}</td>
                                         <td>{{ sales_invoice.created_at }}</td>
+                                        <td><i class="fas fa-eye" style="cursor: pointer;" @click="openReceipt(sales_invoice.id)"></i></td>
                                         <td><i v-if="sales_invoice.sales_status == 'not remitted'" class="fas fa-ban" style="cursor: pointer;" @click="voidSales(sales_invoice.id)"></i></td>
                                     </tr>
                                 </tbody>
@@ -361,6 +363,10 @@ export default {
     methods: {
         back() {
             this.$router.push("/");
+        },
+        openReceipt(sales_id) {
+            let routeData = this.$router.resolve({name: 'SALES RECEIPT', query: {sales_id: sales_id}});
+            window.open(routeData.href, '_blank', "height=500,width=800");
         },
         fetchSales(employee_id, from_date, to_date) {
             let app = this;

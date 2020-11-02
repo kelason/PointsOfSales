@@ -1,5 +1,5 @@
 <?php
-require $_SERVER['DOCUMENT_ROOT'] . 'grocery/config/init.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/grocery/config/init.php';
 
 //Activate Header CORS
 $CORS = cors("POST");
