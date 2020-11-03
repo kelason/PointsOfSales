@@ -4,8 +4,10 @@ class Expenses extends Database
 {
     public $id;
     public $cashier_id;
+    public $remit_id;
     public $total_amount;
     public $expense_note;
+    public $expense_status;
     public $iscancel;
     public $created_at;
     public $from_date;
@@ -42,6 +44,50 @@ class Expenses extends Database
         return $this->setrows($query, $params);
     }
 
+    public function remitExpense() {
+        $query = "UPDATE $this->table 
+        SET 
+            expense_status=:expense_status, 
+            remit_id=:remit_id 
+        WHERE 
+            expense_status=:ex_status 
+        AND 
+            iscancel=:iscancel 
+        AND 
+            remit_id=:r_id";
+        $fields = [
+            "expense_status" => $this->expense_status,
+            "remit_id" => $this->remit_id,
+            "ex_status" => "not remitted",
+            "iscancel" => 0,
+            "r_id" => 0
+        ];
+
+        return $this->update($query, $fields);
+    }
+
+    public function cancelRemitExpense() {
+        $query = "UPDATE $this->table 
+        SET 
+            expense_status=:expense_status, 
+            remit_id=:remit_id 
+        WHERE 
+            expense_status=:ex_status 
+        AND 
+            iscancel=:iscancel 
+        AND 
+            remit_id=:r_id";
+        $fields = [
+            "expense_status" => $this->expense_status,
+            "remit_id" => 0,
+            "ex_status" => "remitted",
+            "iscancel" => 0,
+            "r_id" => $this->remit_id
+        ];
+
+        return $this->update($query, $fields);
+    }
+
     public function cancelExpense() {
         $query = "UPDATE $this->table SET iscancel=:iscancel WHERE id=:id";
 
@@ -51,5 +97,16 @@ class Expenses extends Database
         );
 
         return $this->update($query, $fields);
+    }
+
+    public function getAllExpenseAmount() {
+        $query = "SELECT
+            total_amount
+        FROM $this->table 
+        WHERE iscancel=?
+        AND expense_status=?";
+
+        $params = [0, "not remitted"];
+        return $this->setrows($query, $params);
     }
 }

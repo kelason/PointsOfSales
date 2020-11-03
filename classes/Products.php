@@ -21,6 +21,8 @@ class Products extends Database
     private $tableOrder = "posorder_products";
     private $tablePurchaseProd = "pospurchase_products";
     private $tablePurchase = "pospurchases";
+    private $tableSpoilageProd = "posspoilage_products";
+    private $tableSpoilage = "posspoilages";
 
     public function createProduct() {
         $fields = array(
@@ -173,29 +175,83 @@ class Products extends Database
     }
 
     public function getProductStocksByCategory() {
-        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name, COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) AS stock_qty
+        $query = "SELECT 
+            b.id, 
+            b.product_name, 
+            b.product_image, 
+            b.unit_price, 
+            b.selling_price, 
+            b.product_status, 
+            b.barcode, 
+            b.alarmlvl, 
+            c.category_name, 
+            COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) - COALESCE(f.total_qty,0) AS stock_qty
         FROM $this->tableProCat AS a 
         INNER JOIN $this->table AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
-        LEFT JOIN (SELECT a.product_id, SUM(a.purchase_qty) AS total_qty FROM $this->tablePurchaseProd AS a INNER JOIN $this->tablePurchase AS b ON a.purchase_id=b.id WHERE b.iscancel=? GROUP BY product_id) AS d ON a.product_id=d.product_id 
-        LEFT JOIN (SELECT product_id, SUM(product_qty) AS total_qty FROM $this->tableOrder GROUP BY product_id) AS e ON a.product_id=e.product_id 
+        LEFT JOIN 
+            (SELECT a.product_id, SUM(a.purchase_qty) AS total_qty 
+            FROM $this->tablePurchaseProd AS a 
+            INNER JOIN $this->tablePurchase AS b ON a.purchase_id=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY product_id) 
+        AS d ON a.product_id=d.product_id 
+        LEFT JOIN 
+            (SELECT product_id, SUM(product_qty) AS total_qty 
+            FROM $this->tableOrder 
+            GROUP BY product_id) 
+        AS e ON a.product_id=e.product_id 
+        LEFT JOIN 
+            (SELECT a.product_id, SUM(a.spoilage_qty) AS total_qty 
+            FROM $this->tableSpoilageProd AS a 
+            INNER JOIN $this->tableSpoilage AS b ON a.spoilage_id=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY product_id) 
+        AS f ON a.product_id=f.product_id 
         WHERE b.product_status=?
          AND b.isdelete=? 
          AND c.id=? 
          ORDER BY b.product_name";
 
-        $params = [0, $this->product_status, 0, $this->category_id];
+        $params = [0, 0, $this->product_status, 0, $this->category_id];
         $result = $this->setRows($query, $params);
         return $result;
     }
 
     public function searchProductByCategory() {
-        $query = "SELECT b.id, b.product_name, b.product_image, b.unit_price, b.selling_price, b.product_status, b.barcode, b.alarmlvl, c.category_name, COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) AS stock_qty
+        $query = "SELECT 
+            b.id, 
+            b.product_name, 
+            b.product_image, 
+            b.unit_price, 
+            b.selling_price, 
+            b.product_status, 
+            b.barcode, 
+            b.alarmlvl, 
+            c.category_name, 
+            COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) - COALESCE(f.total_qty,0) AS stock_qty
         FROM $this->tableProCat AS a 
         INNER JOIN $this->table AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
-        LEFT JOIN (SELECT a.product_id, SUM(a.purchase_qty) AS total_qty FROM $this->tablePurchaseProd AS a INNER JOIN $this->tablePurchase AS b ON a.purchase_id=b.id WHERE b.iscancel=? GROUP BY product_id) AS d ON a.product_id=d.product_id 
-        LEFT JOIN (SELECT product_id, SUM(product_qty) AS total_qty FROM $this->tableOrder GROUP BY product_id) AS e ON a.product_id=e.product_id 
+        LEFT JOIN 
+            (SELECT a.product_id, SUM(a.purchase_qty) AS total_qty 
+            FROM $this->tablePurchaseProd AS a 
+            INNER JOIN $this->tablePurchase AS b ON a.purchase_id=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY product_id) 
+        AS d ON a.product_id=d.product_id 
+        LEFT JOIN 
+            (SELECT product_id, SUM(product_qty) AS total_qty 
+            FROM $this->tableOrder 
+            GROUP BY product_id) 
+        AS e ON a.product_id=e.product_id 
+        LEFT JOIN 
+            (SELECT a.product_id, SUM(a.spoilage_qty) AS total_qty 
+            FROM $this->tableSpoilageProd AS a 
+            INNER JOIN $this->tableSpoilage AS b ON a.spoilage_id=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY product_id) 
+        AS f ON a.product_id=f.product_id  
         WHERE b.product_status=? 
         AND b.isdelete=? 
         AND c.id=? 
@@ -203,7 +259,7 @@ class Products extends Database
         LIKE ? 
         ORDER BY b.product_name";
 
-        $params = [0, $this->product_status, 0, $this->category_id, "%" . $this->product_name . "%"];
+        $params = [0, 0, $this->product_status, 0, $this->category_id, "%" . $this->product_name . "%"];
         $result = $this->setRows($query, $params);
         return $result;
     }

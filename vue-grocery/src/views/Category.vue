@@ -181,7 +181,6 @@ export default {
             axios
                 .get("/api/getAllCategories/?page=" + page + "&status=")
                 .then(function(response) {
-                    console.log(response.data);
                     app.categories = response.data.data;
                     app.pagination = response.data.pagination;
                 })

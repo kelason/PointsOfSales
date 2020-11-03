@@ -7,6 +7,7 @@ class Sales extends Database
     public $payment_typeid;
     public $customer_id;
     public $cashier_id;
+    public $remit_id;
     public $sales_comment;
     public $total_amount;
     public $tendered;
@@ -52,6 +53,44 @@ class Sales extends Database
         $fields = [
             "sales_status" => "void",
             "id" => $this->id
+        ];
+
+        return $this->update($query, $fields);
+    }
+
+    public function remitSales() {
+        $query = "UPDATE $this->table 
+        SET 
+            sales_status=:sales_status, 
+            remit_id=:remit_id 
+        WHERE 
+            sales_status=:sls_status 
+        AND 
+            remit_id=:r_id";
+        $fields = [
+            "sales_status" => $this->sales_status,
+            "remit_id" => $this->remit_id,
+            "sls_status" => "not remitted",
+            "r_id" => 0
+        ];
+
+        return $this->update($query, $fields);
+    }
+
+    public function cancelRemitSales() {
+        $query = "UPDATE $this->table 
+        SET 
+            sales_status=:sales_status, 
+            remit_id=:remit_id 
+        WHERE 
+            sales_status=:sls_status 
+        AND 
+            remit_id=:r_id";
+        $fields = [
+            "sales_status" => $this->sales_status,
+            "remit_id" => 0,
+            "sls_status" => "remitted",
+            "r_id" => $this->remit_id
         ];
 
         return $this->update($query, $fields);
@@ -234,6 +273,17 @@ class Sales extends Database
         WHERE b.id=?";
 
         $params = [$this->id];
+        return $this->setRows($query, $params);
+    }
+
+    public function getAllSalesAmount() {
+        $query = "SELECT 
+            total_amount
+        FROM $this->table
+        WHERE
+        sales_status=?";
+
+        $params = ["not remitted"];
         return $this->setRows($query, $params);
     }
 }

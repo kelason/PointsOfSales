@@ -15,9 +15,11 @@ import SalesReport from "../views/SalesReport.vue";
 import CashDrop from "../views/CashDrop.vue";
 import Expense from "../views/Expense.vue";
 import ExpenseDetails from "../views/ExpenseDetails.vue";
+import Spoilage from "../views/Spoilage.vue";
 import PrintInventory from "../views/PrintInventory.vue";
 import PrintSales from "../views/PrintSales.vue";
 import PrintSalesReceipt from "../views/PrintSalesReceipt.vue";
+import PrintCashDrop from "../views/PrintCashDrop.vue";
 
 Vue.use(VueRouter);
 Vue.use(VueSession);
@@ -92,6 +94,11 @@ const routes = [
     component: ExpenseDetails
   },
   {
+    path: "/spoilage",
+    name: "SPOILAGE",
+    component: Spoilage
+  },
+  {
     path: "/print/inventory",
     name: "Print Inventory",
     component: PrintInventory
@@ -105,6 +112,11 @@ const routes = [
     path: "/print/sales-receipt",
     name: "SALES RECEIPT",
     component: PrintSalesReceipt
+  },
+  {
+    path: "/print/cash-drop",
+    name: "REMITTANCE",
+    component: PrintCashDrop
   }
 ];
 

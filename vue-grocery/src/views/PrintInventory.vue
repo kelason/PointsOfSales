@@ -1,5 +1,5 @@
 <template>
-    <div class="row">
+    <div class="row no-gutters">
         <div class="col-sm-12">
             <div class="card fullheight rounded-0">
                 <div class="card-body">
@@ -11,7 +11,7 @@
                                 <th>Beginning</th>
                                 <th>Purchase</th>
                                 <th>Sold</th>
-                                <th>Return</th>
+                                <th>Spoilage</th>
                                 <th>Ending</th>
                             </tr>
                         </thead>
@@ -22,7 +22,7 @@
                                 <td>{{ inventory.begstock_qty }}</td>
                                 <td>{{ inventory.purchase_qty }}</td>
                                 <td>{{ inventory.sales_qty }}</td>
-                                <td>{{ }}</td>
+                                <td>{{ inventory.spoilage_qty }}</td>
                                 <td>{{ inventory.endstock_qty }}</td>
                             </tr>
                         </tbody>

@@ -39,7 +39,7 @@
                                 <th>Beginning</th>
                                 <th>Purchase</th>
                                 <th>Sold</th>
-                                <th>Return</th>
+                                <th>Spoilages</th>
                                 <th>Ending</th>
                             </tr>
                         </thead>
@@ -53,7 +53,7 @@
                                 <td>{{ inventory.begstock_qty }}</td>
                                 <td>{{ inventory.purchase_qty }}</td>
                                 <td>{{ inventory.sales_qty }}</td>
-                                <td>{{ }}</td>
+                                <td>{{ inventory.spoilage_qty }}</td>
                                 <td>{{ inventory.endstock_qty }}</td>
                             </tr>
                         </tbody>
@@ -146,6 +146,7 @@ export default {
                 axios
                     .get("/api/getAllInventories/?page=" + page + "&product_name=" + product_name + "&category_id=" + category_id + "&fdate=" + from_date + "&tdate=" + to_date)
                     .then(function(response) {
+                        console.log(response.data);
                         app.inventories = response.data.data;
                         app.pagination = response.data.pagination;
                         app.loading = false;
