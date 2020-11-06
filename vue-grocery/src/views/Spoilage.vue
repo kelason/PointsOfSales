@@ -46,7 +46,7 @@
                                             <i class="far fa-file" style="cursor: pointer;" @click="openPortal(spoilage.id)"></i>
                                         </td>
                                         <td class="align-middle">
-                                            <i class="fas fa-ban ml-2" :title="'Click to Cancel ' + spoilage.id" style="cursor: pointer;" @click="cancelSpoilage(spoilage.id)" v-if="spoilage.iscancel!=1"></i>
+                                            <i class="fas fa-ban ml-2" :title="'Click to Cancel ID# ' + spoilage.id" style="cursor: pointer;" @click="cancelSpoilage(spoilage.id)" v-if="spoilage.iscancel!=1"></i>
                                             <i class="fas fa-ban ml-2" v-else></i>
                                         </td>
                                     </tr>
@@ -218,8 +218,8 @@ export default {
         spoilageDtFormat(dt) {
             return moment(dt).format("MMMM DD, YYYY hh:mm:ss A");
         },
-        openPortal(purchase_id) {
-            let routeData = this.$router.resolve({name: 'PURCHASE PRODUCTS', query: {purchase_id: purchase_id}});
+        openPortal(spoilage_id) {
+            let routeData = this.$router.resolve({name: 'PSPOILAGE', query: {spoilage_id: spoilage_id}});
             window.open(routeData.href, '_blank', "height=500,width=800");
         },
         toggleModal() {

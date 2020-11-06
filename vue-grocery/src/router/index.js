@@ -16,10 +16,12 @@ import CashDrop from "../views/CashDrop.vue";
 import Expense from "../views/Expense.vue";
 import ExpenseDetails from "../views/ExpenseDetails.vue";
 import Spoilage from "../views/Spoilage.vue";
+import Settings from "../views/Settings.vue";
 import PrintInventory from "../views/PrintInventory.vue";
 import PrintSales from "../views/PrintSales.vue";
 import PrintSalesReceipt from "../views/PrintSalesReceipt.vue";
 import PrintCashDrop from "../views/PrintCashDrop.vue";
+import PrintSpoilage from "../views/PrintSpoilage.vue";
 
 Vue.use(VueRouter);
 Vue.use(VueSession);
@@ -99,6 +101,11 @@ const routes = [
     component: Spoilage
   },
   {
+    path: "/settings",
+    name: "SETTINGS",
+    component: Settings
+  },
+  {
     path: "/print/inventory",
     name: "Print Inventory",
     component: PrintInventory
@@ -117,6 +124,11 @@ const routes = [
     path: "/print/cash-drop",
     name: "REMITTANCE",
     component: PrintCashDrop
+  },
+  {
+    path: "/print/spoilage",
+    name: "PSPOILAGE",
+    component: PrintSpoilage
   }
 ];
 

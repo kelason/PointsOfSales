@@ -7,8 +7,8 @@ $CORS = cors("GET");
 if($_SERVER['REQUEST_METHOD'] == "GET") {
 
     $customers = new Customers();
-    $customers->customer_status = $_GET['customer_status'];
-    $resultCustomer = $customers->getAllCustomers();
+    $customers->customer_status = ($_GET['customer_status'] != '') ? $_GET['customer_status'] : '' ;
+    $resultCustomer = ($_GET['customer_status'] == '') ? $customers->getAllCustomers() : $customers->getAllCustomersbyStatus();
 
     if ($resultCustomer) {
         echo json_encode(

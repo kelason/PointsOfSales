@@ -371,8 +371,7 @@ export default {
             const axios = require("axios");
             axios
                 .get("/api/updateOrderDiscountById/?id=" + id + "&disc=" + disc)
-                .then((res) => {
-                    console.log(res.data);
+                .then(() => {
                     app.fetchOrderProducts();
                     app.toggleModal();
                 })
@@ -398,8 +397,7 @@ export default {
                 const axios = require("axios");
                 axios
                     .post("/api/addSales/", merge_payment)
-                    .then((res) => {
-                        console.log(res.data);
+                    .then(() => {
                         app.$router.push("/terminal");
                     })
                     .catch((error) => {
