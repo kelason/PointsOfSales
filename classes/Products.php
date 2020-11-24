@@ -112,9 +112,10 @@ class Products extends Database
         FROM $this->tableProCat AS a 
         INNER JOIN $this->table AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
-        WHERE b.product_name LIKE ?";
+        WHERE b.product_name LIKE ?
+        AND b.isdelete=?";
 
-        $params = ["%" . $this->product_name . "%"];
+        $params = ["%" . $this->product_name . "%", 0];
         $result = $this->setColumn($query, $params);
         return $result;
     }
@@ -271,8 +272,7 @@ class Products extends Database
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
         WHERE b.product_status=? 
         AND b.isdelete=? 
-        AND b.product_name 
-        LIKE ? 
+        AND b.product_name LIKE ? 
         ORDER BY b.product_name 
         LIMIT $this->start, $this->limit";
 

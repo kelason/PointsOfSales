@@ -35,10 +35,30 @@ class Categories extends Database
         return $this->update($query, $fields);
     }
 
+    public function deleteCategory() {
+        $query = "UPDATE $this->table 
+        SET isdelete=:isdelete 
+        WHERE id=:id";
+
+        $fields = array(
+            'isdelete'  => $this->isdelete,
+            'id'  => $this->id
+        );
+
+        return $this->update($query, $fields);
+    }
+
     public function getAllCategories() {
         $query = "SELECT id, category_name, category_type, isdelete FROM $this->table WHERE category_status=? AND isdelete=? ORDER BY category_name";
         $params = [$this->category_status, 0];
         $result = $this->setRows($query, $params);
+        return $result;
+    }
+
+    public function getCategoryName() {
+        $query = "SELECT category_name FROM $this->table WHERE id=?";
+        $params = [$this->id];
+        $result = $this->setColumn($query, $params);
         return $result;
     }
 

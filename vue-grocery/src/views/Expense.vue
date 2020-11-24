@@ -25,7 +25,7 @@
                 <div class="card-body overflow-auto">
                     <div class="row">
                         <div class="col-12">
-                            <table class="table table-striped text-center">
+                            <table class="table text-center">
                                 <thead>
                                     <tr>
                                         <th>ID</th>

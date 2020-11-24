@@ -294,7 +294,7 @@ export default {
             }
             app.timer = setTimeout(() => {
                 axios
-                    .get("/api/searchProduct/?product_name=" + name)
+                    .get("/api/searchProduct/?product_name=" + name + "&limit=all")
                     .then(function(response) {
                         app.products = response.data.data;
                     })
@@ -399,6 +399,7 @@ export default {
                             }
                             app.dups = [];
                             app.toggleModal();
+                            app.fetchPurchases(app.page);
                         }
                     })
                     .catch((error) => {

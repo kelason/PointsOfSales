@@ -14,9 +14,9 @@
                             <button class="btn btn-block btn-outline-dark rounded-0" :class="{ 'active': (selectedCategory !== null) ? category.id == selectedCategory : index===0 }" @click="selectedCategory=category.id, fetchProductsbyCategory((selectedCategory !== null) ? selectedCategory : category.id), searchProd=''">{{ category.category_name }}</button>
                         </div>
                     </div>
-                    <button class="btn btn-primary text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
                 </div>
             </div>
+            <button class="btn btn-primary text-white btn-block sticky-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
         </div>
         <div class="col-md-7">
             <div class="card fullheight overflow-auto shadow">
@@ -85,9 +85,9 @@
                             <span class="float-right mr-3 font-weight-bold">{{(orderTotal == 0) ? '' : "&#8369; " + orderTotal }}</span>
                         </div>
                     </div>
-                    <button class="btn btn-info btn-block item-bottom btn-lg rounded-0" @click="checkOut(orderTotal)"><span class="ml-2"><i class="fas fa-cart-plus"></i> Checkout</span> </button>
                 </div>
             </div>
+            <button class="btn btn-info btn-block sticky-bottom btn-lg rounded-0" @click="checkOut(orderTotal)"><span class="ml-2"><i class="fas fa-cart-plus"></i> Checkout</span> </button>
         </div>
         <div class="modal fade" tabindex="-1" :class="{show, 'd-block': active}" role="dialog" id="addDisc">
             <div class="modal-dialog modal-lg" role="document">

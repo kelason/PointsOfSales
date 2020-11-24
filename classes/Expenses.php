@@ -41,7 +41,24 @@ class Expenses extends Database
         AND DATE(a.created_at)<=?";
 
         $params = [$this->from_date, $this->to_date];
-        return $this->setrows($query, $params);
+        return $this->setRows($query, $params);
+    }
+
+    public function getExpenseById() {
+        $query = "SELECT
+            a.id AS ex_id,
+            a.total_amount,
+            a.expense_note,
+            a.iscancel,
+            a.created_at,
+            b.employee_fn,
+            b.employee_sn
+        FROM $this->table AS a
+        INNER JOIN $this->tableEmp AS b ON b.id=a.cashier_id
+        WHERE a.id=?";
+
+        $params = [$this->id];
+        return $this->setRow($query, $params);
     }
 
     public function remitExpense() {

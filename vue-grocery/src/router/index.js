@@ -17,11 +17,13 @@ import Expense from "../views/Expense.vue";
 import ExpenseDetails from "../views/ExpenseDetails.vue";
 import Spoilage from "../views/Spoilage.vue";
 import Settings from "../views/Settings.vue";
+import Supplier from "../views/Supplier.vue";
 import PrintInventory from "../views/PrintInventory.vue";
 import PrintSales from "../views/PrintSales.vue";
 import PrintSalesReceipt from "../views/PrintSalesReceipt.vue";
 import PrintCashDrop from "../views/PrintCashDrop.vue";
 import PrintSpoilage from "../views/PrintSpoilage.vue";
+import Change from "../views/Change.vue";
 
 Vue.use(VueRouter);
 Vue.use(VueSession);
@@ -106,6 +108,11 @@ const routes = [
     component: Settings
   },
   {
+    path: "/supplier",
+    name: "SUPPLIERS",
+    component: Supplier
+  },
+  {
     path: "/print/inventory",
     name: "Print Inventory",
     component: PrintInventory
@@ -129,6 +136,11 @@ const routes = [
     path: "/print/spoilage",
     name: "PSPOILAGE",
     component: PrintSpoilage
+  },
+  {
+    path: "/change",
+    name: "CHANGE",
+    component: Change
   }
 ];
 

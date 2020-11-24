@@ -94,7 +94,7 @@
                             <div class="col-6 p-2">
                                 <select id="product_id" v-model="spoilage_product.product_id" @change="fetchProductById()" class="form-control mb-3 rounded-0 border-top-0  border-left-0  border-right-0">
                                     <option disabled value="0">Select Product</option>
-                                    <option v-for="product in products" :key="product.id" :value="product.id">{{ product.product_name + "  (" + product.stock_qty + ")"}}</option>
+                                    <option v-for="product in products" :key="product.id" :value="product.id">{{ "(" + product.stock_qty + ") " + product.product_name }}</option>
                                 </select>
                             </div>
                             <div class="col-6">
@@ -320,6 +320,7 @@ export default {
                         app.dups = [];
                         app.toggleModal();
                         app.fetchProducts();
+                        app.fetchSpoilages(app.from_date, app.to_date);
                     }
                 })
                 .catch((error) => {

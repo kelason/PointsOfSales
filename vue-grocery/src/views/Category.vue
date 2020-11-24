@@ -22,7 +22,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>Category Name</th>
-                                    <th>Category Type</th>
+                                    <!-- <th>Category Type</th> -->
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -37,7 +37,7 @@
                             <tbody v-else>
                                 <tr class="text-center" v-for="category in categories" :key="category.id">
                                     <td class="align-middle">{{ category.category_name }}</td>
-                                    <td class="align-middle">{{ category.type_name }}</td>
+                                    <!-- <td class="align-middle">{{ category.type_name }}</td> -->
                                     <td class="align-middle">{{ category.category_status }}</td>
                                     <td class="align-middle">
                                         <i class="fa fa-edit mr-2" :title="'Click to Edit ' + category.category_name" style="cursor: pointer;" @click="editCategory(category)"></i> 
@@ -95,13 +95,13 @@
                                 </div>
                                 <small class="text-danger font-weight-bold" v-if="errors.category_name">{{ errors.category_name }}</small>
                             </div>
-                            <div class="col-6 p-2">
+                            <!-- <div class="col-6 p-2">
                                 <select id="catid" v-model="category.category_type" class="form-control mb-3 rounded-0 border-top-0  border-left-0  border-right-0">
                                     <option disabled value="0">Select Category Type</option>
                                     <option v-for="category_type in category_types" :key="category_type.id" :value="category_type.id">{{ category_type.type_name }}</option>
                                 </select>
                                 <small class="text-danger font-weight-bold" v-if="errors.type_id">{{ errors.type_id }}</small>
-                            </div>
+                            </div> -->
                             <div class="col-6 p-2">
                                 <select id="catid" v-model="category.category_status" class="form-control mb-3 rounded-0 border-top-0  border-left-0  border-right-0">
                                     <option disabled value="0">Select Status</option>
@@ -210,7 +210,7 @@ export default {
             }
             app.timer = setTimeout(() => {
                 axios
-                    .get("/api/searchCategory/?category_name=" + name)
+                    .get("/api/searchCategory/?page=" + app.page + "&category_name=" + name)
                     .then(function(response) {
                         app.categories = response.data.data;
                         app.pagination = response.data.pagination;
@@ -281,7 +281,7 @@ export default {
             if (confirm('Do you wat to delete ' + product_name)) {
                 const axios = require("axios");
                 axios
-                    .put("/api/deleteProduct/", {'id' : product_id})
+                    .put("/api/deleteCategory/", {'id' : product_id})
                     .then(() => {
                         this.fetchCategories(this.page);
                     })

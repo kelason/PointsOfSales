@@ -49,6 +49,7 @@ class Remittances extends Database
         $query = "SELECT
             a.id,
             a.created_at,
+            a.iscancel,
             b.employee_fn,
             b.employee_sn
         FROM $this->table AS a

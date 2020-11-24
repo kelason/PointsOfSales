@@ -11,15 +11,15 @@
                             </div>
                         </div>
                         <div class="col-1 offset-6 mt-3">
-                            <i class="fas fa-plus-circle fa-2x" title="Add Products" @click="toggleModal(), edit = false;" style="cursor: pointer;"></i>
+                            <i class="fas fa-plus-circle fa-2x" title="Add Products" @click="toggleModal(), edit = false, flush()" style="cursor: pointer;"></i>
                         </div>
                     </div>
                 </div>
                 <div class="card-body overflow-auto">
                     <form method="POST" enctype="multipart/form-data">
-                        <table class="table table-striped">
+                        <table class="table text-center">
                             <thead>
-                                <tr class="text-center">
+                                <tr>
                                     <th>Image</th>
                                     <th>Product Name</th>
                                     <th>Unit Price</th>
@@ -31,15 +31,16 @@
                                     <th>Action</th>
                                 </tr>
                             </thead>
-                            <tbody v-if="products==''">
-                                <tr class="text-center">
-                                    <td colspan="9">
-                                        <p class="text-danger text-center">No Records...</p>
-                                    </td>
+                            <tbody v-if="loading">
+                                <tr>
+                                    <td colspan="9"><img src="http://localhost/grocery/public/images/loading.gif" alt=""></td>
                                 </tr>
                             </tbody>
                             <tbody v-else>
-                                <tr class="text-center" v-for="(product, index) in products" :key="product.id">
+                                <tr v-if="!products.length">
+                                    <td colspan="9"><strong class="text-danger text-center">No Record</strong></td>
+                                </tr>
+                                <tr v-else class="border-bottom" v-for="(product, index) in products" :key="product.id">
                                     <td>
                                         <label :title="'Click to Upload Photo'" :for="'file' + index" class="border m-0" style="cursor: pointer;">
                                             <input type="file" ref="file" :id="'file' + index" class="form-control-file" @change="createImage(product.id, index)" hidden>
@@ -218,6 +219,16 @@ export default {
         back() {
             this.$router.push("/");
         },
+        flush() {
+            this.product = {
+                product_name: '',
+                category_id: 0,
+                product_status: 0,
+                unit_price: '',
+                selling_price: '',
+                product_image: ''
+            }
+        },
         createImage(product_id, index) {
             var app = this;
             const axios = require("axios");
@@ -286,6 +297,7 @@ export default {
         searchProduct(name) {
             var app = this;
             const axios = require("axios");
+            app.loading = true;
             if (app.timer) {
                 clearTimeout(app.timer);
                 app.timer = null;
@@ -296,6 +308,7 @@ export default {
                     .then(function(response) {
                         app.products = response.data.data;
                         app.pagination = response.data.pagination;
+                        app.loading = false;
                     })
                     .catch((error) => {
                         console.log(error);

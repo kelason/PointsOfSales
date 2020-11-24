@@ -25,18 +25,17 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
 
     $resultProductCategory = $productCategories->createProductCategories();
 
-    if ($resultProduct && $resultProductCategory) {
+    if ($resultProduct) {
         echo json_encode(
             [
-                "data" => [
-                    "msg" => "Product added successfully."
-                ]
+                "data" => [],
+                "msg" => "Product added successfully."
             ]);
     } else {
         echo json_encode(
             [
                 "data" => [],
-                "msg" => "Failed fetching Orders."
+                "msg" => "Failed Adding Products."
             ]
         );
     }

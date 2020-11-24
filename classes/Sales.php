@@ -259,6 +259,26 @@ class Sales extends Database
         return $this->setRows($query, $params);
     }
 
+    public function getSalesInvoiceById() {
+        $query = "SELECT 
+            a.id, 
+            a.sales_status,
+            a.sales_comment, 
+            a.created_at, 
+            b.payment_name, 
+            c.customer_name,
+            d.employee_fn,
+            d.employee_sn
+        FROM $this->table AS a
+        INNER JOIN $this->tablePay AS b ON b.id=a.payment_typeid
+        INNER JOIN $this->tableCus AS c ON c.id=a.customer_id
+        INNER JOIN $this->tableEmp AS d ON d.id=a.cashier_id
+        AND a.id=?";
+
+        $params = [$this->id];
+        return $this->setRow($query, $params);
+    }
+
     public function getSalesOrderById() {
         $query = "SELECT 
             c.product_name, 

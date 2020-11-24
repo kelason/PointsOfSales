@@ -31,11 +31,13 @@ class Orders extends Database
 
     public function updateOrderStatusById() {
         $query = "UPDATE $this->table 
-        SET order_status=:order_status 
+        SET order_status=:order_status, 
+        created_at=:created_at 
         WHERE id=:id";
 
         $fields = array(
             'order_status'  => $this->order_status,
+            'created_at'  => $this->created_at,
             'id'  => $this->id
         );
 

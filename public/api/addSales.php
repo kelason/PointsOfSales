@@ -25,6 +25,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     $orders = new Orders();
     $orders->id = $data[0]->order_id;
     $orders->order_status = "paid";
+    $orders->created_at = DATE('Y-m-d H:i:s');
     $resultOrders = $orders->updateOrderStatusById();
 
     if($resultSales && $resultOrders) 

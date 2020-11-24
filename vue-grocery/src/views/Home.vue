@@ -163,6 +163,24 @@
             </router-link>
         </div>
         <div class="col-xl-3 col-sm-6 col-12 p-3">
+            <router-link to="/supplier">
+                <div class="card bg-dark text-white" style="cursor: pointer;">
+                    <div class="card-content p-2">
+                        <div class="card-body">
+                            <div class="media d-flex">
+                                <div class="align-self-center">
+                                    <i class="fas fa-truck fa-5x float-left"></i>
+                                </div>
+                                <div class="media-body align-self-end text-right">
+                                    <h3>Supplier</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </router-link>
+        </div>
+        <div class="col-xl-3 col-sm-6 col-12 p-3">
             <router-link to="/settings">
                 <div class="card bg-dark text-white" style="cursor: pointer;">
                     <div class="card-content p-2">

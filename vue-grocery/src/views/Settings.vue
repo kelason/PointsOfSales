@@ -11,9 +11,9 @@
                             <button class="btn btn-block btn-outline-dark rounded-0" :class="{'active' : (selectedMenu !== null) ? menu.id == selectedMenu : index===0}" @click="selectedMenu = menu.id, headerName=menu.menu_name, (selectedMenu == 3) ? flush() : fetchEmployeesById($session.get('user_id')), (selectedMenu == 3) ? edit=true : edit=false">{{ menu.menu_name }}</button>
                         </div>
                     </div>
-                    <button class="btn btn-primary text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
                 </div>
             </div>
+            <button class="btn btn-primary text-white btn-block sticky-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
         </div>
         <div class="col-sm-10">
             <div class="card fullheight rounded-0" style="overflow: auto;">
@@ -155,8 +155,8 @@
                         <div class="col-sm-4">
                             <label for="" class="ml-4 text-muted"><small>Status</small></label>
                             <select v-model="customer.customer_status" class="form-control form-control-sm rounded-0 bg-transparent border-top-0 border-left-0 border-right-0">
-                                <option class="text-dark" value="1" disabled>Active</option>
-                                <option class="text-dark" value="2" disabled>Inactive</option>
+                                <option class="text-dark" value="1">Active</option>
+                                <option class="text-dark" value="2">Inactive</option>
                             </select>
                         </div>
                         <div class="col-sm-6 mt-3">
@@ -185,6 +185,65 @@
                                         <td>
                                             <i class="fa fa-edit mr-2" v-if="cust.id!=1" :title="'Click to Edit ' + cust.customer_name" style="cursor: pointer;" @click="editCustomer(cust)"></i> 
                                         </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row" v-if="selectedMenu == 5">
+                        <div class="col-sm-3">
+                            <label for="user-emp" class="ml-4 text-muted"><small>Employees</small></label>
+                            <select id="user-emp" v-model="user.employee_id" class="form-control form-control-sm rounded-0 bg-transparent border-top-0 border-left-0 border-right-0" :class="{'is-invalid': errors.employee_id}">
+                                <option class="text-dark" value="0" disabled>Select Employee</option>
+                                <option class="text-dark" v-for="emp in emp_users" :key="emp.id" :value="emp.id">{{ emp.employee_fn + " " + emp.employee_sn }}</option>
+                            </select>
+                            <small class="text-danger font-weight-bold" v-if="errors.employee_id">{{ errors.employee_id }}</small>
+                        </div>
+                        <div class="col-sm-3 mt-3">
+                            <div class="form-label-group">
+                                <input type="text" v-model="user.username" id="usernames" class="form-control form-control-sm bg-transparent rounded-0 border-top-0 border-left-0 border-right-0" :class="{'is-invalid': errors.username}" placeholder="Username">
+                                <label for="usernames">Username</label>
+                                <small class="text-danger font-weight-bold" v-if="errors.username">{{ errors.username }}</small>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="" class="ml-4 text-muted"><small>Status</small></label>
+                            <select v-model="user.user_status" class="form-control form-control-sm rounded-0 bg-transparent border-top-0 border-left-0 border-right-0">
+                                <option class="text-dark" value="1">Active</option>
+                                <option class="text-dark" value="2">Inactive</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label for="" class="ml-4 text-muted"><small>Account Approval</small></label>
+                            <select v-model="user.user_approval" class="form-control form-control-sm rounded-0 bg-transparent border-top-0 border-left-0 border-right-0">
+                                <option class="text-dark" value="1">Cashier</option>
+                                <option class="text-dark" value="2">Manager</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-10 mt-3">
+                            <div class="alert alert-success" role="alert" v-if="msguser">
+                                {{ msguser }}
+                            </div>
+                        </div>
+                        <div class="col-sm-2 mt-3">
+                            <button class="btn btn-sm btn-outline-info btn-block" @click="addUser">Save</button>
+                        </div>
+                        <div class="col-sm-12">
+                            <table class="table table-sm text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Employee Name</th>
+                                        <th>Username</th>
+                                        <th>Approval</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody v-for="usrs in usr" :key="usrs.id">
+                                    <tr>
+                                        <td>{{ usrs.employee_fn + ' ' + usrs.employee_sn }}</td>
+                                        <td>{{ usrs.username }}</td>
+                                        <td>{{ usrs.user_approval }}</td>
+                                        <td>{{ usrs.user_status }}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -238,6 +297,12 @@ export default {
                 employee_brgy: 0,
                 employee_phone: 0
             },
+            user: {
+                employee_id: 0,
+                username: '',
+                user_approval: 1,
+                user_status: 1
+            },
             customer: {
                 customer_name: '',
                 customer_phone: '',
@@ -251,11 +316,22 @@ export default {
             edit_customer: false,
             msg: false,
             msgpass: false,
+            msguser: false,
             oldPass: '',
             newPass: '',
             confirmPass: '',
             emps: [],
-            custs: []
+            custs: [],
+            emp_users: [],
+            usr: []
+        }
+    },
+    mounted() {
+        if(this.$session.get('user_approval') == 'cashier') {
+            var removeIndex = [4, 5];
+            for (let index = removeIndex.length -1; index >= 0; index--) {
+                this.menus.splice(removeIndex[index], 1)
+            }
         }
     },
     created() {
@@ -263,6 +339,8 @@ export default {
         this.fetchEmployeesById(this.$session.get("user_id"));
         this.fetchEmployees();
         this.fetchCustomers();
+        this.fetchEmployeesWithoutUser();
+        this.fetchUsers();
     },
     methods: {
         back() {
@@ -316,6 +394,12 @@ export default {
         validCusNum() {
             return this.customer.customer_phone.length <= 5 || this.customer.customer_phone == 0;
         },
+        validUsername() {
+            return this.user.username.length <= 3;
+        },
+        validEmployee () { 
+            return this.user.employee_id == 0;
+        },
         fetchEmployeesById(user_id) {
             var app = this;
 
@@ -346,6 +430,18 @@ export default {
                 .get("/api/getAllEmployees/?status=active&id=" + app.$session.get('user_id'))
                 .then(function(response) {
                     app.emps = response.data.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        fetchEmployeesWithoutUser() {
+            var app = this;
+
+            axios
+                .get("/api/getAllEmployeesWithoutUser/?id=" + app.$session.get('user_id'))
+                .then(function(response) {
+                    app.emp_users = response.data.data;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -543,6 +639,43 @@ export default {
             app.customer.customer_phone = emp.customer_phone;
             app.customer.customer_status = (emp.customer_status == "active") ? 1 : 2;
         },
+        addUser() {
+            let app = this;
+            app.errors = [];
+            
+            if (app.validUsername()) app.errors.username = "Please input username.";
+            if (app.validEmployee()) app.errors.employee_id = "Please select employee.";
+
+            if (
+                !app.validUsername() &&
+                !app.validEmployee() 
+            ) {
+                axios
+                    .post("/api/addUser/", app.user)
+                    .then(function() {
+                        app.msguser = "User Added Successfully!";
+                        app.fetchEmployeesWithoutUser();
+                        setTimeout(() => {
+                            app.msguser = false;
+                        }, 3000);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            }
+        },
+        fetchUsers() {
+            var app = this;
+
+            axios
+                .get("/api/getAllUsers/")
+                .then(function(response) {
+                    app.usr = response.data.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
     }
 }
 </script>

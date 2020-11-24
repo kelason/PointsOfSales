@@ -43,11 +43,16 @@
                                 <th>Ending</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr v-if="loading">
+                        <tbody v-if="loading">
+                            <tr>
                                 <td colspan="7"><img src="http://localhost/grocery/public/images/loading.gif" alt=""></td>
                             </tr>
-                            <tr class="border-bottom" v-else v-for="inventory in inventories" :key="inventory.id">
+                        </tbody>
+                        <tbody v-else>
+                            <tr v-if="!inventories.length">
+                                <td colspan="7"><strong class="text-danger text-center">No Record</strong></td>
+                            </tr>
+                            <tr v-else class="border-bottom" v-for="inventory in inventories" :key="inventory.id">
                                 <td>{{ inventory.product_name }}</td>
                                 <td>{{ inventory.category_name }}</td>
                                 <td>{{ inventory.begstock_qty }}</td>
@@ -112,8 +117,8 @@ export default {
     },
     created () {
         this.fetchCategories();
-        this.from_date = moment().format("YYYY-MM-DDTkk:mm");
-        this.to_date = moment().format("YYYY-MM-DDTkk:mm");
+        this.from_date = moment().format("YYYY-MM-DDTHH:mm");
+        this.to_date = moment().format("YYYY-MM-DDTHH:mm");
         this.fetchInventory(this.page, this.product_name, this.category_id, this.from_date, this.to_date);
     },
     methods: {
@@ -154,10 +159,10 @@ export default {
                     .catch((error) => {
                         console.log(error);
                     });
-            }, 100);
+            }, 500);
         },
         printInventory() {
-            let routeData = this.$router.resolve({name: 'Print Inventory', query: {fdate: this.from_date, tdate: this.to_date}});
+            let routeData = this.$router.resolve({name: 'Print Inventory', query: {fdate: this.from_date, tdate: this.to_date, catid: this.category_id, product_name: this.product_name}});
             window.open(routeData.href, '_blank', "height=500,width=900");
         }
     }

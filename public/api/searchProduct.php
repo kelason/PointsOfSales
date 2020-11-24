@@ -9,7 +9,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
     $products->product_name = $_GET['product_name'];
     $products->product_status = "active";
 
-    $products->limit = 7;
+    $products->limit = (isset($_GET['limit']) && $_GET['limit'] == 'all') ? 10000 : 7;
 
     $page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
     if ($page < 1) {
@@ -37,6 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
         echo json_encode(
         [
             "data" => [],
+            "pagination" => $pagination,
             "msg" => "Failed fetching Product."
         ]);
     }

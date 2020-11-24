@@ -1,9 +1,14 @@
 <template>
-    <div class="container">
+    <div class="container" style="background-color: #ffffff">
         <div class="row mx-auto">
             <div class="col-sm-12">
                 <h5>Cabanatuan City, Nueva Ecija</h5>
             </div>
+        </div>
+        <img :src="imgURL + 'cancelled.png'" style="position:absolute; width: 600px; z-index: 10;" v-if="expense.iscancel == 1">
+        <div class="row mx-auto">
+            <div class="col-sm-6"><strong>Remitted By:</strong> {{ expense.employee_fn + " " + expense.employee_sn }}</div>
+            <div class="col-sm-6"><strong>Date:</strong> {{ expenseDtFormat(expense.created_at) }}</div>
         </div>
         <br><br>
         <div class="row mx-auto">
@@ -28,17 +33,29 @@
                 </table>
             </div>
         </div>
+        <div class="row mx-auto mt-4">
+            <div class="col-sm-4 signature"></div>
+        </div>
+        <div class="row mx-auto">
+            <div class="col-sm-4">
+                Checked By:
+            </div>
+        </div>
     </div>
 </template>
 <script>
+import moment from 'moment';
 export default {
     data () {
         return {
+            expense: [],
             expense_details: [],
+            imgURL: 'http://localhost/grocery/public/images/'
         }
     },
     created() {
         this.fetchExpenseDetails();
+        this.fetchExpenses();
     },
     computed: {
         totalExpenses: function() {
@@ -50,6 +67,22 @@ export default {
         }
     },
     methods: {
+        expenseDtFormat(dt) {
+            return moment(dt).format("MMMM DD, YYYY hh:mm:ss A");
+        },
+        fetchExpenses() {
+            var app = this;
+            const axios = require("axios");
+            
+            axios
+                .get("/api/getExpenseById/?expense_id=" + app.$route.query.expense_id)
+                .then(function(response) {
+                    app.expense = response.data[0];
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
         fetchExpenseDetails() {
             var app = this;
             const axios = require("axios");
@@ -57,7 +90,6 @@ export default {
             axios
                 .get("/api/getAllExpenseDetailsById/?expense_id=" + app.$route.query.expense_id)
                 .then(function(response) {
-                    console.log(response.data);
                     app.expense_details = response.data.data;
                 })
                 .catch((error) => {

@@ -11,9 +11,9 @@
                             <button class="btn btn-block btn-outline-dark rounded-0" :class="{'active' : (selectedMenu !== null) ? menu.id == selectedMenu : index===0}" @click="selectedMenu = menu.id, headerName=menu.menu_name, fetchSales(z_employee_id, z_from_date, z_to_date), fetchSalesSingle(x_employee_id, x_from_date), fetchSalesProduct(ps_select, ps_from_date, ps_to_date), fetchSalesRanking(rank_from_date, rank_to_date), fetchEmployees()">{{ menu.menu_name }}</button>
                         </div>
                     </div>
-                    <button class="btn btn-primary text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
                 </div>
             </div>
+            <button class="btn btn-primary text-white btn-block sticky-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
         </div>
         <div class="col-sm-10">
             <div class="card fullheight rounded-0" style="overflow: auto;">
@@ -143,7 +143,7 @@
                                         <td>{{ sales_invoice.sales_status }}</td>
                                         <td>{{ sales_invoice.created_at }}</td>
                                         <td><i class="fas fa-eye" style="cursor: pointer;" @click="openReceipt(sales_invoice.id)"></i></td>
-                                        <td><i v-if="sales_invoice.sales_status == 'not remitted'" class="fas fa-ban" style="cursor: pointer;" @click="voidSales(sales_invoice.id)"></i></td>
+                                        <td><i v-if="sales_invoice.sales_status == 'not remitted'" class="fas fa-ban" style="cursor: pointer;" @click="($session.get('user_approval') == 'manager') ? voidSales(sales_invoice.id) : waringPriv()"></i></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -563,6 +563,9 @@ export default {
         printSales() {
             let routeData = this.$router.resolve({name: 'Print Sales', query: {typeid: this.ps_select, fdate: this.ps_from_date, tdate: this.ps_to_date}});
             window.open(routeData.href, '_blank', "height=500,width=900");
+        },
+        waringPriv() {
+            alert('Only manager can void sales....');
         }
     },
     computed: {

@@ -1,11 +1,10 @@
 <template>
-    <div class="container">
+    <div class="container" style="background-color: #ffffff">
         <div class="row mx-auto">
             <div class="col-sm-12">
                 <h5>Cabanatuan City, Nueva Ecija</h5>
             </div>
         </div>
-        
         <div class="row mx-auto" v-for="purchase in purchases" :key="purchase.id">
             <img :src="imgURL + 'cancelled.png'" style="position:absolute; width: 600px; z-index: 10;" v-if="purchase.iscancel == 1">
             <div class="col-sm-6"><strong>Supplier:</strong> {{ purchase.supplier_name }}</div>
@@ -16,7 +15,7 @@
         <br><br>
         <div class="row mx-auto">
             <div class="col-sm-12">
-                <table class="table table-striped">
+                <table class="table">
                     <thead>
                         <tr>
                             <th>Product Name</th>
@@ -25,7 +24,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="purchase_product in purchase_products" :key="purchase_product.id">
+                        <tr class="border-bottom" v-for="purchase_product in purchase_products" :key="purchase_product.id">
                             <td>{{ purchase_product.product_name }}</td>
                             <td>{{ purchase_product.purchase_qty }}</td>
                             <td>&#8369; {{ purchase_product.total_amount }}</td>
@@ -36,6 +35,14 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <div class="row mx-auto mt-4">
+            <div class="col-sm-4 signature"></div>
+        </div>
+        <div class="row mx-auto">
+            <div class="col-sm-4">
+                Checked By:
             </div>
         </div>
     </div>

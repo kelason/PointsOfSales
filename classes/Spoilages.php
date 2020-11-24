@@ -40,6 +40,23 @@ class Spoilages extends Database
         return $this->setRows($query, $params);
     }
 
+    public function getSpoilageById() {
+        $query = "SELECT
+            a.id,
+            a.spoilage_note,
+            a.iscancel,
+            a.created_at,
+            b.employee_fn,
+            b.employee_sn
+        FROM $this->table AS a
+        INNER JOIN $this->tableEmp AS b ON b.id=a.cashier_id
+        WHERE a.id=?";
+
+        $params = [$this->id];
+
+        return $this->setRow($query, $params);
+    }
+
     public function cancelSpoilage() {
         $query = "UPDATE $this->table SET iscancel=:iscancel WHERE id=:id";
 

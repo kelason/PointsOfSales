@@ -28,9 +28,9 @@
                             <textarea id="comment" v-model="payment.sales_comment" class="form-control form-control-sm rounded-0" cols="30" rows="9" placeholder="Optional"></textarea>
                         </div>
                     </div>
-                    <button class="btn btn-primary text-white btn-block item-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
                 </div>
             </div>
+            <button class="btn btn-primary text-white btn-block sticky-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
         </div>
         <div class="col-sm-3">
             <div class="card fullheight overflow-auto rounded-0">
@@ -71,74 +71,73 @@
                             <span class="float-right mr-3 font-weight-bold">{{(subTotal == 0) ? '' : "&#8369; " + subTotal }}</span>
                         </div>
                     </div>
-                    <button class="btn btn-info btn-block item-bottom btn-lg rounded-0" disabled>.</button>
                 </div>
             </div>
         </div>
         <div class="col-sm-6">
-            <div class="card fullheight overflow-auto">
+            <div class="card fullheight">
                 <div class="card-body">
                     <div class="row">
                         <div class="col-12">
                             <input type="text" v-model="tendered" class="form-control form-control-lg" disabled>
                             <div class="row no-gutters">
                                 <div class="col-sm-3">
-                                    <button @click="key(20)" class="btn btn-lg btn-info border btn-block p-4 px-0">&#8369; 20</button>
+                                    <button @click="key(20)" class="btn btn-lg btn-info border btn-block p-3">&#8369; 20</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="key(100)" class="btn btn-lg btn-info border btn-block p-4 px-0">&#8369; 100</button>
+                                    <button @click="key(100)" class="btn btn-lg btn-info border btn-block p-3">&#8369; 100</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="key(500)" class="btn btn-lg btn-info border btn-block p-4 px-0">&#8369; 500</button>
+                                    <button @click="key(500)" class="btn btn-lg btn-info border btn-block p-3">&#8369; 500</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="key(1000)" class="btn btn-lg btn-info border btn-block p-4">&#8369; 1000</button>
+                                    <button @click="key(1000)" class="btn btn-lg btn-info border btn-block p-3">&#8369; 1000</button>
                                 </div>
                             </div>
                             <div class="row no-gutters">
                                 <div class="col-sm-3">
-                                    <button @click="key(7)" class="btn btn-lg btn-dark border btn-block p-5 px-0">7</button>
+                                    <button @click="key(7)" class="btn btn-lg btn-dark border btn-block p-5">7</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="key(8)" class="btn btn-lg btn-dark border btn-block p-5 px-0">8</button>
+                                    <button @click="key(8)" class="btn btn-lg btn-dark border btn-block p-5">8</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="key(9)" class="btn btn-lg btn-dark border btn-block p-5 px-0">9</button>
+                                    <button @click="key(9)" class="btn btn-lg btn-dark border btn-block p-5">9</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="clear(tendered)" class="btn btn-lg btn-danger border btn-block p-5 px-0">&larr;</button>
+                                    <button @click="clear(tendered)" class="btn btn-lg btn-danger border btn-block p-5">&larr;</button>
                                 </div>
                             </div>
                             <div class="row no-gutters">
                                 <div class="col-sm-3">
-                                    <button @click="key(4)" class="btn btn-lg btn-dark border btn-block p-5 px-0">4</button>
+                                    <button @click="key(4)" class="btn btn-lg btn-dark border btn-block p-5">4</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="key(5)" class="btn btn-lg btn-dark border btn-block p-5 px-0">5</button>
+                                    <button @click="key(5)" class="btn btn-lg btn-dark border btn-block p-5">5</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="key(6)" class="btn btn-lg btn-dark border btn-block p-5 px-0">6</button>
+                                    <button @click="key(6)" class="btn btn-lg btn-dark border btn-block p-5">6</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="clearAll" class="btn btn-lg btn-danger border btn-block p-5 px-0">C</button>
+                                    <button @click="clearAll" class="btn btn-lg btn-danger border btn-block p-5">C</button>
                                 </div>
                             </div>
                             <div class="row no-gutters">
                                 <div class="col-sm-3">
-                                    <button @click="key(1)" class="btn btn-lg btn-dark border btn-block p-5 px-0">1</button>
+                                    <button @click="key(1)" class="btn btn-lg btn-dark border btn-block p-5">1</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="key(2)" class="btn btn-lg btn-dark border btn-block p-5 px-0">2</button>
+                                    <button @click="key(2)" class="btn btn-lg btn-dark border btn-block p-5">2</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="key(3)" class="btn btn-lg btn-dark border btn-block p-5 px-0">3</button>
+                                    <button @click="key(3)" class="btn btn-lg btn-dark border btn-block p-5">3</button>
                                 </div>
                                 <div class="col-sm-3">
-                                    <button @click="key(0)" class="btn btn-lg btn-dark border btn-block p-5 px-0">0</button>
+                                    <button @click="key(0)" class="btn btn-lg btn-dark border btn-block p-5">0</button>
                                 </div>
                             </div>
                             <div class="row no-gutters">
-                                <div class="col-sm-12"><button value="0" class="btn btn-lg btn-success border btn-block p-4 px-0" @click="btnTendered">Tender</button></div> 
+                                <div class="col-sm-12"><button value="0" class="btn btn-lg btn-success border btn-block p-4" @click="btnTendered">Tender</button></div> 
                             </div>
                         </div>
                     </div>
@@ -398,13 +397,13 @@ export default {
                 axios
                     .post("/api/addSales/", merge_payment)
                     .then(() => {
-                        app.$router.push("/terminal");
+                        app.$router.push({ name: 'CHANGE', params: { change: app.changeAmount } });
                     })
                     .catch((error) => {
                         console.log(error);
                     });
             } else {
-                alert('Please check tender amount');
+                alert('Please check tendered amount');
             }
                 
         }

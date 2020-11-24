@@ -37,7 +37,12 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
                 "pagination" => $pagination
             ]);
     } else {
-        echo json_encode(["msg" => "Failed fetching Inventories."]);
+        echo json_encode(
+            [
+                "msg" => "Failed fetching Inventories.",
+                "data" => [],
+                "pagination" => $pagination
+            ]);
     }
 }
 ?>

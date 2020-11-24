@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" style="background-color: #ffffff">
         <div class="row mx-auto">
             <div class="col-sm-12">
                 <h5>Cabanatuan City, Nueva Ecija</h5>
@@ -23,7 +23,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="remit_detail in remit_details" :key="remit_detail.id">
+                        <tr class="border-bottom" v-for="remit_detail in remit_details" :key="remit_detail.id">
                             <td>{{ remit_detail.remit_qty }}</td>
                             <td>&#8369; {{ remit_detail.remit_amount }}</td>
                             <td>&#8369; {{ remit_detail.remit_total }}</td>
@@ -55,6 +55,7 @@ export default {
         return {
             remittances: [],
             remit_details : [],
+            imgURL: 'http://localhost/grocery/public/images/'
         }
     },
     created () {
@@ -81,7 +82,6 @@ export default {
             axios
                 .get("/api/getAllRemittancesById/?remit_id=" + app.$route.query.remit_id)
                 .then(function(response) {
-                    console.log(response.data);
                     app.remittances = response.data.data;
                 })
                 .catch((error) => {

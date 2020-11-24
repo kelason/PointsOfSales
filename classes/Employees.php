@@ -16,6 +16,7 @@ class Employees extends Database
     private $tableBrgy = "posbrgy";
     private $tableCity = "poscitymun";
     private $tableProv = "posprovince";
+    private $tableUser = "posusers";
 
     public function getAllEmployees() {
         $query = "SELECT 
@@ -63,6 +64,21 @@ class Employees extends Database
             AND a.id=?";
 
         $params = [$this->employee_status, $this->id];
+        return $this->setRows($query, $params);
+    }
+
+    public function getAllEmployeesWithoutUser() {
+        $query = "SELECT 
+            a.id, 
+            a.employee_fn, 
+            a.employee_mn, 
+            a.employee_sn 
+            FROM $this->table AS a
+            LEFT OUTER JOIN $this->tableUser AS b ON a.id=b.employee_id
+            WHERE a.id!=?
+            AND b.employee_id IS NULL";
+
+        $params = [$this->id];
         return $this->setRows($query, $params);
     }
 

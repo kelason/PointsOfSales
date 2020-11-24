@@ -30,13 +30,11 @@ class Inventories extends Database
     public function paginationInventories() {
         if ($this->category_id != 0) {
             $where = " AND c.id = ? ";
-            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "%" . $this->product_name . "%", $this->category_id];
+            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "%" . $this->product_name . "%", 0, $this->category_id];
         } else {
             $where = "";
-            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "%" . $this->product_name . "%"];
+            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "%" . $this->product_name . "%", 0];
         }
-
-        
 
         $query = "SELECT 
             b.id, 
@@ -132,6 +130,7 @@ class Inventories extends Database
             GROUP BY a.product_id)
         AS begsp ON b.id=begsp.product_id 
         WHERE b.product_name LIKE ?
+        AND b.isdelete=?
         $where
         ORDER BY b.product_name
         LIMIT $this->start, $this->limit";
@@ -142,6 +141,14 @@ class Inventories extends Database
     }
 
     public function getAllInventories() {
+        if ($this->category_id != 0) {
+            $where = " AND c.id = ? ";
+            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "%" . $this->product_name . "%", 0, $this->category_id];
+        } else {
+            $where = "";
+            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "%" . $this->product_name . "%", 0];
+        }
+
         $query = "SELECT 
             b.id, 
             b.product_name, 
@@ -234,10 +241,12 @@ class Inventories extends Database
             WHERE b.iscancel=?  
             AND DATE(b.created_at)<=? 
             GROUP BY a.product_id)
-        AS begsp ON b.id=begsp.product_id   
+        AS begsp ON b.id=begsp.product_id 
+        WHERE b.product_name LIKE ?
+        AND b.isdelete=? 
+        $where 
         ORDER BY b.product_name";
-
-        $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date];
+            
         $result = $this->setRows($query, $params);
 
         return $result;
@@ -275,9 +284,10 @@ class Inventories extends Database
             GROUP BY a.product_id)
         AS d ON a.id=d.product_id 
         WHERE a.product_name LIKE ?
+        AND a.isdelete=?
         ORDER BY a.product_name";
 
-        $params = [0, "paid", 0, "%" . $this->product_name . "%"];
+        $params = [0, "paid", 0, "%" . $this->product_name . "%", 0];
         $result = $this->setRows($query, $params);
 
         return $result;
@@ -322,10 +332,10 @@ class Inventories extends Database
     public function inventoryCount() {
         if ($this->category_id != 0) {
             $where = " AND c.id = ? ";
-            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, $this->category_id];
+            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, 0, $this->category_id];
         } else {
             $where = "";
-            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date];
+            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, 0];
         }
 
         $query = "SELECT COUNT(b.id)
@@ -407,6 +417,7 @@ class Inventories extends Database
             AND DATE(b.created_at)<=? 
             GROUP BY a.product_id)
         AS begsp ON b.id=begsp.product_id 
+        WHERE b.isdelete=?
         $where";
 
         $result = $this->setColumn($query, $params);
