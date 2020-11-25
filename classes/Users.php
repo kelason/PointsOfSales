@@ -46,10 +46,18 @@ class Users extends Database
         return password_hash($password, PASSWORD_BCRYPT);
     }
 
+    public function existUser() {
+        $query = "SELECT username FROM $this->table WHERE username=?";
+        $params = [$this->username];
+
+		$result = $this->setRowCount($query, $params);
+		return $result;
+    }
+
     public function getPassword()
 	{
-        $query = "SELECT userpassword FROM $this->table WHERE username=?";
-        $params = [$this->username];
+        $query = "SELECT userpassword FROM $this->table WHERE username=? AND user_status=?";
+        $params = [$this->username, $this->user_status];
 
 		$result = $this->setColumn($query, $params);
 		return $result;

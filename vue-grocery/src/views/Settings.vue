@@ -652,9 +652,16 @@ export default {
             ) {
                 axios
                     .post("/api/addUser/", app.user)
-                    .then(function() {
-                        app.msguser = "User Added Successfully!";
+                    .then(function(res) {
+                        app.msguser = res.data.msg;
                         app.fetchEmployeesWithoutUser();
+                        app.fetchUsers();
+                        app.user = {
+                            employee_id: 0,
+                            username: '',
+                            user_approval: 1,
+                            user_status: 1
+                        }
                         setTimeout(() => {
                             app.msguser = false;
                         }, 3000);

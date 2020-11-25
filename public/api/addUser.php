@@ -14,20 +14,23 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     $user->user_approval = ($data->user_approval == 1) ? "cashier" : "manager";
     $user->created_at = Date('Y-m-d H:i:s');
 
-    $resultUser = $user->createUser();
+    if($user->existUser() == 0) {
+        $resultUser = $user->createUser();
+    } else {
+        $resultUser = "";
+    }
 
     if ($resultUser) {
         echo json_encode(
             [
-                "data" => [
-                    "msg" => "user added successfully."
-                ]
+                "data" => [],
+                "msg" => "User added successfully."
             ]);
     } else {
         echo json_encode(
             [
                 "data" => [],
-                "msg" => "Failed fetching Employee."
+                "msg" => "Failed Adding User."
             ]
         );
     }

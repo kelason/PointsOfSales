@@ -8,8 +8,8 @@ if($_SERVER['REQUEST_METHOD'] == "GET") {
 
     $employees = new Employees();
     $employees->employee_status = $_GET['status'];
-    $employees->id = ($_GET['id'] != '') ? $_GET['id'] : '';
-    $allEmployees = ($_GET['id'] == '') ? $employees->getAllEmployees() : $employees->getEmployeeExcludeById();
+    $employees->id = (isset($_GET['id']) && $_GET['id'] != '') ? $_GET['id'] : '';
+    $allEmployees = (isset($_GET['id']) && $_GET['id'] == '') ? $employees->getAllEmployees() : $employees->getEmployeeExcludeById();
 
     if ($allEmployees) {
         echo json_encode(

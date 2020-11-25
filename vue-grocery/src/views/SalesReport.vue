@@ -333,6 +333,8 @@ export default {
             payment_id: 1,
             z_employee_id: 0,
             x_employee_id: 0,
+            z_employees: [],
+            x_employees: [],
             payment_types: [],
             customers: [],
             rank_from_date: new Date(),

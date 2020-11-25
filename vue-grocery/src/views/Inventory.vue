@@ -59,7 +59,7 @@
                                 <td>{{ inventory.purchase_qty }}</td>
                                 <td>{{ inventory.sales_qty }}</td>
                                 <td>{{ inventory.spoilage_qty }}</td>
-                                <td>{{ inventory.endstock_qty }}</td>
+                                <td :class="{'text-white bg-danger': inventory.endstock_qty <= inventory.alarmlvl }">{{ inventory.endstock_qty }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -159,7 +159,7 @@ export default {
                     .catch((error) => {
                         console.log(error);
                     });
-            }, 500);
+            }, 200);
         },
         printInventory() {
             let routeData = this.$router.resolve({name: 'Print Inventory', query: {fdate: this.from_date, tdate: this.to_date, catid: this.category_id, product_name: this.product_name}});
