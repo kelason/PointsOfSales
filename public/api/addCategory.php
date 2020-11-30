@@ -17,9 +17,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     if ($resultCategory) {
         echo json_encode(
             [
-                "data" => [
-                    "msg" => "Category added successfully."
-                ]
+                "data" => [],
+                "msg" => "Category added successfully."
             ]);
     } else {
         echo json_encode(

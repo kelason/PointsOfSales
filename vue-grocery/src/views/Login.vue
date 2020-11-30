@@ -64,7 +64,6 @@ export default {
                             app.$session.set("user_approval", response.data.user_approval);
                             app.$session.set("user_id", response.data.user_id);
                             app.$router.push("/");
-                            console.log(response.data);
                         } else {
                             app.msg = response.data.msg;
                         }

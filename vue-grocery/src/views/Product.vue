@@ -245,7 +245,7 @@ export default {
             formData.append('file', app.file, newFile);
 
             axios
-                .post("/api/uploadProductImage.php" , formData, {
+                .post("/api/uploadProductImage/" , formData, {
                     header:{
                         'Content-Type' : 'multipart/form-data'
                     }
@@ -271,7 +271,7 @@ export default {
             
             app.loading = true;
             axios
-                .get("/api/getAllProducts.php?page=" + page)
+                .get("/api/getAllProducts/?page=" + page)
                 .then(function(response) {
                     app.products = response.data.data;
                     app.pagination = response.data.pagination;
@@ -286,7 +286,7 @@ export default {
             const axios = require("axios");
 
             axios
-                .get("/api/getAllCategories.php?page=&status=active")
+                .get("/api/getAllCategories/?page=&status=active")
                 .then(function(response) {
                     app.categories = response.data.data;
                 })
@@ -304,7 +304,7 @@ export default {
             }
             app.timer = setTimeout(() => {
                 axios
-                    .get("/api/searchProduct.php?product_name=" + name)
+                    .get("/api/searchProduct/?product_name=" + name)
                     .then(function(response) {
                         app.products = response.data.data;
                         app.pagination = response.data.pagination;
@@ -336,7 +336,7 @@ export default {
                 const axios = require("axios");
                 if(app.edit == false) {
                     axios
-                        .post("/api/addProducts.php", app.product)
+                        .post("/api/addProducts/", app.product)
                         .then(function(response) {
                             app.msg = response.data.msg;
 
@@ -350,7 +350,7 @@ export default {
                         });
                 } else {
                     axios
-                        .put("/api/updateProduct.php", app.product)
+                        .put("/api/updateProduct/", app.product)
                         .then((response) => {
                             app.msg = response.data.msg;
                             app.edit = false;
@@ -384,7 +384,7 @@ export default {
             if (confirm('Do you wat to delete ' + product_name)) {
                 const axios = require("axios");
                 axios
-                    .put("/api/deleteProduct.php", {'id' : product_id})
+                    .put("/api/deleteProduct/", {'id' : product_id})
                     .then(() => {
                         this.fetchProducts(this.page);
                     })

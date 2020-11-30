@@ -22,7 +22,7 @@
                             <thead>
                                 <tr class="text-center">
                                     <th>Category Name</th>
-                                    <!-- <th>Category Type</th> -->
+                                    <th>Category Type</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -37,7 +37,7 @@
                             <tbody v-else>
                                 <tr class="text-center" v-for="category in categories" :key="category.id">
                                     <td class="align-middle">{{ category.category_name }}</td>
-                                    <!-- <td class="align-middle">{{ category.type_name }}</td> -->
+                                    <td class="align-middle">{{ category.type_name }}</td>
                                     <td class="align-middle">{{ category.category_status }}</td>
                                     <td class="align-middle">
                                         <i class="fa fa-edit mr-2" :title="'Click to Edit ' + category.category_name" style="cursor: pointer;" @click="editCategory(category)"></i> 
@@ -48,6 +48,13 @@
                         </table>
                     </form>
                     <hr>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-success" role="alert" v-if="msg">
+                                {{msg}}
+                            </div>
+                        </div>
+                    </div>
                     <div class="row item-bottom p-4">
                         <div class="col-6">
                             <button class="btn btn-sm btn-primary" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
@@ -95,13 +102,13 @@
                                 </div>
                                 <small class="text-danger font-weight-bold" v-if="errors.category_name">{{ errors.category_name }}</small>
                             </div>
-                            <!-- <div class="col-6 p-2">
+                            <div class="col-6 p-2">
                                 <select id="catid" v-model="category.category_type" class="form-control mb-3 rounded-0 border-top-0  border-left-0  border-right-0">
                                     <option disabled value="0">Select Category Type</option>
                                     <option v-for="category_type in category_types" :key="category_type.id" :value="category_type.id">{{ category_type.type_name }}</option>
                                 </select>
                                 <small class="text-danger font-weight-bold" v-if="errors.type_id">{{ errors.type_id }}</small>
-                            </div> -->
+                            </div>
                             <div class="col-6 p-2">
                                 <select id="catid" v-model="category.category_status" class="form-control mb-3 rounded-0 border-top-0  border-left-0  border-right-0">
                                     <option disabled value="0">Select Status</option>
@@ -109,13 +116,6 @@
                                     <option value="2">Inactive</option>
                                 </select>
                                 <small class="text-danger font-weight-bold" v-if="errors.category_status">{{ errors.category_status }}</small>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="alert alert-success" role="alert" v-if="msg">
-                                    {{msg}}
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -245,6 +245,12 @@ export default {
                                 app.msg = null;
                             }, 2000);
                             app.fetchCategories(app.page);
+                            app.toggleModal();
+                            app.category = {
+                                category_name: '',
+                                category_type: 0,
+                                category_status: 0,
+                            }
                         })
                         .catch((error) => {
                             console.log(error);
@@ -259,6 +265,12 @@ export default {
                                 app.msg = null;
                             }, 2000);
                             app.fetchCategories(app.page);
+                            app.toggleModal();
+                            app.category = {
+                                category_name: '',
+                                category_type: 0,
+                                category_status: 0,
+                            }
                         })
                         .catch((error) => {
                             console.log(error);

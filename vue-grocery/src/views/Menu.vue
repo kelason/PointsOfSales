@@ -2,16 +2,17 @@
     <div class="row">
         <div class="col-md-2">
             <div class="card fullheight overflow-auto shadow">
-                <div class="card-header bg-gradient p-0 pl-4 pr-4 pt-1">
-                    <div class="form-label-group">
+                <div class="card-header bg-gradient p-4 pl-4 pr-4 pt-1">
+                    <!-- <div class="form-label-group">
                         <input type="text" id="inputCategory" class="form-control form-control-sm mb-3 rounded-0 border-top-0 bg-transparent text-white border-left-0  border-right-0" placeholder="Insert Category" @keyup="searchCategory($event.target.value)">
                         <label for="inputCategory" class="text-white">Insert Category</label>
-                    </div>
+                    </div> -->
+                    Category Types
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-12 mb-2" v-for="(category, index) in categories" :value="category.id" :key="category.id">
-                            <button class="btn btn-block btn-outline-dark rounded-0" :class="{ 'active': (selectedCategory !== null) ? category.id == selectedCategory : index===0 }" @click="selectedCategory=category.id, fetchProductsbyCategory((selectedCategory !== null) ? selectedCategory : category.id), searchProd=''">{{ category.category_name }}</button>
+                        <div class="col-12 mb-2" v-for="(category_type, index) in category_types" :value="category_type.id" :key="category_type.id">
+                            <button class="btn btn-block btn-outline-dark rounded-0" :class="{ 'active': (selectedCategoryType !== null) ? category_type.id == selectedCategoryType : index===0 }" @click="selectedCategoryType=category_type.id, fetchCategoriesByTypeId((selectedCategoryType !== null) ? selectedCategoryType : category_type.id), searchProd=''">{{ category_type.type_name }}</button>
                         </div>
                     </div>
                 </div>
@@ -19,18 +20,19 @@
             <button class="btn btn-primary text-white btn-block sticky-bottom btn-lg rounded-0" @click="back()"><span class="float-left ml-2"><i class="fas fa-arrow-left"></i> Back</span></button>
         </div>
         <div class="col-md-7">
-            <div class="card fullheight overflow-auto shadow">
+            <div class="card fullheight-v overflow-auto shadow">
                 <div class="card-header bg-gradient p-0 pl-4 pr-4 pt-1">
                     <div class="form-label-group">
                         <input type="text" v-model="searchProd" id="inputProduct" class="form-control form-control-sm bg-transparent text-white rounded-0 border-top-0 border-left-0 border-right-0" placeholder="Insert Product" @keyup="searchProduct($event.target.value)">
                         <label for="inputProduct" class="text-white">Insert Product</label>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body pt-3">
+                    
                     <div v-if="products==''">
-                            <div class="text-danger text-center">
-                                No Records...
-                            </div>
+                        <div class="text-danger text-center">
+                            No Records...
+                        </div>
                     </div>
                     <div v-else class="row text-center">
                         <div class="col-md-3 mb-4" v-for="(product) in products" :value="product.id" :key="product.id" @click="addOrderProducts(product.id, 1, product.stock_qty)">
@@ -38,6 +40,20 @@
                             <p class="card-text box text-white">
                                 {{ trimProductName(product.product_name) }} <br> ({{ product.stock_qty }})
                             </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer p-1">
+                    <div class="container testimonial-group">
+                        <div class="row">
+                            <div class="col-xs-12"  v-if="categories==''">
+                                <div class="text-danger text-center">
+                                    No Records...
+                                </div>
+                            </div>
+                            <div class="col-xs-1">
+                                <button class="btn btn-sm btn-outline-dark m-1" v-for="(category, index) in categories" :key="category.id" :class="{ 'active': (selectedCategory !== null) ? category.id == selectedCategory : index===0 }" @click="selectedCategory=category.id, fetchProductsbyCategory((selectedCategory !== null) ? selectedCategory : category.id)">{{ category.category_name }}</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -145,12 +161,14 @@ export default {
         return {
             products: [],
             categories: [],
+            category_types: [],
             orders: [],
             order_discs: [],
             disc: 20,
             show: false,
             active: false,
             selectedCategory: null,
+            selectedCategoryType: null,
             catid: undefined,
             searchProd: '',
             imgURL: 'http://localhost/grocery/public/images/products/'
@@ -158,7 +176,8 @@ export default {
     },
     created () {
         this.focusBarcode();
-        this.fetchCategories();
+        this.fetchCategoriesByTypeId();
+        this.fetchCategoryTypes();
         this.fetchProductsbyCategory();
         this.fetchOrderProducts();
     },
@@ -245,14 +264,27 @@ export default {
                     console.log(error);
                 });
         },
-        fetchCategories() {
+        fetchCategoriesByTypeId(id) {
+            var app = this;
+            const axios = require("axios");
+            
+            axios
+                .get("/api/getAllCategoriesByTypeId/?category_status=active&typeid=" + id)
+                .then(function(response) {
+                    app.categories = response.data.data;
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+        fetchCategoryTypes() {
             var app = this;
             const axios = require("axios");
 
             axios
-                .get("/api/getAllCategories/?page=&status=active")
+                .get("/api/getAllCategoryTypes/")
                 .then(function(response) {
-                    app.categories = response.data.data;
+                    app.category_types = response.data.data;
                 })
                 .catch((error) => {
                     console.log(error);

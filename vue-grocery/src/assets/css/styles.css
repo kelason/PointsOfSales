@@ -43,6 +43,15 @@ select{
     padding-left: 27px!important;
 }
 
+.testimonial-group > .row {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.testimonial-group > .row > .col-xs-1 {
+display: inline-block;
+float: none;
+}
+
 .sansita {
     font-family: 'Sansita', sans-serif;
 }
@@ -58,7 +67,11 @@ select{
 }
 
 .fullheight {
-    height: calc(100vh - 120px);
+    height: calc(100vh - 105px);
+}
+
+.fullheight-v {
+    height: calc(100vh - 60px);
 }
 
 .container-full {
@@ -216,7 +229,8 @@ a {
 
 /* width */
 ::-webkit-scrollbar {
-    width: 15px;
+    width: 10px;
+    height: 10px;
 }
 
 /* Track */

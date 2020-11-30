@@ -55,6 +55,13 @@ class Categories extends Database
         return $result;
     }
 
+    public function getAllCategoriesByTypeId() {
+        $query = "SELECT id, category_name, category_type, isdelete FROM $this->table WHERE category_status=? AND isdelete=? AND category_type=? ORDER BY category_name";
+        $params = [$this->category_status, 0, $this->category_type];
+        $result = $this->setRows($query, $params);
+        return $result;
+    }
+
     public function getCategoryName() {
         $query = "SELECT category_name FROM $this->table WHERE id=?";
         $params = [$this->id];
