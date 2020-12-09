@@ -397,7 +397,7 @@ export default {
                 axios
                     .post("/api/addSales/", merge_payment)
                     .then(() => {
-                        app.$router.push({ name: 'CHANGE', params: { change: app.changeAmount } });
+                        app.$router.push({ name: 'CHANGE', params: { change: app.changeAmount, order_id: app.orderId } });
                     })
                     .catch((error) => {
                         console.log(error);

@@ -17,6 +17,17 @@ export default {
         if (!this.$route.params.change) {
             this.$router.push("/");
         }
+    },
+    created() {
+        const axios = require("axios");
+        axios
+            .post("/api/printReceipt/", { order_id: this.$route.params.order_id})
+            .then(() => {
+
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 }
 </script>

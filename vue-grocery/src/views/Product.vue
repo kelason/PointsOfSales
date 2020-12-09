@@ -52,7 +52,7 @@
                                     <td class="align-middle">&#8369; {{ product.selling_price }}</td>
                                     <td class="align-middle">{{ product.category_name }}</td>
                                     <td class="align-middle">{{ product.product_status }}</td>
-                                    <td class="align-middle">{{ product.barcode }}</td>
+                                    <td class="align-middle"><img :src="imgBarcode + '/' + product.id + '.png'" class="res-img" style="width: 100px; height: 30px;"/></td>
                                     <td class="align-middle">{{ product.alarmlvl }}</td>
                                     <td class="align-middle">
                                         <i class="fa fa-edit mr-2" :title="'Click to Edit ' + product.product_name" style="cursor: pointer;" @click="editProduct(product)"></i> 
@@ -191,7 +191,8 @@ export default {
             file: '',
             page: 1,
             msg: null,
-            imgURL: 'http://localhost/grocery/public/images/products/'
+            imgURL: 'http://localhost/grocery/public/images/products/',
+            imgBarcode: 'http://localhost/grocery/public/images/barcode/'
         }
     },
     created () {

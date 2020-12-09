@@ -18,6 +18,7 @@ import ExpenseDetails from "../views/ExpenseDetails.vue";
 import Spoilage from "../views/Spoilage.vue";
 import Settings from "../views/Settings.vue";
 import Supplier from "../views/Supplier.vue";
+import ChangeItem from "../views/ChangeItem.vue";
 import PrintInventory from "../views/PrintInventory.vue";
 import PrintSales from "../views/PrintSales.vue";
 import PrintSalesReceipt from "../views/PrintSalesReceipt.vue";
@@ -111,6 +112,11 @@ const routes = [
     path: "/supplier",
     name: "SUPPLIERS",
     component: Supplier
+  },
+  {
+    path: "/change-item",
+    name: "CHANGE ITEM",
+    component: ChangeItem
   },
   {
     path: "/print/inventory",

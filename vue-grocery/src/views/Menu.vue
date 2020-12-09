@@ -63,7 +63,7 @@
             <div class="card fullheight shadow">
                 <div class="card-header bg-gradient p-0 pl-4 pr-4 pt-1">
                     <div class="form-label-group">
-                        <input type="text" id="inputBarcode" ref="bar" class="form-control form-control-sm bg-transparent text-white rounded-0 border-top-0 border-left-0 border-right-0" placeholder="Insert Barcode">
+                        <input type="text" v-model="product_barcode" @input="SearchProductBarcode($event.target.value)" id="inputBarcode" ref="bar" class="form-control form-control-sm bg-transparent text-white rounded-0 border-top-0 border-left-0 border-right-0" placeholder="Insert Barcode">
                         <label for="inputBarcode" class="text-white">Insert Barcode</label>
                     </div>
                 </div>
@@ -159,6 +159,7 @@ export default {
     },
     data () {
         return {
+            product_barcode: "",
             products: [],
             categories: [],
             category_types: [],
@@ -296,6 +297,7 @@ export default {
             axios
                 .get("/api/getAllOrderProducts/")
                 .then(function(response) {
+                    console.log(response.data)
                     app.orders = response.data.data;
                     app.orders = response.data.data.filter(function(element){
                         return element.id != null
@@ -415,6 +417,29 @@ export default {
         },
         checkOut(orderTotal) {
             (orderTotal != 0) ? this.$router.push("/terminal/payment") : '';
+        },
+        SearchProductBarcode(barcode) {
+            var app = this;
+            const axios = require("axios");
+
+            if (app.timer) {
+                clearTimeout(app.timer);
+                app.timer = null;
+            }
+            app.timer = setTimeout(() => {
+                axios
+                .get("/api/searchProductByBarcode/?barcode=" + barcode + '&qty=1&user_id=' + app.$session.get('user_id'))
+                .then(() => {
+                    app.fetchOrderProducts();
+                    app.fetchProductsbyCategory(app.selectedCategory);
+                    app.product_barcode = '';
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            }, 500);
+
+            
         }
     },
     computed: {
