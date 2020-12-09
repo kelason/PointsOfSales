@@ -15,6 +15,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     $sales->sales_comment = $data[0]->sales_comment;
     $sales->total_amount = $data[0]->total_amount;
     $sales->tendered = $data[0]->tendered;
+    $sales->sales_code = genRandStr();
     $sales->change_amount = $data[0]->change_amount;
     $sales->discount_amount = $data[0]->discount_amount;
     $sales->vat_amount = $data[0]->vat_amount;

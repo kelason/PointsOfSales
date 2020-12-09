@@ -14,6 +14,7 @@ class Sales extends Database
     public $change_amount;
     public $discount_amount;
     public $vat_amount;
+    public $sales_code;
     public $created_at;
     public $from_date;
     public $to_date;
@@ -39,6 +40,7 @@ class Sales extends Database
             'sales_comment'  => $this->sales_comment,
             'total_amount'  => $this->total_amount,
             'tendered'  => $this->tendered,
+            'sales_code'  => $this->sales_code,
             'change_amount'  => $this->change_amount,
             'discount_amount'  => $this->discount_amount,
             'vat_amount'  => $this->vat_amount,
@@ -317,6 +319,7 @@ class Sales extends Database
                 a.discount_amount, 
                 a.vat_amount, 
                 a.created_at, 
+                a.sales_code, 
                 a.total_amount - a.vat_amount AS vat_sales, 
                 a.total_amount - a.discount_amount AS to_pay, 
                 b.payment_name, 

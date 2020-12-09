@@ -141,7 +141,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
         $connector = new WindowsPrintConnector("EPSON TM-U220 Receipt");
         $printer = new Printer($connector, $profile);
         $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
-        file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/grocery/public/images/receipts barcode/$data->order_id.png", $generator->getBarcode($data->order_id, $generator::TYPE_CODE_128));
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/grocery/public/images/receipts barcode/$data->order_id.png", $generator->getBarcode($sales['sales_code'], $generator::TYPE_CODE_128));
         $tux = EscposImage::load($_SERVER['DOCUMENT_ROOT'] . "/grocery/public/images/receipts barcode/$data->order_id.png", false);
         
         $printer -> text($content);

@@ -142,7 +142,7 @@ class OrderProducts extends Database
     }
 
     public function getOrderDiscountById() {
-        $query = "SELECT a.id, a.order_id, a.product_id, a.product_qty, a.total_amount, a.vat_amount, a.discount_amount, c.product_name, c.selling_price
+        $query = "SELECT a.id, a.order_id, a.product_id, a.product_qty, a.product_qty AS max_qty, a.total_amount, a.vat_amount, a.discount_amount, c.product_name, c.selling_price
         FROM $this->table AS a 
         INNER JOIN $this->tableOrders AS b ON a.order_id=b.id 
         INNER JOIN $this->tableProduct AS c ON a.product_id=c.id
