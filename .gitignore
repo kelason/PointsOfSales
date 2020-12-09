@@ -1,3 +1,6 @@
 vue.config.js
 /vue-grocery/node_modules
 /public/images
+/vendor
+/public/api/print.php
+/public/api/barcode.php
