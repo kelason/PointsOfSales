@@ -172,7 +172,7 @@
                                         <tr v-for="(order_disc, index) in order_discs" :key="order_disc.id" :value="order_disc.id">
                                             <td class="pt-2 pb-2 align-middle" :title="'Click to discount ' + order_disc.product_name" style="cursor: pointer;">{{order_disc.product_name}}</td>
                                             <td class="pt-2 pb-2 pl-5 align-middle">
-                                                <input type="text" :min="1" :max="order_disc.product_qty" v-model="order_disc.product_qty" @input="minDiscQty($event, index)" class="form-control form-control-sm bg-transparent rounded-0 border-top-0 border-left-0 border-right-0" style="width:40px;">
+                                                <input type="text" :min="0" :max="order_disc.max_qty" v-model="order_disc.product_qty" @input="minDiscQty($event, index)" class="form-control form-control-sm bg-transparent rounded-0 border-top-0 border-left-0 border-right-0" style="width:40px;">
                                             </td>
                                             <td class="pt-2 pb-2 pl-5 align-middle">
                                                 <input type="text" v-model="disc" min="0" max="90" @input="minInputDisc($event)" class="form-control form-control-sm bg-transparent rounded-0 border-top-0 border-left-0 border-right-0" style="width:40px;">
@@ -237,7 +237,7 @@ export default {
             const maxValue = parseInt(event.target.max);
             
             if (inputValue < minValue || Number.isNaN(inputValue)) {
-                return app.order_discs[selectedIndex].product_qty = 1;
+                return app.order_discs[selectedIndex].product_qty = 0;
             } else if (inputValue > maxValue) {
                 return app.order_discs[selectedIndex].product_qty = maxValue;
             } else {
@@ -251,7 +251,7 @@ export default {
             const maxValue = parseInt(event.target.max);
             
             if (inputValue < minValue || Number.isNaN(inputValue)) {
-                return app.orders[selectedIndex].product_qty = 1;
+                return app.orders[selectedIndex].product_qty = 0;
             } else if (inputValue > maxValue) {
                 return app.orders[selectedIndex].product_qty = maxValue;
             } else {
@@ -381,7 +381,7 @@ export default {
         btnTendered() {
             let app = this;
 
-            if(app.tendered != 0 && Number(app.tendered) > Number(app.subTotal)) {
+            if(app.tendered != 0 && app.orderTotal != 0 && Number(app.tendered) > Number(app.subTotal)) {
                 var arr_pay = [];
                 arr_pay = {
                     cashier_id: app.$session.get('user_id'),
