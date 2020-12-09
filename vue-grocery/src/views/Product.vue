@@ -145,12 +145,6 @@
                                     <label for="alarm">Alarm Level</label>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <div class="form-label-group">
-                                    <input type="text" v-model="product.barcode" id="bcode" class="form-control form-control-sm mb-3 rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Barcode">
-                                    <label for="bcode">Barcode</label>
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
