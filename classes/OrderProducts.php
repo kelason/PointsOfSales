@@ -15,6 +15,9 @@ class OrderProducts extends Database
     private $tableProduct = "posproducts";
     private $tablePurchaseProd = "pospurchase_products";
     private $tablePurchase = "pospurchases";
+    private $tableSpoilageProd = "posspoilage_products";
+    private $tableSpoilage = "posspoilages";
+    private $tableOrderProd = "posorder_products";
 
     public function insertOrderProducts() {
         $fields = array(
@@ -95,15 +98,44 @@ class OrderProducts extends Database
     }
 
     public function getAllOrderProducts() {
-        $query = "SELECT a.id, a.order_id, a.product_id, a.product_qty, a.total_amount, a.vat_amount, a.discount_amount, c.product_name, COALESCE(d.total_qty,0) AS stock_qty
+        $query = "SELECT 
+            a.id, 
+            a.order_id, 
+            a.product_id, 
+            a.product_qty, 
+            a.total_amount, 
+            a.vat_amount, 
+            a.discount_amount, 
+            c.product_name, 
+            COALESCE(d.total_qty,0) - COALESCE(f.total_qty,0) - COALESCE(e.total_qty,0) AS stock_qty
         FROM $this->table AS a 
         INNER JOIN $this->tableOrders AS b ON a.order_id=b.id 
         INNER JOIN $this->tableProduct AS c ON a.product_id=c.id
-        LEFT JOIN (SELECT a.product_id, SUM(a.purchase_qty) AS total_qty FROM $this->tablePurchaseProd AS a INNER JOIN $this->tablePurchase AS b ON a.purchase_id=b.id WHERE b.iscancel=? GROUP BY product_id) AS d ON a.product_id=d.product_id
+        LEFT JOIN 
+            (SELECT a.product_id, SUM(a.purchase_qty) AS total_qty 
+            FROM $this->tablePurchaseProd AS a 
+            INNER JOIN $this->tablePurchase AS b ON a.purchase_id=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY a.product_id) 
+            AS d ON a.product_id=d.product_id
+        LEFT JOIN 
+            (SELECT a.product_id, SUM(a.spoilage_qty) AS total_qty 
+            FROM $this->tableSpoilageProd AS a 
+            INNER JOIN $this->tableSpoilage AS b ON a.spoilage_id=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY a.product_id)
+            AS e ON a.product_id=e.product_id
+        LEFT JOIN 
+            (SELECT a.product_id, SUM(a.product_qty) AS total_qty 
+            FROM $this->tableOrderProd AS a
+            INNER JOIN $this->tableOrders AS b ON a.order_id=b.id 
+            WHERE b.order_status=? 
+            GROUP BY a.product_id) 
+            AS f ON a.product_id=f.product_id 
         WHERE b.order_status=?
         ORDER BY a.id";
 
-        $params = [0, "not paid"];
+        $params = [0, 0, "paid", "not paid"];
         $result = $this->setRows($query, $params);
 
         return $result;

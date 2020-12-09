@@ -306,4 +306,48 @@ class Sales extends Database
         $params = ["not remitted"];
         return $this->setRows($query, $params);
     }
+
+    public function printSalesReceipt() {
+        $query = "SELECT
+                a.id, 
+                a.order_id,
+                a.total_amount, 
+                a.tendered, 
+                a.change_amount, 
+                a.discount_amount, 
+                a.vat_amount, 
+                a.created_at, 
+                a.total_amount - a.vat_amount AS vat_sales, 
+                a.total_amount - a.discount_amount AS to_pay, 
+                b.payment_name, 
+                c.customer_name,
+                d.employee_fn, 
+                d.employee_sn 
+            FROM $this->table AS a
+            INNER JOIN $this->tablePay AS b ON a.payment_typeid=b.id
+            INNER JOIN $this->tableCus AS c ON c.id=a.customer_id
+            INNER JOIN $this->tableEmp AS d ON d.id=a.cashier_id
+            WHERE 
+                a.order_id=?
+        ";
+
+        $params = [$this->order_id];
+        return $this->setRow($query, $params);
+    }
+
+    public function printOrderReceipt() {
+        $query = "SELECT
+            a.product_qty, 
+            b.product_name,
+            b.selling_price, 
+            a.product_qty * b.selling_price AS total_amount 
+            FROM $this->tableOrderProd AS a 
+            INNER JOIN $this->tableProd AS b ON a.product_id=b.id
+            WHERE 
+                a.order_id=?
+        ";
+
+        $params = [$this->order_id];
+        return $this->setRows($query, $params);
+    }
 }

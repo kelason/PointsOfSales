@@ -101,6 +101,16 @@ class Products extends Database
         return $result;
     }
 
+    public function productShowByBarcode() {
+        $query = "SELECT id, product_name, product_image, unit_price, selling_price, product_status, barcode, alarmlvl, isdelete, isvatable 
+        FROM $this->table 
+        WHERE barcode=?";
+
+        $params = [$this->barcode];
+        $result = $this->setRows($query, $params);
+        return $result;
+    }
+
     public function productCount() {
         $query = "SELECT COUNT(*) FROM $this->table";
         $result = $this->setColumn($query);
@@ -262,6 +272,39 @@ class Products extends Database
 
         $params = [0, 0, $this->product_status, 0, $this->category_id, "%" . $this->product_name . "%"];
         $result = $this->setRows($query, $params);
+        return $result;
+    }
+
+    public function searchProductStocksByBarcode() {
+        $query = "SELECT 
+            COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) - COALESCE(f.total_qty,0) AS stock_qty
+        FROM $this->tableProCat AS a 
+        INNER JOIN $this->table AS b ON a.product_id=b.id 
+        LEFT JOIN 
+            (SELECT a.product_id, SUM(a.purchase_qty) AS total_qty 
+            FROM $this->tablePurchaseProd AS a 
+            INNER JOIN $this->tablePurchase AS b ON a.purchase_id=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY product_id) 
+        AS d ON a.product_id=d.product_id 
+        LEFT JOIN 
+            (SELECT product_id, SUM(product_qty) AS total_qty 
+            FROM $this->tableOrder 
+            GROUP BY product_id) 
+        AS e ON a.product_id=e.product_id 
+        LEFT JOIN 
+            (SELECT a.product_id, SUM(a.spoilage_qty) AS total_qty 
+            FROM $this->tableSpoilageProd AS a 
+            INNER JOIN $this->tableSpoilage AS b ON a.spoilage_id=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY product_id) 
+        AS f ON a.product_id=f.product_id  
+        WHERE b.isdelete=? 
+        AND b.barcode=? 
+        ORDER BY b.product_name";
+
+        $params = [0, 0, 0, $this->barcode];
+        $result = $this->setColumn($query, $params);
         return $result;
     }
 
