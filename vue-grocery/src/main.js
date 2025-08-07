@@ -9,7 +9,7 @@ import "./assets/css/styles.css";
 
 import "bootstrap/dist/js/bootstrap.bundle.js";
 
-axios.defaults.baseURL = "http://localhost/grocery/public";
+axios.defaults.baseURL = "http://localhost:8081/grocery/public";
 Vue.config.productionTip = false;
 
 new Vue({

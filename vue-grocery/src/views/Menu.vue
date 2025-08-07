@@ -172,7 +172,7 @@ export default {
             selectedCategoryType: null,
             catid: undefined,
             searchProd: '',
-            imgURL: 'http://localhost/grocery/public/images/products/'
+            imgURL: '/grocery/public/images/products/'
         }
     },
     created () {

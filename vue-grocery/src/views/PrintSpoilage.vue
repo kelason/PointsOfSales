@@ -47,7 +47,7 @@ export default {
         return {
             spoilage: [],
             spoilage_products: [],
-            imgURL: 'http://localhost/grocery/public/images/'
+            imgURL: '/grocery/public/images/'
         }
     },
     created() {

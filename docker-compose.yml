@@ -1,0 +1,30 @@
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: docker/Dockerfile
+    image: php_pos
+    ports:
+      - "8081:80"
+    volumes:
+      # Mount source-code for development
+      - ./:/var/www/grocery
+      - /var/www/grocery/vue-grocery/node_modules
+      - /var/www/grocery/vendor
+    depends_on:
+      - db
+  db:
+    image: mysql:8
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql-config.cnf:/etc/mysql/conf.d/config.cnf
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: php_pos
+      MYSQL_USER: php_pos
+      MYSQL_PASSWORD: php_pos
+
+volumes:
+  mysql-data:

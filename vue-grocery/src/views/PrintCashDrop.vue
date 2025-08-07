@@ -55,7 +55,7 @@ export default {
         return {
             remittances: [],
             remit_details : [],
-            imgURL: 'http://localhost/grocery/public/images/'
+            imgURL: '/grocery/public/images/'
         }
     },
     created () {

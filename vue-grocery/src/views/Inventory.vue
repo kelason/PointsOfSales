@@ -45,7 +45,7 @@
                         </thead>
                         <tbody v-if="loading">
                             <tr>
-                                <td colspan="7"><img src="http://localhost/grocery/public/images/loading.gif" alt=""></td>
+                                <td colspan="7"><img src="/grocery/public/images/loading.gif" alt=""></td>
                             </tr>
                         </tbody>
                         <tbody v-else>
@@ -112,7 +112,7 @@ export default {
             from_date: new Date(),
             to_date: new Date(),
             page: 1,
-            imgURL: 'http://localhost/grocery/public/images/products/'
+            imgURL: '/grocery/public/images/products/'
         }
     },
     created () {

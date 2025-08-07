@@ -33,7 +33,7 @@
                             </thead>
                             <tbody v-if="loading">
                                 <tr>
-                                    <td colspan="9"><img src="http://localhost/grocery/public/images/loading.gif" alt=""></td>
+                                    <td colspan="9"><img src="/grocery/public/images/loading.gif" alt=""></td>
                                 </tr>
                             </tbody>
                             <tbody v-else>
@@ -145,6 +145,11 @@
                                     <label for="alarm">Alarm Level</label>
                                 </div>
                             </div>
+                            <div class="col-12"><div class="form-label-group">
+                                <input type="text" v-model="product.barcode" id="bcode" placeholder="Barcode" class="form-control form-control-sm mb-3 rounded-0 border-top-0  border-left-0  border-right-0">
+                                    <label for="bcode">Barcode</label>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
@@ -185,8 +190,8 @@ export default {
             file: '',
             page: 1,
             msg: null,
-            imgURL: 'http://localhost/grocery/public/images/products/',
-            imgBarcode: 'http://localhost/grocery/public/images/barcode/'
+            imgURL: '/grocery/public/images/products/',
+            imgBarcode: '/grocery/public/images/barcode/'
         }
     },
     created () {

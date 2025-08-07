@@ -57,7 +57,6 @@ export default {
                         userpassword: app.userpassword
                     })
                     .then(function(response) {
-                        //console.log(response);
                         if (response.status === 200 && response.data.user_id != 0) {
                             app.msg = response.data.msg;
                             app.$session.start();

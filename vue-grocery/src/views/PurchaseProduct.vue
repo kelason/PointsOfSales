@@ -56,7 +56,7 @@ export default {
             errors: [],
             purchase_products: [],
             purchases: [],
-            imgURL: 'http://localhost/grocery/public/images/'
+            imgURL: '/grocery/public/images/'
         }
     },
     created() {
