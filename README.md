@@ -1,6 +1,6 @@
 # Points of Sales (POS)
 
-A brief description of your project.
+A POS terminal that can help the businesses to track their sales. It comes with many features that can be explained down below.
 
 ## Features
 - POS terminal
@@ -57,16 +57,22 @@ A brief description of your project.
  
 ## Prerequisites
 1. Docker
-   ``` https://www.docker.com/
+   ```bash
+   https://www.docker.com/
    
  ## Installation
  1. Clone the repository:
-    ```git clone https://github.com/kelason/PointsOfSales.git
+    ```bash
+    git clone https://github.com/kelason/PointsOfSales.git
  2. Navigate to the project directory:
-    ``` cd your-project
+    ```bash
+    cd your-project
  3. Docker Build
-    ```docker build -t php-pos -f docker/Dockerfile .
+    ```bash
+    docker build -t php-pos -f docker/Dockerfile .
  4. Docker up
-    ```docker-compose up app db
+    ```bash
+    docker-compose up app db
  5. Docker down
-    ```docker-compose down
+    ```bash
+    docker-compose down
