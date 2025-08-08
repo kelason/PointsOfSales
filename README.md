@@ -1,7 +1,5 @@
 # Points of Sale (POS) System  
 
-![License](https://img.shields.io/badge/license-MIT-blue)  
-
 A **Point of Sale (POS) Terminal** designed to help businesses track sales, manage inventory, and generate detailed reports.  
 
 ## Table of Contents
