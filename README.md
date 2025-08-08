@@ -86,6 +86,10 @@ A **Point of Sale (POS) Terminal** designed to help businesses track sales, mana
 ## 🛠️ Prerequisites  
 - [Docker](https://www.docker.com/)  
 
+## 🗃️ Database Setup
+1. **Import the SQL file**
+  - SQL file is located at database/php_pos.sql
+
 ## 🚀 Installation  
 1. **Clone the repository**:  
    ```bash
