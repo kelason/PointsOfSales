@@ -2,6 +2,20 @@
 
 A **Point of Sale (POS) Terminal** designed to help businesses track sales, manage inventory, and generate detailed reports.  
 
+## 🛠️ Tech Stack
+
+**Backend**:
+- PHP 8.1+ (OOP architecture)
+- MySQL Database
+
+**Frontend**:
+- Vue.js 2 
+- Bootstrap 5
+
+**Infrastructure**:
+- Docker
+- Apache web server
+
 ## Table of Contents
 - [Features](#-features)
 - [Prerequisites](#-prerequisites)
@@ -88,3 +102,19 @@ A **Point of Sale (POS) Terminal** designed to help businesses track sales, mana
  5. **Docker down**
     ```bash
     docker-compose down
+
+## 📜 License
+
+This project is **proprietary software** owned solely by [Kevin Sapang]. All rights reserved.
+
+### What this means:
+- You may **not**:
+  - Copy, modify, or distribute the code without explicit permission
+  - Use the code for commercial purposes other than your own
+
+### Permissions (optional):
+- [✓] You may clone and run this software for personal evaluation
+- [ ] You may not use this in production without purchasing a license
+- [ ] You may not redistribute modified versions
+
+For licensing inquiries, contact: [kevin.sapang@gmail.com]
