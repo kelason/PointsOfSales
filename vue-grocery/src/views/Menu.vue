@@ -273,6 +273,13 @@ export default {
                 .get("/api/getAllCategoriesByTypeId/?category_status=active&typeid=" + id)
                 .then(function(response) {
                     app.categories = response.data.data;
+                    if (app.categories && app.categories.length > 0) {
+                        app.selectedCategory = app.categories[0].id;
+                        app.fetchProductsbyCategory(app.selectedCategory);
+                    } else {
+                        app.selectedCategory = null;
+                        app.products = [];
+                    }
                 })
                 .catch((error) => {
                     console.log(error);

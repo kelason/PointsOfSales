@@ -1,0 +1,9 @@
+.git
+.env
+vendor/
+node_modules/
+vue-grocery/node_modules/
+docker/mysql-data/
+docker-compose.yml
+docker-compose.override.yml
+*.sql

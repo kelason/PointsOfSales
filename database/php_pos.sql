@@ -42138,10 +42138,10 @@ CREATE TABLE `poscategories` (
 --
 
 INSERT INTO `poscategories` (`id`, `category_name`, `category_type`, `category_status`, `isdelete`) VALUES
-(1, 'Snacks', 1, 'active', 0),
+(1, 'Snacks', 2, 'active', 0),
 (2, 'Soft Drinks', 1, 'active', 0),
-(3, 'Condements', 1, 'active', 0),
-(4, 'Pasalubong', 1, 'active', 0);
+(3, 'Condiments', 3, 'active', 0),
+(4, 'Pasalubong', 4, 'active', 0);
 
 -- --------------------------------------------------------
 
@@ -44184,16 +44184,7 @@ INSERT INTO `posproduct_categories` (`product_id`, `category_id`) VALUES
 (11, 4),
 (12, 4),
 (13, 2),
-(14, 1),
-(15, 7),
-(16, 7),
-(17, 7),
-(18, 7),
-(19, 7),
-(20, 7),
-(21, 28),
-(22, 20),
-(23, 24);
+(14, 1);
 
 -- --------------------------------------------------------
 
@@ -44904,8 +44895,8 @@ ALTER TABLE `possuppliers`
 ALTER TABLE `posusers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 INSERT INTO `poscategories` (`id`, `category_name`, `category_type`, `category_status`, `isdelete`) VALUES
-(5, 'Dairy', 1, 'active', 0),
-(6, 'Frozen Foods', 1, 'active', 0),
+(5, 'Dairy', 3, 'active', 0),
+(6, 'Frozen Foods', 3, 'active', 0),
 (7, 'Beverages', 1, 'active', 0);
 
 INSERT INTO `posproducts` (`id`, `product_name`, `product_image`, `unit_price`, `selling_price`, `product_status`, `barcode`, `alarmlvl`, `isvatable`, `isdelete`) VALUES
