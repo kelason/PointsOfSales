@@ -87,8 +87,7 @@ A **Point of Sale (POS) Terminal** designed to help businesses track sales, mana
 - [Docker](https://www.docker.com/)  
 
 ## 🗃️ Database Setup
-1. **Import the SQL file**
-  - SQL file is located at database/php_pos.sql
+- The SQL database structure and dummy data are **automatically migrated and imported** into the database container the first time you run `docker-compose up app db`. No manual setup is required!
 
 ## 🚀 Installation  
 1. **Clone the repository**:  

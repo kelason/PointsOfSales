@@ -44903,6 +44903,35 @@ ALTER TABLE `possuppliers`
 --
 ALTER TABLE `posusers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+INSERT INTO `poscategories` (`id`, `category_name`, `category_type`, `category_status`, `isdelete`) VALUES
+(5, 'Dairy', 1, 'active', 0),
+(6, 'Frozen Foods', 1, 'active', 0),
+(7, 'Beverages', 1, 'active', 0);
+
+INSERT INTO `posproducts` (`id`, `product_name`, `product_image`, `unit_price`, `selling_price`, `product_status`, `barcode`, `alarmlvl`, `isvatable`, `isdelete`) VALUES
+(24, 'Fresh Milk 1L', 'no-thumbnail.jpg', 80.00, 95.00, 'active', 'FMILK1002345', 10, 'yes', 0),
+(25, 'Cheddar Cheese 250g', 'no-thumbnail.jpg', 120.00, 150.00, 'active', 'CHEES9876543', 5, 'yes', 0),
+(26, 'Chicken Nuggets 500g', 'no-thumbnail.jpg', 150.00, 185.00, 'active', 'NUGGET567890', 15, 'yes', 0),
+(27, 'Vanilla Ice Cream 1.5L', 'no-thumbnail.jpg', 200.00, 250.00, 'active', 'ICRMTV123456', 5, 'yes', 0),
+(28, 'Green Tea 500ml', 'no-thumbnail.jpg', 30.00, 45.00, 'active', 'GREENTEA0001', 20, 'yes', 0),
+(29, 'Instant Coffee 100g', 'no-thumbnail.jpg', 100.00, 120.00, 'active', 'COFEE982374', 15, 'yes', 0),
+(30, 'White Bread 400g', 'no-thumbnail.jpg', 40.00, 55.00, 'active', 'WBREAD00123', 20, 'yes', 0),
+(31, 'Hotdogs 1kg', 'no-thumbnail.jpg', 180.00, 220.00, 'active', 'HOTDOG45678', 10, 'yes', 0),
+(32, 'Orange Juice 1L', 'no-thumbnail.jpg', 60.00, 75.00, 'active', 'OJUICE12300', 12, 'yes', 0),
+(33, 'Butter 200g', 'no-thumbnail.jpg', 90.00, 110.00, 'active', 'BUTTER44556', 8, 'yes', 0);
+
+INSERT INTO `posproduct_categories` (`product_id`, `category_id`) VALUES
+(24, 5),
+(25, 5),
+(26, 6),
+(27, 6),
+(28, 7),
+(29, 7),
+(30, 1),
+(31, 6),
+(32, 7),
+(33, 5);
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

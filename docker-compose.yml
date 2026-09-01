@@ -20,6 +20,7 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
       - ./docker/mysql-config.cnf:/etc/mysql/conf.d/config.cnf
+      - ./database/php_pos.sql:/docker-entrypoint-initdb.d/php_pos.sql
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: php_pos
