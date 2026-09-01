@@ -44,7 +44,7 @@
                                     <td>
                                         <label :title="'Click to Upload Photo'" :for="'file' + index" class="border m-0" style="cursor: pointer;">
                                             <input type="file" ref="file" :id="'file' + index" class="form-control-file" @change="createImage(product.id, index)" hidden>
-                                            <img :src="imgURL + product.product_image" class="res-img shadow border" style="width: 80px; height: 50px;"/>
+                                            <img :src="imgURL + product.product_image" @error="imageLoadError" class="res-img shadow border" style="width: 80px; height: 50px;"/>
                                         </label>
                                     </td>
                                     <td class="align-middle">{{ product.product_name }}</td>
@@ -52,7 +52,7 @@
                                     <td class="align-middle">&#8369; {{ product.selling_price }}</td>
                                     <td class="align-middle">{{ product.category_name }}</td>
                                     <td class="align-middle">{{ product.product_status }}</td>
-                                    <td class="align-middle"><img :src="imgBarcode + '/' + product.id + '.png'" class="res-img" style="width: 100px; height: 30px;"/></td>
+                                    <td class="align-middle"><img :src="'/grocery/public/api/barcode.php?text=' + product.barcode" @error="imageLoadError" class="res-img" style="width: 100px; height: 30px;"/></td>
                                     <td class="align-middle">{{ product.alarmlvl }}</td>
                                     <td class="align-middle">
                                         <i class="fa fa-edit mr-2" :title="'Click to Edit ' + product.product_name" style="cursor: pointer;" @click="editProduct(product)"></i> 
@@ -216,6 +216,10 @@ export default {
         }
     },
     methods: {
+        imageLoadError(event) {
+            event.target.src = this.imgURL + 'no-thumbnail.jpg';
+            event.target.onerror = null;
+        },
         back() {
             this.$router.push("/");
         },
