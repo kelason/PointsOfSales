@@ -173,7 +173,7 @@
                                         <th>Total Profit</th>
                                     </tr>
                                 </thead>
-                                <tbody v-for="sales_prod in sales_prods" :key="sales_prod.id">
+                                <tbody v-for="sales_prod in sales_prods" :key="sales_prod.product_id">
                                     <tr>
                                         <td class="align-middle">{{ sales_prod.product_name }}</td>
                                         <td class="align-middle">{{ sales_prod.category_name }}</td>

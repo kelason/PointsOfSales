@@ -81,7 +81,7 @@
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-gradient">
-                        <h5 class="modal-title">Add Category</h5>
+                        <h5 class="modal-title">Add Supplier</h5>
                         <button type="button" class="close" @click="toggleModal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -104,7 +104,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="" class="ml-4 text-muted"><small>Province</small></label>
-                                <select v-model="supplier.supplier_prov" @input="fetchCityMuns($event.target.value), citymuns=[], brgys=[]" class="form-control form-control-sm rounded-0 bg-transparent border-top-0 border-left-0 border-right-0" :class="{'is-invalid': errors.supplier_prov}">
+                                <select v-model="supplier.supplier_prov" @change="fetchCityMuns(supplier.supplier_prov); supplier.supplier_citymun = 0; supplier.supplier_brgy = 0; citymuns = []; brgys = [];" class="form-control form-control-sm rounded-0 bg-transparent border-top-0 border-left-0 border-right-0" :class="{'is-invalid': errors.supplier_prov}">
                                     <option class="text-dark" value="0" disabled>Select Province</option>
                                     <option class="text-dark" v-for="province in provinces" :key="province.id" :value="province.provCode">{{ province.provDesc }}</option>
                                 </select>
@@ -112,7 +112,7 @@
                             </div>
                             <div class="col-sm-4">
                                 <label for="" class="ml-4 text-muted"><small>City/Municipality</small></label>
-                                <select v-model="supplier.supplier_citymun" @input="fetchBrgys($event.target.value), brgys=[]" class="form-control form-control-sm rounded-0 bg-transparent border-top-0 border-left-0 border-right-0" :class="{'is-invalid': errors.supplier_citymun}">
+                                <select v-model="supplier.supplier_citymun" @change="fetchBrgys(supplier.supplier_citymun); supplier.supplier_brgy = 0; brgys = [];" class="form-control form-control-sm rounded-0 bg-transparent border-top-0 border-left-0 border-right-0" :class="{'is-invalid': errors.supplier_citymun}">
                                     <option class="text-dark" value="0" disabled>Select City</option>
                                     <option class="text-dark" v-for="citymun in citymuns" :key="citymun.id" :value="citymun.citymunCode">{{ citymun.citymunDesc }}</option>
                                 </select>

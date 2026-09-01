@@ -200,7 +200,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click="addPurchase">Save changes</button>
+                        <button type="button" class="btn btn-primary" @click="addPurchase" :style="dups.length === 0 ? 'opacity: 0.5;' : ''">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -242,8 +242,8 @@ export default {
         }
     },
     created() {
-        this.purchase.created_at = moment().format("YYYY-MM-DDTkk:mm");
-        this.from_date = moment().startOf('month').format("YYYY-MM-DDThh:mm");
+        this.purchase.created_at = moment().format("YYYY-MM-DDTHH:mm");
+        this.from_date = moment().startOf('month').format("YYYY-MM-DDTHH:mm");
         this.to_date = moment().endOf('month').format("YYYY-MM-DDTkk:mm");
         this.searchPurchaseByDate();
         this.fetchProducts();
@@ -368,6 +368,12 @@ export default {
         addPurchase() {
             var app = this;
             app.errors = [];
+            
+            if (app.dups.length === 0) {
+                app.msg = "Error: No item selected yet.";
+                setTimeout(() => { app.msg = ''; }, 3000);
+                return;
+            }
 
             if (app.validSupplier) app.errors.supplier_id = "Please Select Supplier.";
             if (app.validDr) app.errors.drnum = "Please Input Delivery Reciept #.";
@@ -387,7 +393,7 @@ export default {
                                 supplier_id: 0,
                                 drnum: '',
                                 cashier_id: app.$session.get('user_id'),
-                                created_at: moment().format("YYYY-MM-DDTkk:mm"),
+                                created_at: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
                                 purchase_note: ''
                             }
                             app.purchase_product = {

@@ -24,6 +24,7 @@ import PrintSales from "../views/PrintSales.vue";
 import PrintSalesReceipt from "../views/PrintSalesReceipt.vue";
 import PrintCashDrop from "../views/PrintCashDrop.vue";
 import PrintSpoilage from "../views/PrintSpoilage.vue";
+import PrintChangeItem from "../views/PrintChangeItem.vue";
 import Change from "../views/Change.vue";
 
 Vue.use(VueRouter);
@@ -142,6 +143,11 @@ const routes = [
     path: "/print/spoilage",
     name: "PSPOILAGE",
     component: PrintSpoilage
+  },
+  {
+    path: "/print/change-item",
+    name: "PCHANGEITEM",
+    component: PrintChangeItem
   },
   {
     path: "/change",

@@ -26,6 +26,8 @@ class Inventories extends Database
     private $tablePurchase = "pospurchases";
     private $tableSpoilageProd = "posspoilage_products";
     private $tableSpoilage = "posspoilages";
+    private $tableChangeItemProd = "poschangeitem_products";
+    private $tableChangeItem = "poschangeitems";
 
     public function paginationInventories() {
         if ($this->category_id != 0) {
@@ -46,11 +48,12 @@ class Inventories extends Database
             b.barcode, 
             b.alarmlvl, 
             c.category_name, 
-            d.purchase_qty, 
-            e.sales_qty, 
-            f.spoilage_qty, 
-            COALESCE(enp.epurchase_qty,0) - COALESCE(ens.esales_qty,0) - COALESCE(ensp.sespoilage_qty,0) AS endstock_qty,
-            COALESCE(begp.bpurchase_qty,0) - COALESCE(begs.bsales_qty,0) - COALESCE(begsp.sbspoilage_qty,0) AS begstock_qty
+            COALESCE(d.purchase_qty, 0) AS purchase_qty, 
+            COALESCE(e.sales_qty, 0) AS sales_qty, 
+            COALESCE(f.spoilage_qty, 0) AS spoilage_qty, 
+            COALESCE(g.change_qty, 0) AS change_qty,
+            COALESCE(enp.epurchase_qty,0) - COALESCE(ens.esales_qty,0) - COALESCE(ensp.sespoilage_qty,0) - COALESCE(ench.sechange_qty,0) AS endstock_qty,
+            COALESCE(begp.bpurchase_qty,0) - COALESCE(begs.bsales_qty,0) - COALESCE(begsp.sbspoilage_qty,0) - COALESCE(begch.sbchange_qty,0) AS begstock_qty
         FROM $this->tableProCat AS a 
         INNER JOIN $this->tableProd AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
@@ -129,12 +132,42 @@ class Inventories extends Database
             AND DATE(b.created_at)<=? 
             GROUP BY a.product_id)
         AS begsp ON b.id=begsp.product_id 
+        LEFT OUTER JOIN 
+            (SELECT a.productid_out, SUM(a.change_qty) AS change_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id   
+            WHERE b.iscancel=? 
+            AND DATE(b.created_at)>=? 
+            AND DATE(b.created_at)<=? 
+            GROUP BY a.productid_out) 
+        AS g ON b.id=g.productid_out
+        LEFT OUTER JOIN
+            (SELECT a.productid_out, SUM(a.change_qty) AS sechange_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id   
+            WHERE b.iscancel=?  
+            AND DATE(b.created_at)<=? 
+            GROUP BY a.productid_out)
+        AS ench ON b.id=ench.productid_out 
+        LEFT OUTER JOIN
+            (SELECT a.productid_out, SUM(a.change_qty) AS sbchange_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id  
+            WHERE b.iscancel=?  
+            AND DATE(b.created_at)<=? 
+            GROUP BY a.productid_out)
+        AS begch ON b.id=begch.productid_out 
         WHERE b.product_name LIKE ?
         AND b.isdelete=?
         $where
         ORDER BY b.product_name
         LIMIT $this->start, $this->limit";
 
+        if ($this->category_id != 0) {
+            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "%" . $this->product_name . "%", 0, $this->category_id];
+        } else {
+            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "%" . $this->product_name . "%", 0];
+        }
         $result = $this->setRows($query, $params);
 
         return $result;
@@ -159,11 +192,12 @@ class Inventories extends Database
             b.barcode, 
             b.alarmlvl, 
             c.category_name, 
-            d.purchase_qty, 
-            e.sales_qty, 
-            f.spoilage_qty, 
-            COALESCE(enp.epurchase_qty,0) - COALESCE(ens.esales_qty,0) - COALESCE(ensp.sespoilage_qty,0) AS endstock_qty,
-            COALESCE(begp.bpurchase_qty,0) - COALESCE(begs.bsales_qty,0) - COALESCE(begsp.sbspoilage_qty,0) AS begstock_qty
+            COALESCE(d.purchase_qty, 0) AS purchase_qty, 
+            COALESCE(e.sales_qty, 0) AS sales_qty, 
+            COALESCE(f.spoilage_qty, 0) AS spoilage_qty, 
+            COALESCE(g.change_qty, 0) AS change_qty,
+            COALESCE(enp.epurchase_qty,0) - COALESCE(ens.esales_qty,0) - COALESCE(ensp.sespoilage_qty,0) - COALESCE(ench.sechange_qty,0) AS endstock_qty,
+            COALESCE(begp.bpurchase_qty,0) - COALESCE(begs.bsales_qty,0) - COALESCE(begsp.sbspoilage_qty,0) - COALESCE(begch.sbchange_qty,0) AS begstock_qty
         FROM $this->tableProCat AS a 
         INNER JOIN $this->tableProd AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
@@ -242,11 +276,41 @@ class Inventories extends Database
             AND DATE(b.created_at)<=? 
             GROUP BY a.product_id)
         AS begsp ON b.id=begsp.product_id 
+        LEFT OUTER JOIN 
+            (SELECT a.productid_out, SUM(a.change_qty) AS change_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id   
+            WHERE b.iscancel=? 
+            AND DATE(b.created_at)>=? 
+            AND DATE(b.created_at)<=? 
+            GROUP BY a.productid_out) 
+        AS g ON b.id=g.productid_out
+        LEFT OUTER JOIN
+            (SELECT a.productid_out, SUM(a.change_qty) AS sechange_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id   
+            WHERE b.iscancel=?  
+            AND DATE(b.created_at)<=? 
+            GROUP BY a.productid_out)
+        AS ench ON b.id=ench.productid_out 
+        LEFT OUTER JOIN
+            (SELECT a.productid_out, SUM(a.change_qty) AS sbchange_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id  
+            WHERE b.iscancel=?  
+            AND DATE(b.created_at)<=? 
+            GROUP BY a.productid_out)
+        AS begch ON b.id=begch.productid_out
         WHERE b.product_name LIKE ?
         AND b.isdelete=? 
         $where 
         ORDER BY b.product_name";
             
+        if ($this->category_id != 0) {
+            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "%" . $this->product_name . "%", 0, $this->category_id];
+        } else {
+            $params = [0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "paid", $this->from_date, $this->to_date, "paid", $this->to_date, "paid", $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, 0, $this->from_date, $this->to_date, 0, $this->to_date, 0, $this->beginning_date, "%" . $this->product_name . "%", 0];
+        }
         $result = $this->setRows($query, $params);
 
         return $result;
@@ -260,7 +324,8 @@ class Inventories extends Database
             b.purchase_qty, 
             c.sales_qty, 
             d.spoilage_qty,
-            COALESCE(b.purchase_qty,0) - COALESCE(c.sales_qty,0) - COALESCE(d.spoilage_qty,0) AS stock_qty
+            e.change_qty,
+            COALESCE(b.purchase_qty,0) - COALESCE(c.sales_qty,0) - COALESCE(d.spoilage_qty,0) - COALESCE(e.change_qty,0) AS stock_qty
         FROM $this->tableProd AS a 
         LEFT OUTER JOIN
             (SELECT a.product_id, SUM(a.purchase_qty) AS purchase_qty 
@@ -283,11 +348,18 @@ class Inventories extends Database
             WHERE b.iscancel=?
             GROUP BY a.product_id)
         AS d ON a.id=d.product_id 
+        LEFT OUTER JOIN
+            (SELECT a.productid_out, SUM(a.change_qty) AS change_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id 
+            WHERE b.iscancel=?
+            GROUP BY a.productid_out)
+        AS e ON a.id=e.productid_out 
         WHERE a.product_name LIKE ?
         AND a.isdelete=?
         ORDER BY a.product_name";
 
-        $params = [0, "paid", 0, "%" . $this->product_name . "%", 0];
+        $params = [0, "paid", 0, 0, "%" . $this->product_name . "%", 0];
         $result = $this->setRows($query, $params);
 
         return $result;
@@ -297,7 +369,7 @@ class Inventories extends Database
         $query = "SELECT 
             a.id, 
             a.product_name, 
-            COALESCE(b.purchase_qty,0) - COALESCE(c.sales_qty,0) - COALESCE(d.spoilage_qty,0) AS stock_qty
+            COALESCE(b.purchase_qty,0) - COALESCE(c.sales_qty,0) - COALESCE(d.spoilage_qty,0) - COALESCE(e.change_qty,0) AS stock_qty
         FROM $this->tableProd AS a 
         LEFT OUTER JOIN
             (SELECT a.product_id, SUM(a.purchase_qty) AS purchase_qty 
@@ -320,10 +392,17 @@ class Inventories extends Database
             WHERE b.iscancel=?
             GROUP BY a.product_id)
         AS d ON a.id=d.product_id 
+        LEFT OUTER JOIN
+            (SELECT a.productid_out, SUM(a.change_qty) AS change_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id 
+            WHERE b.iscancel=?
+            GROUP BY a.productid_out)
+        AS e ON a.id=e.productid_out 
         WHERE a.id=?
         ORDER BY a.product_name";
 
-        $params = [0, "paid", 0, $this->product_id];
+        $params = [0, "paid", 0, 0, $this->product_id];
         $result = $this->setRows($query, $params);
 
         return $result;

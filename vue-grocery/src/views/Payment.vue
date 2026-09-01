@@ -381,7 +381,7 @@ export default {
         btnTendered() {
             let app = this;
 
-            if(app.tendered != 0 && app.orderTotal != 0 && Number(app.tendered) > Number(app.subTotal)) {
+            if(app.tendered != 0 && app.orderTotal != 0 && Number(app.tendered) >= Number(app.subTotal)) {
                 var arr_pay = [];
                 arr_pay = {
                     cashier_id: app.$session.get('user_id'),

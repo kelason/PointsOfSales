@@ -23,6 +23,8 @@ class Products extends Database
     private $tablePurchase = "pospurchases";
     private $tableSpoilageProd = "posspoilage_products";
     private $tableSpoilage = "posspoilages";
+    private $tableChangeItemProd = "poschangeitem_products";
+    private $tableChangeItem = "poschangeitems";
 
     public function createProduct() {
         $fields = array(
@@ -135,10 +137,17 @@ class Products extends Database
         FROM $this->tableProCat AS a 
         INNER JOIN $this->table AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
+        LEFT JOIN 
+            (SELECT a.productid_out, SUM(a.change_qty) AS total_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY productid_out) 
+        AS g ON b.id=g.productid_out 
         WHERE b.isdelete=? 
         ORDER BY b.product_name";
 
-        $params = [0];
+        $params = [0, 0];
         $result = $this->setRows($query, $params);
         return $result;
     }
@@ -161,11 +170,18 @@ class Products extends Database
         FROM $this->tableProCat AS a 
         INNER JOIN $this->table AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
+        LEFT JOIN 
+            (SELECT a.productid_out, SUM(a.change_qty) AS total_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY productid_out) 
+        AS g ON b.id=g.productid_out 
         WHERE b.isdelete=? 
         ORDER BY b.product_name 
         LIMIT $this->start, $this->limit";
 
-        $params = [0];
+        $params = [0, 0];
         $result = $this->setRows($query, $params);
         return $result;
     }
@@ -196,7 +212,7 @@ class Products extends Database
             b.barcode, 
             b.alarmlvl, 
             c.category_name, 
-            COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) - COALESCE(f.total_qty,0) AS stock_qty
+            COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) - COALESCE(f.total_qty,0) - COALESCE(g.total_qty,0) AS stock_qty
         FROM $this->tableProCat AS a 
         INNER JOIN $this->table AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
@@ -219,12 +235,19 @@ class Products extends Database
             WHERE b.iscancel=? 
             GROUP BY product_id) 
         AS f ON a.product_id=f.product_id 
+        LEFT JOIN 
+            (SELECT a.productid_out, SUM(a.change_qty) AS total_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY productid_out) 
+        AS g ON a.product_id=g.productid_out 
         WHERE b.product_status=?
          AND b.isdelete=? 
          AND c.id=? 
          ORDER BY b.product_name";
 
-        $params = [0, 0, $this->product_status, 0, $this->category_id];
+        $params = [0, 0, 0, $this->product_status, 0, $this->category_id];
         $result = $this->setRows($query, $params);
         return $result;
     }
@@ -240,7 +263,7 @@ class Products extends Database
             b.barcode, 
             b.alarmlvl, 
             c.category_name, 
-            COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) - COALESCE(f.total_qty,0) AS stock_qty
+            COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) - COALESCE(f.total_qty,0) - COALESCE(g.total_qty,0) AS stock_qty
         FROM $this->tableProCat AS a 
         INNER JOIN $this->table AS b ON a.product_id=b.id 
         INNER JOIN $this->tableCat AS c ON a.category_id=c.id 
@@ -263,6 +286,13 @@ class Products extends Database
             WHERE b.iscancel=? 
             GROUP BY product_id) 
         AS f ON a.product_id=f.product_id  
+        LEFT JOIN 
+            (SELECT a.productid_out, SUM(a.change_qty) AS total_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY productid_out) 
+        AS g ON a.product_id=g.productid_out 
         WHERE b.product_status=? 
         AND b.isdelete=? 
         AND c.id=? 
@@ -270,14 +300,14 @@ class Products extends Database
         LIKE ? 
         ORDER BY b.product_name";
 
-        $params = [0, 0, $this->product_status, 0, $this->category_id, "%" . $this->product_name . "%"];
+        $params = [0, 0, 0, $this->product_status, 0, $this->category_id, "%" . $this->product_name . "%"];
         $result = $this->setRows($query, $params);
         return $result;
     }
 
     public function searchProductStocksByBarcode() {
         $query = "SELECT 
-            COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) - COALESCE(f.total_qty,0) AS stock_qty
+            COALESCE(d.total_qty,0) - COALESCE(e.total_qty,0) - COALESCE(f.total_qty,0) - COALESCE(g.total_qty,0) AS stock_qty
         FROM $this->tableProCat AS a 
         INNER JOIN $this->table AS b ON a.product_id=b.id 
         LEFT JOIN 
@@ -298,12 +328,19 @@ class Products extends Database
             INNER JOIN $this->tableSpoilage AS b ON a.spoilage_id=b.id 
             WHERE b.iscancel=? 
             GROUP BY product_id) 
-        AS f ON a.product_id=f.product_id  
+        AS f ON a.product_id=f.product_id 
+        LEFT JOIN 
+            (SELECT a.productid_out, SUM(a.change_qty) AS total_qty 
+            FROM $this->tableChangeItemProd AS a 
+            INNER JOIN $this->tableChangeItem AS b ON a.changeid=b.id 
+            WHERE b.iscancel=? 
+            GROUP BY productid_out) 
+        AS g ON a.product_id=g.productid_out 
         WHERE b.isdelete=? 
         AND b.barcode=? 
         ORDER BY b.product_name";
 
-        $params = [0, 0, 0, $this->barcode];
+        $params = [0, 0, 0, 0, $this->barcode];
         $result = $this->setColumn($query, $params);
         return $result;
     }

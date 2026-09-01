@@ -150,7 +150,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click="addSpoilage">Save changes</button>
+                        <button type="button" class="btn btn-primary" @click="addSpoilage" :style="dups.length === 0 ? 'opacity: 0.5;' : ''">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -190,9 +190,9 @@ export default {
         }
     },
     created() {
-        this.spoilage.created_at = moment().format("YYYY-MM-DDThh:mm");
-        this.from_date = moment().startOf('month').format("YYYY-MM-DDThh:mm");
-        this.to_date = moment().endOf('month').format("YYYY-MM-DDTkk:mm");
+        this.spoilage.created_at = moment().format("YYYY-MM-DDTHH:mm");
+        this.from_date = moment().startOf('month').format("YYYY-MM-DDTHH:mm");
+        this.to_date = moment().endOf('month').format("YYYY-MM-DDTHH:mm");
         this.fetchProducts();
         this.fetchSpoilages(this.from_date, this.to_date);
     },
@@ -298,6 +298,11 @@ export default {
         },
         addSpoilage() {
             var app = this;
+            if (app.dups.length === 0) {
+                app.msg = "Error: No item selected yet.";
+                setTimeout(() => { app.msg = ''; }, 3000);
+                return;
+            }
             var arr = new Array({'spoilage': app.spoilage, 'spoilage_product': app.dups});
             const axios = require("axios");
 
@@ -308,7 +313,7 @@ export default {
                     if (response.data) {
                         app.spoilage = {
                             cashier_id: app.$session.get('user_id'),
-                            created_at: moment(new Date()).format("YYYY-MM-DDThh:mm"),
+                            created_at: moment(new Date()).format("YYYY-MM-DDTHH:mm"),
                             spoilage_note: ''
                         },
                         app.spoilage_product = {

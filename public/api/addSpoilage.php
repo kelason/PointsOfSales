@@ -10,6 +10,11 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
         $res[$key] = $value;
     }
 
+    if (empty($res['spoilage_product'])) {
+        echo json_encode(["data" => [], "msg" => "No products added."]);
+        exit;
+    }
+
     $spoilage = new Spoilages();
     $spoilage->cashier_id = $res['spoilage']->cashier_id;
     $spoilage->created_at = DATE('Y-m-d H:i:s', strtotime($res['spoilage']->created_at));
@@ -27,7 +32,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST") {
     }
     $resultSpoilProd = $spoilage->createSpoilageProduct();
 
-    if ($resultSpoilProd && $resultSpoil) {
+    if ($resultSpoilProd !== false && $resultSpoil !== false) {
         echo json_encode(
             [
                 "data" => [

@@ -27,6 +27,9 @@ class Database extends Connection
 	{
 		try {
 			$this->getConnection()->beginTransaction();
+			if (empty($fields)) {
+				return false;
+			}
 			foreach ($fields as $field) {}
 
 			$implodeColumns = implode(', ', array_keys($field));

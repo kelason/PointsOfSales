@@ -6,13 +6,13 @@
                     <div class="row">
                         <div class="col-3">
                             <div class="form-label-group">
-                                <input type="datetime-local" v-model="from_date" id="from_date" class="form-control form-control-sm mb-3 bg-transparent text-white rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Date" @input="fetchSpoilages(from_date, to_date)">
+                                <input type="datetime-local" v-model="from_date" id="from_date" class="form-control form-control-sm mb-3 bg-transparent text-white rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Date" @input="fetchChangeItems(from_date, to_date)">
                                 <label class="text-white" for="from_date">From Date</label>
                             </div>
                         </div>
                         <div class="col-3">
                             <div class="form-label-group">
-                                <input type="datetime-local" v-model="to_date" id="to_date" class="form-control form-control-sm mb-3 bg-transparent text-white rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Date" @input="fetchSpoilages(from_date, to_date)">
+                                <input type="datetime-local" v-model="to_date" id="to_date" class="form-control form-control-sm mb-3 bg-transparent text-white rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Date" @input="fetchChangeItems(from_date, to_date)">
                                 <label class="text-white" for="to_date">To Date</label>
                             </div>
                         </div>
@@ -37,16 +37,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="spoilage in spoilages" :key="spoilage.id" :class="{'bg-warning' : spoilage.iscancel==1}">
-                                        <td class="align-middle">{{ spoilage.id }}</td>
-                                        <td class="align-middle">{{ spoilage.employee_fn }} {{ spoilage.employee_sn }}</td>
-                                        <td class="align-middle">{{ spoilage.spoilage_note }}</td>
-                                        <td class="align-middle">{{ spoilageDtFormat(spoilage.created_at) }}</td>
+                                    <tr v-for="changeitem in changeitems" :key="changeitem.id" :class="{'bg-warning' : changeitem.iscancel==1}">
+                                        <td class="align-middle">{{ changeitem.id }}</td>
+                                        <td class="align-middle">{{ changeitem.employee_fn }} {{ changeitem.employee_sn }}</td>
+                                        <td class="align-middle">{{ changeitem.changeitem_note }}</td>
+                                        <td class="align-middle">{{ changeitemDtFormat(changeitem.created_at) }}</td>
                                         <td class="align-middle">
-                                            <i class="far fa-file" style="cursor: pointer;" @click="openPortal(spoilage.id)"></i>
+                                            <i class="far fa-file" style="cursor: pointer;" @click="openPortal(changeitem.id)"></i>
                                         </td>
                                         <td class="align-middle">
-                                            <i class="fas fa-ban ml-2" :title="'Click to Cancel ID# ' + spoilage.id" style="cursor: pointer;" @click="cancelSpoilage(spoilage.id)" v-if="spoilage.iscancel!=1"></i>
+                                            <i class="fas fa-ban ml-2" :title="'Click to Cancel ID# ' + changeitem.id" style="cursor: pointer;" @click="cancelChangeItem(changeitem.id)" v-if="changeitem.iscancel!=1"></i>
                                             <i class="fas fa-ban ml-2" v-else></i>
                                         </td>
                                     </tr>
@@ -63,11 +63,11 @@
                 </div>
             </div>
         </div>
-        <div class="modal fade" tabindex="-1" :class="{show, 'd-block': active}" role="dialog" id="addSpoilage">
+        <div class="modal fade" tabindex="-1" :class="{show, 'd-block': active}" role="dialog" id="addChangeItem">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header bg-gradient">
-                        <h5 class="modal-title">Add Spoilage</h5>
+                        <h5 class="modal-title">Add Change Item</h5>
                         <button type="button" class="close" @click="toggleModal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -76,31 +76,31 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <div class="form-label-group">
-                                    <input type="datetime-local" v-model="spoilage.created_at" id="created_at" class="form-control form-control-sm mb-3 rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Date">
+                                    <input type="datetime-local" v-model="changeitem.created_at" id="created_at" class="form-control form-control-sm mb-3 rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Date">
                                     <label for="created_at">Date</label>
                                 </div>
                             </div>
                             <div class="col-sm-12">
                                 <label for="comment" class="ml-2 font-weight-light">Comment:</label>
-                                <textarea id="comment" v-model="spoilage.spoilage_note" class="form-control form-control-sm rounded-0" cols="30" rows="7" placeholder="Optional"></textarea>
+                                <textarea id="comment" v-model="changeitem.changeitem_note" class="form-control form-control-sm rounded-0" cols="30" rows="7" placeholder="Optional"></textarea>
                             </div>
                             <hr>
                             <div class="col-6">
                                 <div class="form-label-group">
-                                    <input type="text" v-model="spoilage_product.search_product" id="search_product" class="form-control form-control-sm mb-3 rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Search Product" @input="fetchProducts($event.target.value)">
+                                    <input type="text" v-model="changeitem_product.search_product" id="search_product" class="form-control form-control-sm mb-3 rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Search Product" @input="fetchProducts($event.target.value)">
                                     <label for="search_product">Search Product</label>
                                 </div>
                             </div>
                             <div class="col-6 p-2">
-                                <select id="product_id" v-model="spoilage_product.product_id" @change="fetchProductById()" class="form-control mb-3 rounded-0 border-top-0  border-left-0  border-right-0">
+                                <select id="product_id" v-model="changeitem_product.product_id" @change="fetchProductById()" class="form-control mb-3 rounded-0 border-top-0  border-left-0  border-right-0">
                                     <option disabled value="0">Select Product</option>
                                     <option v-for="product in products" :key="product.id" :value="product.id">{{ "(" + product.stock_qty + ") " + product.product_name }}</option>
                                 </select>
                             </div>
                             <div class="col-6">
                                 <div class="form-label-group">
-                                    <input type="number" v-model="spoilage_product.spoilage_qty" id="spoilage_qty" min="1" :max="max_stock" @input="maxInput" class="form-control form-control-sm mb-3 rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Quantity">
-                                    <label for="spoilage_qty">Quantity</label>
+                                    <input type="number" v-model="changeitem_product.change_qty" id="change_qty" min="1" :max="max_stock" @input="maxInput" class="form-control form-control-sm mb-3 rounded-0 border-top-0  border-left-0  border-right-0" placeholder="Quantity">
+                                    <label for="change_qty">Quantity</label>
                                 </div>
                             </div>
                             <div class="col-6">
@@ -121,7 +121,7 @@
                                     <tbody>
                                         <tr v-for="(dup, index) in dups" :key="dup.product_id">
                                             <td>{{ dups[index].product_name }}</td>
-                                            <td>{{ dups[index].spoilage_qty }}</td>
+                                            <td>{{ dups[index].change_qty }}</td>
                                             <td>
                                                 <i class="fa fa-trash ml-2" :title="'Click to Delete ' + dups[index].product_name" style="cursor: pointer;" @click="deleteQueue(index)"></i>
                                             </td>
@@ -133,8 +133,8 @@
                                         </tr>
                                         <tr>
                                             <td colspan="2"></td>
-                                            <td class="float-right">{{ (spoilageTotal == 0) ? '' : 'Total: ' }}</td>
-                                            <td>{{ (spoilageTotal == 0) ? '' : '&#8369; ' + spoilageTotal }}</td>
+                                            <td class="float-right">{{ (changeitemTotal == 0) ? '' : 'Total: ' }}</td>
+                                            <td>{{ (changeitemTotal == 0) ? '' : '&#8369; ' + changeitemTotal }}</td>
                                             <td></td>
                                         </tr>
                                     </tbody>
@@ -150,7 +150,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click="addSpoilage">Save changes</button>
+                        <button type="button" class="btn btn-primary" @click="addChangeItem" :style="dups.length === 0 ? 'opacity: 0.5;' : ''">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -167,40 +167,40 @@ export default {
             active: false,
             edit: false,
             errors: [],
-            spoilages: [],
+            changeitems: [],
             products: [],
             suppliers: [],
-            queue_spoilage: [],
+            queue_changeitem: [],
             dups: [],
             max_stock: 0,
-            spoilage: {
+            changeitem: {
                 cashier_id: this.$session.get('user_id'),
                 created_at: new Date(),
-                spoilage_note: ''
+                changeitem_note: ''
             },
             from_date: new Date(),
             to_date: new Date(),
-            spoilage_product: {
+            changeitem_product: {
                 product_id: 0,
                 product_name: '',
-                spoilage_qty: 1,
+                change_qty: 1,
                 unit_price: 0
             },
             page: 1
         }
     },
     created() {
-        this.spoilage.created_at = moment().format("YYYY-MM-DDThh:mm");
-        this.from_date = moment().startOf('month').format("YYYY-MM-DDThh:mm");
-        this.to_date = moment().endOf('month').format("YYYY-MM-DDTkk:mm");
+        this.changeitem.created_at = moment().format("YYYY-MM-DDTHH:mm");
+        this.from_date = moment().startOf('month').format("YYYY-MM-DDTHH:mm");
+        this.to_date = moment().endOf('month').format("YYYY-MM-DDTHH:mm");
         this.fetchProducts();
-        this.fetchSpoilages(this.from_date, this.to_date);
+        this.fetchChangeItems(this.from_date, this.to_date);
     },
     computed: {
-        spoilageTotal: function() {
+        changeitemTotal: function() {
             var sum=0;
             this.dups.forEach(element => {
-                sum += parseFloat(element.spoilage_qty * element.unit_price)
+                sum += parseFloat(element.change_qty * element.unit_price)
             });
             return sum.toFixed(2);
         },
@@ -215,11 +215,11 @@ export default {
         back() {
             this.$router.push("/");
         },
-        spoilageDtFormat(dt) {
+        changeitemDtFormat(dt) {
             return moment(dt).format("MMMM DD, YYYY hh:mm:ss A");
         },
-        openPortal(spoilage_id) {
-            let routeData = this.$router.resolve({name: 'PSPOILAGE', query: {spoilage_id: spoilage_id}});
+        openPortal(changeitem_id) {
+            let routeData = this.$router.resolve({name: 'PCHANGEITEM', query: {changeitem_id: changeitem_id}});
             window.open(routeData.href, '_blank', "height=500,width=800");
         },
         toggleModal() {
@@ -237,11 +237,11 @@ export default {
             const maxValue = parseInt(event.target.max);
             
             if (inputValue < minValue || Number.isNaN(inputValue)) {
-                return app.spoilage_product.spoilage_qty = 0;
+                return app.changeitem_product.change_qty = 0;
             } else if (inputValue > maxValue) {
-                return app.spoilage_product.spoilage_qty = maxValue;
+                return app.changeitem_product.change_qty = maxValue;
             } else {
-                return app.spoilage_product.spoilage_qty = inputValue;
+                return app.changeitem_product.change_qty = inputValue;
             }
         },
         fetchProducts(name='') {
@@ -264,14 +264,14 @@ export default {
                     });
             }, 500);
         },
-        fetchSpoilages(from_date, to_date) {
+        fetchChangeItems(from_date, to_date) {
             var app = this;
             const axios = require("axios");
             
             axios
-                .get("/api/getAllSpoilages/?from_date=" + from_date + "&to_date=" + to_date)
+                .get("/api/getAllChangeItems/?from_date=" + from_date + "&to_date=" + to_date)
                 .then(function(response) {
-                    app.spoilages = response.data.data;
+                    app.changeitems = response.data.data;
                 })
                 .catch((error) => {
                     console.log(error);
@@ -282,12 +282,12 @@ export default {
             const axios = require("axios");
             
             axios
-                .get("/api/getProductInventoriesById/?product_id=" + app.spoilage_product.product_id)
+                .get("/api/getProductInventoriesById/?product_id=" + app.changeitem_product.product_id)
                 .then(function(response) {
                     const prod = response.data.data;
                     
                     prod.forEach(element => {
-                        app.spoilage_product.product_name = element.product_name;
+                        app.changeitem_product.product_name = element.product_name;
                         app.max_stock = element.stock_qty;
                     });
                    
@@ -296,47 +296,52 @@ export default {
                     console.log(error);
                 });
         },
-        addSpoilage() {
+        addChangeItem() {
             var app = this;
-            var arr = new Array({'spoilage': app.spoilage, 'spoilage_product': app.dups});
+            if (app.dups.length === 0) {
+                app.msg = "Error: No item selected yet.";
+                setTimeout(() => { app.msg = ''; }, 3000);
+                return;
+            }
+            var arr = new Array({'changeitem': app.changeitem, 'changeitem_product': app.dups});
             const axios = require("axios");
 
             axios
-                .post("/api/addSpoilage/", arr)
+                .post("/api/addChangeItem/", arr)
                 .then(function(response) {
                     console.log(response.data);
                     if (response.data) {
-                        app.spoilage = {
+                        app.changeitem = {
                             cashier_id: app.$session.get('user_id'),
                             created_at: moment(new Date()).format("YYYY-MM-DDThh:mm"),
-                            spoilage_note: ''
+                            changeitem_note: ''
                         },
-                        app.spoilage_product = {
+                        app.changeitem_product = {
                             product_id: 0,
                             product_name: '',
-                            spoilage_qty: 1,
+                            change_qty: 1,
                             unit_price: 0
                         },
                         app.dups = [];
                         app.toggleModal();
                         app.fetchProducts();
-                        app.fetchSpoilages(app.from_date, app.to_date);
+                        app.fetchChangeItems(app.from_date, app.to_date);
                     }
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         },
-        cancelSpoilage(id) {
+        cancelChangeItem(id) {
             var app = this;
             const axios = require("axios");
 
-            if (confirm("Do you want to cancel spoilage ID# " + id)) {
+            if (confirm("Do you want to cancel changeitem ID# " + id)) {
                 axios
-                    .put("/api/cancelSpoilageById/", {'spoilage_id' : id})
+                    .put("/api/cancelChangeItemById/", {'changeitem_id' : id})
                     .then(function() {
                         app.fetchProducts();
-                        app.fetchSpoilages(app.from_date, app.to_date);
+                        app.fetchChangeItems(app.from_date, app.to_date);
                     })
                     .catch((error) => {
                         console.log(error);
@@ -346,14 +351,14 @@ export default {
         },
         addQueue() {
             var app = this;
-            if (app.spoilage_product.product_id != 0) app.queue_spoilage.push({...this.spoilage_product});
+            if (app.changeitem_product.product_id != 0) app.queue_changeitem.push({...this.changeitem_product});
             
-            app.queue_spoilage.filter(function(el, i) {
-                if (i === app.queue_spoilage.length - 1 && app.dups.map(function(e) {return e.product_id}).indexOf(el.product_id) == -1) {
+            app.queue_changeitem.filter(function(el, i) {
+                if (i === app.queue_changeitem.length - 1 && app.dups.map(function(e) {return e.product_id}).indexOf(el.product_id) == -1) {
                     app.dups.push({
                         product_id: el.product_id,
                         product_name: el.product_name,
-                        spoilage_qty: el.spoilage_qty,
+                        change_qty: el.change_qty,
                         unit_price: el.unit_price,
                     });
                 }

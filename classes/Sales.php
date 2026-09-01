@@ -190,7 +190,7 @@ class Sales extends Database
         INNER JOIN $this->tableCat AS c ON c.id=a.category_id
         LEFT OUTER JOIN 
             (SELECT 
-                a.id, 
+                MAX(a.id) AS id, 
                 b.product_id, 
                 SUM(b.product_qty) AS tot_qty, 
                 SUM(b.vat_amount) AS tot_vat, 

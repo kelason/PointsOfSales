@@ -1,50 +1,48 @@
 <template>
-    <div class="container" style="background-color: #ffffff">
-        <div class="row">
-            <div class="col-sm-12 text-center">
+    <div class="container-fluid px-4" style="background-color: #ffffff; min-height: 100vh;">
+        <div class="row pt-3">
+            <div class="col-12 text-center">
                 <h5>Cabanatuan City, Nueva Ecija</h5>
             </div>
-        
-            <div class="col-sm-6 mt-3"><strong>From:</strong> {{ fdate }}</div>
-            <div class="col-sm-6 mt-3"><strong>To:</strong> {{ tdate }}</div>
-            <div class="col-sm-6 mt-3"><strong>Category:</strong> {{ (categories != '') ? categories : 'All Categories' }}</div>
-            <div class="col-sm-12 mt-4">
-                <div class="card fullheight rounded-0">
-                    <div class="card-body">
-                        <table class="table text-center">
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Category</th>
-                                    <th>Beginning</th>
-                                    <th>Purchase</th>
-                                    <th>Sold</th>
-                                    <th>Spoilage</th>
-                                    <th>Ending</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="border-bottom" v-for="inventory in inventories" :key="inventory.id">
-                                    <td>{{ inventory.product_name }}</td>
-                                    <td>{{ inventory.category_name }}</td>
-                                    <td>{{ inventory.begstock_qty }}</td>
-                                    <td>{{ inventory.purchase_qty }}</td>
-                                    <td>{{ inventory.sales_qty }}</td>
-                                    <td>{{ inventory.spoilage_qty }}</td>
-                                    <td>{{ inventory.endstock_qty }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-sm-4"><strong>From:</strong> {{ fdate }}</div>
+            <div class="col-sm-4"><strong>To:</strong> {{ tdate }}</div>
+            <div class="col-sm-4"><strong>Category:</strong> {{ (categories != '') ? categories : 'All Categories' }}</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <table class="table table-sm table-bordered text-center" style="font-size: 0.82rem;">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Product</th>
+                            <th>Category</th>
+                            <th>Beginning</th>
+                            <th>Purchase</th>
+                            <th>Sold</th>
+                            <th>Spoilage</th>
+                            <th>Change Items</th>
+                            <th>Ending</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="inventory in inventories" :key="inventory.id">
+                            <td class="text-left">{{ inventory.product_name }}</td>
+                            <td>{{ inventory.category_name }}</td>
+                            <td>{{ inventory.begstock_qty }}</td>
+                            <td>{{ inventory.purchase_qty }}</td>
+                            <td>{{ inventory.sales_qty }}</td>
+                            <td>{{ inventory.spoilage_qty }}</td>
+                            <td>{{ inventory.change_qty }}</td>
+                            <td>{{ inventory.endstock_qty }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="row mx-auto mt-5">
-            <div class="col-sm-4 signature"></div>
-        </div>
-        <div class="row mx-auto">
+        <div class="row mt-5">
             <div class="col-sm-4">
-                Checked By:
+                <div style="border-top: 1px solid #000; margin-top: 40px; padding-top: 4px;">Checked By:</div>
             </div>
         </div>
     </div>

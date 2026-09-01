@@ -174,7 +174,7 @@ export default {
         }
     },
     created() {
-        this.expense.created_at = moment().format("YYYY-MM-DDTkk:mm");
+        this.expense.created_at = moment().format("YYYY-MM-DDTHH:mm");
         this.from_date = moment().startOf('month').format("YYYY-MM-DD");
         this.to_date = moment().endOf('month').format("YYYY-MM-DD");
         this.fetchParticulars();
@@ -254,24 +254,23 @@ export default {
         addExpense() {
             var app = this;
 
-            app.expense = {
-                total_amount: app.expenseTotal,
-                cashier_id: app.$session.get('user_id'),
-                created_at: new Date(),
-                expense_note: ''
+            if (app.dups.length === 0) {
+                alert('Please add at least one expense item.');
+                return;
             }
-            
-            var arr = new Array({'expense': app.expense, 'expense_details': app.dups});
+
+            app.expense.total_amount = app.expenseTotal;
+            var payload = new Array({'expense': app.expense, 'expense_details': app.dups});
             const axios = require("axios");
 
             axios
-                .post("/api/addExpense/", arr)
+                .post("/api/addExpense/", payload)
                 .then(function(response) {
                     if (response.data) {
                         app.expense = {
-                            total_amount: app.expenseTotal,
+                            total_amount: 0,
                             cashier_id: app.$session.get('user_id'),
-                            created_at: moment(new Date()).format("YYYY-MM-DDTkk:mm"),
+                            created_at: moment().format("YYYY-MM-DDTHH:mm"),
                             expense_note: ''
                         }
                         app.expense_details = {
@@ -279,6 +278,7 @@ export default {
                             expense_amount: 0
                         }
                         app.dups = [];
+                        app.fetchExpenses();
                         app.toggleModal();
                     }
                 })

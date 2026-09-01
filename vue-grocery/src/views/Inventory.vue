@@ -40,17 +40,18 @@
                                 <th>Purchase</th>
                                 <th>Sold</th>
                                 <th>Spoilages</th>
+                                <th>Change Items</th>
                                 <th>Ending</th>
                             </tr>
                         </thead>
                         <tbody v-if="loading">
                             <tr>
-                                <td colspan="7"><img src="/grocery/public/images/loading.gif" alt=""></td>
+                                <td colspan="8"><img src="/grocery/public/images/loading.gif" alt=""></td>
                             </tr>
                         </tbody>
                         <tbody v-else>
                             <tr v-if="!inventories.length">
-                                <td colspan="7"><strong class="text-danger text-center">No Record</strong></td>
+                                <td colspan="8"><strong class="text-danger text-center">No Record</strong></td>
                             </tr>
                             <tr v-else class="border-bottom" v-for="inventory in inventories" :key="inventory.id">
                                 <td>{{ inventory.product_name }}</td>
@@ -59,6 +60,7 @@
                                 <td>{{ inventory.purchase_qty }}</td>
                                 <td>{{ inventory.sales_qty }}</td>
                                 <td>{{ inventory.spoilage_qty }}</td>
+                                <td>{{ inventory.change_qty }}</td>
                                 <td :class="{'text-white bg-danger': inventory.endstock_qty <= inventory.alarmlvl }">{{ inventory.endstock_qty }}</td>
                             </tr>
                         </tbody>
