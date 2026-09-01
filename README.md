@@ -106,6 +106,15 @@ A **Point of Sale (POS) Terminal** designed to help businesses track sales, mana
  5. **Docker down**
     ```bash
     docker-compose down
+    ```
+
+## 🌐 Accessing the App
+
+Once the Docker containers are up and running, you can access the application in your browser:
+
+- **URL**: [http://localhost:8081/grocery/](http://localhost:8081/grocery/)
+- **Username**: `admin`
+- **Password**: `admin`
 
 ## 📜 License
 
