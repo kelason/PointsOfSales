@@ -42,9 +42,10 @@ RUN apt-get update && apt-get install -y curl \
     && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
     && apt-get install -y nodejs
 
-# Install frontend dependencies
+# Install frontend dependencies and build production assets
 WORKDIR /var/www/grocery/vue-grocery
 RUN npm install
+RUN npm run build && cp -r dist/* ../public/
 
 # Revert working directory
 WORKDIR /var/www/grocery

@@ -36,7 +36,7 @@
                     </div>
                     <div v-else class="row text-center">
                         <div class="col-md-3 mb-4" v-for="(product) in products" :value="product.id" :key="product.id" @click="addOrderProducts(product.id, 1, product.stock_qty)">
-                            <v-lazy-image :src="imgURL + product.product_image" class="res-img shadow-lg border" :title="product.product_name" />
+                            <img :src="imgURL + product.product_image" @error="imageLoadError" class="res-img shadow-lg border" :title="product.product_name" loading="lazy" />
                             <p class="card-text box text-white">
                                 {{ trimProductName(product.product_name) }} <br> ({{ product.stock_qty }})
                             </p>
@@ -152,11 +152,7 @@
     </div>
 </template>
 <script>
-import VLazyImage from "v-lazy-image";
 export default {
-    components: {
-        VLazyImage
-    },
     data () {
         return {
             product_barcode: "",
@@ -177,12 +173,14 @@ export default {
     },
     created () {
         this.focusBarcode();
-        this.fetchCategoriesByTypeId();
         this.fetchCategoryTypes();
-        this.fetchProductsbyCategory();
         this.fetchOrderProducts();
     },
     methods: {
+        imageLoadError(event) {
+            event.target.src = this.imgURL + 'no-thumbnail.jpg';
+            event.target.onerror = null;
+        },
         focusBarcode() {
             setTimeout(() => {
                 this.$refs.bar.focus()
@@ -293,6 +291,10 @@ export default {
                 .get("/api/getAllCategoryTypes/")
                 .then(function(response) {
                     app.category_types = response.data.data;
+                    if (app.category_types && app.category_types.length > 0) {
+                        app.selectedCategoryType = app.category_types[0].id;
+                        app.fetchCategoriesByTypeId(app.selectedCategoryType);
+                    }
                 })
                 .catch((error) => {
                     console.log(error);

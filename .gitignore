@@ -4,3 +4,8 @@ vue.config.js
 /vendor
 /public/api/print.php
 /public/api/barcode.php
+/public/css/
+/public/js/
+/public/img/
+/public/index.html
+/public/favicon.ico
