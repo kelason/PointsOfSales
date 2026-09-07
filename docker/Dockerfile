@@ -53,5 +53,8 @@ WORKDIR /var/www/grocery
 # Change the owner of the container document root
 RUN chown -R www-data:www-data /var/www/grocery/
 
+COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 EXPOSE 80
-CMD ["apache2-foreground"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
