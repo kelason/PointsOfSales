@@ -35,7 +35,7 @@ WORKDIR /var/www/grocery
 # Copy application code into the container
 COPY . /var/www/grocery
 
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-req=ext-intl
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-req ext-intl
 
 # Install Node.js and NPM (using NodeSource for cleaner installation)
 RUN apt-get update && apt-get install -y curl \
